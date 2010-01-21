@@ -1,0 +1,64 @@
+﻿<Window x:Class="SharePointLogViewer.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:SharePointLogViewer"
+    xmlns:controls="clr-namespace:SharePointLogViewer.Controls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" >
+    <Window.Resources>
+        <Style x:Key="alternatingListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#EFEFEF"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>        
+
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
+        <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
+        <CommandBinding Command="local:MainWindow.OpenFile" Executed="OpenFileExecuted" />
+    </Window.CommandBindings>
+    
+    <Grid AllowDrop="True" Drop="Grid_Drop">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Open File" Command="local:MainWindow.OpenFile" />
+            <Label>Filter:</Label>
+            <ComboBox x:Name="cmbFilterBy" SelectedIndex="3">
+                <ComboBoxItem>Timestamp</ComboBoxItem>
+                <ComboBoxItem>Process</ComboBoxItem>
+                <ComboBoxItem>TID</ComboBoxItem>
+                <ComboBoxItem>Area</ComboBoxItem>
+                <ComboBoxItem>Category</ComboBoxItem>
+                <ComboBoxItem>EventID</ComboBoxItem>
+                <ComboBoxItem>Level</ComboBoxItem>
+                <ComboBoxItem>Message</ComboBoxItem>
+                <ComboBoxItem>Correlation</ComboBoxItem>
+            </ComboBox>
+            <TextBox x:Name="txtFilter" Width="200" />
+            <Button Content="Go" Command="local:MainWindow.Filter" IsDefault="True" />
+        </StackPanel>
+        <Button Content="About" HorizontalAlignment="Right" Command="local:MainWindow.About"/>
+        <controls:SortableListView Grid.Row="1" ItemsSource="{Binding}" 
+                  ItemContainerStyle="{StaticResource alternatingListViewItemStyle}"
+                  AlternationCount="2">
+            <controls:SortableListView.View>
+                <GridView>
+                    <GridViewColumn Header="Timestamp" Width="100" DisplayMemberBinding="{Binding Timestamp}" controls:SortableListView.SortPropertyName="Timestamp"/>
+                    <GridViewColumn Header="Process" Width="100" DisplayMemberBinding="{Binding Process}" controls:SortableListView.SortPropertyName="Process"/>
+                    <GridViewColumn Header="TID" Width="100" DisplayMemberBinding="{Binding TID}" controls:SortableListView.SortPropertyName="TID"/>
+                    <GridViewColumn Header="Area" Width="100" DisplayMemberBinding="{Binding Area}" controls:SortableListView.SortPropertyName="Area"/>
+                    <GridViewColumn Header="Category" Width="100" DisplayMemberBinding="{Binding Category}" controls:SortableListView.SortPropertyName="Category"/>
+                    <GridViewColumn Header="EventID" Width="100" DisplayMemberBinding="{Binding EventID}" controls:SortableListView.SortPropertyName="EventID"/>
+                    <GridViewColumn Header="Level" Width="100" DisplayMemberBinding="{Binding Level}" controls:SortableListView.SortPropertyName="Level"/>
+                    <GridViewColumn Header="Message" Width="200" DisplayMemberBinding="{Binding Message}" controls:SortableListView.SortPropertyName="Message"/>
+                    <GridViewColumn Header="Correlation" Width="100" DisplayMemberBinding="{Binding Correlation}" controls:SortableListView.SortPropertyName="Correlation"/>
+                </GridView>
+            </controls:SortableListView.View>
+        </controls:SortableListView>
+    </Grid>    
+</Window>
