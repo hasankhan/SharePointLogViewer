@@ -13,6 +13,11 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="BlueGradient">
+            <GradientStop Color="White" Offset="0" />
+            <GradientStop Color="#DCE7F5" Offset="0.80" />
+        </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="HeadingBrush" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#828487" Offset="0"/>
@@ -166,14 +171,14 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />            
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" Background="WhiteSmoke">
-            <StackPanel Height="25" Orientation="Horizontal" DockPanel.Dock="Left" >
+        <DockPanel Grid.Row="0" Background="{StaticResource ResourceKey=BlueGradient}">
+            <StackPanel Height="25" Orientation="Horizontal" DockPanel.Dock="Left">
                 <Button IsTabStop="False"  ToolTip="Open File(s)" Command="local:MainWindow.OpenFile" >
                     <Image Source="Images\openfile.png"/>
                 </Button>
                 <Separator/>
                 <Label Content="Filter: "/>
-                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100">
+                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100" Background="{StaticResource ResourceKey=BlueGradient}">
                     <ComboBoxItem>*</ComboBoxItem>
                     <ComboBoxItem>Timestamp</ComboBoxItem>
                     <ComboBoxItem>Process</ComboBoxItem>
@@ -193,7 +198,6 @@
             <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" HorizontalContentAlignment="Right">
                 <Image Height="20" Width="20" Source="Images\about.png" ToolTip="About SharePointLogViewer" />
             </Button>
-
         </DockPanel>
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" ItemsSource="{Binding}"
                                FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
