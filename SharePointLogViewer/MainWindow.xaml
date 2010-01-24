@@ -164,6 +164,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />            
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Background="WhiteSmoke">
             <StackPanel Height="25" Orientation="Horizontal" DockPanel.Dock="Left" >
@@ -197,7 +198,7 @@
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" ItemsSource="{Binding}"
                                FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 
-                                AlternationCount="2">
+                                AlternationCount="2" x:Name="lstLog">
             <local:LogFilterListView.View>
                 <GridView>
                     <controls:SortableGridViewColumn Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp"/>
@@ -212,5 +213,9 @@
                 </GridView>
             </local:LogFilterListView.View>
         </local:LogFilterListView>
+        <Expander Grid.Row="2" IsExpanded="True">
+            <TextBox Height="100" VerticalScrollBarVisibility="Auto"
+                     Text="{Binding ElementName=lstLog, Path=SelectedValue.Message, Mode=OneWay}" />
+        </Expander>
     </Grid>    
 </Window>
