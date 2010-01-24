@@ -70,6 +70,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ValueConverter.cs" />
+    <Page Include="Controls\FiterListViewDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -80,7 +85,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\BaseWPFHelpers.cs" />
+    <Compile Include="Controls\FilterableListView.cs" />
+    <Compile Include="Controls\SortableGridViewColumn.cs" />
+    <Compile Include="Controls\SortableGridViewColumnHeader.cs" />
     <Compile Include="Controls\SortableListView.cs" />
+    <Compile Include="LogFilterListView.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
