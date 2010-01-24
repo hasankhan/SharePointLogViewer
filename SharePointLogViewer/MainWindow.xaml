@@ -165,25 +165,35 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button Content="Open File" Command="local:MainWindow.OpenFile" />
-            <Label>Filter:</Label>
-            <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100">
-                <ComboBoxItem>*</ComboBoxItem>
-                <ComboBoxItem>Timestamp</ComboBoxItem>
-                <ComboBoxItem>Process</ComboBoxItem>
-                <ComboBoxItem>TID</ComboBoxItem>
-                <ComboBoxItem>Area</ComboBoxItem>
-                <ComboBoxItem>Category</ComboBoxItem>
-                <ComboBoxItem>EventID</ComboBoxItem>
-                <ComboBoxItem>Level</ComboBoxItem>
-                <ComboBoxItem>Message</ComboBoxItem>
-                <ComboBoxItem>Correlation</ComboBoxItem>
-            </ComboBox>
-            <TextBox x:Name="txtFilter" Width="200" />
-            <Button Content="Go" Command="local:MainWindow.Filter" IsDefault="True" />
-        </StackPanel>
-        <Button Content="About" HorizontalAlignment="Right" Command="local:MainWindow.About"/>
+        <DockPanel Grid.Row="0" Background="WhiteSmoke">
+            <StackPanel Height="25" Orientation="Horizontal" DockPanel.Dock="Left" >
+                <Button IsTabStop="False"  ToolTip="Open File(s)" Command="local:MainWindow.OpenFile" >
+                    <Image Source="Images\openfile.png"/>
+                </Button>
+                <Separator/>
+                <Label Content="Filter: "/>
+                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100">
+                    <ComboBoxItem>*</ComboBoxItem>
+                    <ComboBoxItem>Timestamp</ComboBoxItem>
+                    <ComboBoxItem>Process</ComboBoxItem>
+                    <ComboBoxItem>TID</ComboBoxItem>
+                    <ComboBoxItem>Area</ComboBoxItem>
+                    <ComboBoxItem>Category</ComboBoxItem>
+                    <ComboBoxItem>EventID</ComboBoxItem>
+                    <ComboBoxItem>Level</ComboBoxItem>
+                    <ComboBoxItem>Message</ComboBoxItem>
+                    <ComboBoxItem>Correlation</ComboBoxItem>
+                </ComboBox>
+                <TextBox x:Name="txtFilter" Width="300" />
+                <Button Command="local:MainWindow.Filter" IsDefault="True">
+                    <Image Source="Images\search.png" ToolTip="Filter"/>
+                </Button>
+            </StackPanel>
+            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" HorizontalContentAlignment="Right">
+                <Image Height="20" Width="20" Source="Images\about.png" ToolTip="About SharePointLogViewer" />
+            </Button>
+
+        </DockPanel>
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" ItemsSource="{Binding}"
                                FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 

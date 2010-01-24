@@ -106,7 +106,7 @@ namespace SharePointLogViewer
 
         private void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("Copyright 2010 Overroot Inc.\n\nhttp://www.overroot.com", "About NCachePoint", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Copyright 2010 Overroot Inc.\n\nhttp://www.overroot.com", "About SharePointLogViewer", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void Grid_Drop(object sender, DragEventArgs e)
