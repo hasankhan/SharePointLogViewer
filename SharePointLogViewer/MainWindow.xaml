@@ -6,13 +6,12 @@
     Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" >
     <Window.Resources>
         <Style x:Key="alternatingListViewItemStyle" TargetType="{x:Type ListViewItem}">
-            <Style.Triggers>
+            <Style.Triggers>               
                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                     <Setter Property="Background" Value="#EFEFEF"></Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>        
-
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
@@ -28,7 +27,8 @@
         <StackPanel Orientation="Horizontal">
             <Button Content="Open File" Command="local:MainWindow.OpenFile" />
             <Label>Filter:</Label>
-            <ComboBox x:Name="cmbFilterBy" SelectedIndex="3">
+            <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100">
+                <ComboBoxItem>*</ComboBoxItem>
                 <ComboBoxItem>Timestamp</ComboBoxItem>
                 <ComboBoxItem>Process</ComboBoxItem>
                 <ComboBoxItem>TID</ComboBoxItem>
@@ -48,15 +48,15 @@
                   AlternationCount="2">
             <controls:SortableListView.View>
                 <GridView>
-                    <GridViewColumn Header="Timestamp" Width="100" DisplayMemberBinding="{Binding Timestamp}" controls:SortableListView.SortPropertyName="Timestamp"/>
-                    <GridViewColumn Header="Process" Width="100" DisplayMemberBinding="{Binding Process}" controls:SortableListView.SortPropertyName="Process"/>
-                    <GridViewColumn Header="TID" Width="100" DisplayMemberBinding="{Binding TID}" controls:SortableListView.SortPropertyName="TID"/>
-                    <GridViewColumn Header="Area" Width="100" DisplayMemberBinding="{Binding Area}" controls:SortableListView.SortPropertyName="Area"/>
-                    <GridViewColumn Header="Category" Width="100" DisplayMemberBinding="{Binding Category}" controls:SortableListView.SortPropertyName="Category"/>
-                    <GridViewColumn Header="EventID" Width="100" DisplayMemberBinding="{Binding EventID}" controls:SortableListView.SortPropertyName="EventID"/>
-                    <GridViewColumn Header="Level" Width="100" DisplayMemberBinding="{Binding Level}" controls:SortableListView.SortPropertyName="Level"/>
-                    <GridViewColumn Header="Message" Width="200" DisplayMemberBinding="{Binding Message}" controls:SortableListView.SortPropertyName="Message"/>
-                    <GridViewColumn Header="Correlation" Width="100" DisplayMemberBinding="{Binding Correlation}" controls:SortableListView.SortPropertyName="Correlation"/>
+                    <GridViewColumn Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" controls:SortableListView.SortPropertyName="Timestamp"/>
+                    <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Process}" controls:SortableListView.SortPropertyName="Process"/>
+                    <GridViewColumn Header="TID" DisplayMemberBinding="{Binding TID}" controls:SortableListView.SortPropertyName="TID"/>
+                    <GridViewColumn Header="Area" DisplayMemberBinding="{Binding Area}" controls:SortableListView.SortPropertyName="Area"/>
+                    <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" controls:SortableListView.SortPropertyName="Category"/>
+                    <GridViewColumn Header="EventID" DisplayMemberBinding="{Binding EventID}" controls:SortableListView.SortPropertyName="EventID"/>
+                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" controls:SortableListView.SortPropertyName="Level"/>
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" controls:SortableListView.SortPropertyName="Message"/>
+                    <GridViewColumn Header="Correlation" DisplayMemberBinding="{Binding Correlation}" controls:SortableListView.SortPropertyName="Correlation"/>
                 </GridView>
             </controls:SortableListView.View>
         </controls:SortableListView>

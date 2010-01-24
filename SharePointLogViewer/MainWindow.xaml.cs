@@ -13,6 +13,8 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
 using System.ComponentModel;
+using System.Reflection;
+using System.Linq;
 
 namespace SharePointLogViewer
 {
@@ -53,6 +55,7 @@ namespace SharePointLogViewer
         private void OpenFileExecuted(object sender, ExecutedRoutedEventArgs e)
         {            
             var dialog = new OpenFileDialog();
+            dialog.Filter = "Log Files (*.log)|*.log";
             dialog.Multiselect = true;
             if (dialog.ShowDialog().Value)
                 LoadFiles(dialog.FileNames);
@@ -72,36 +75,38 @@ namespace SharePointLogViewer
             else
             {                
                 Predicate<LogEntry> predicate;
-                switch (filterBy)
+                if (filterBy == "*")
                 {
-                    case "Timestamp":
-                        predicate = entry => entry.Timestamp.ToLower().Contains(text); break;                        
-                    case "Process":
-                        predicate = entry => entry.Process.ToLower().Contains(text); break;
-                    case "TID":
-                        predicate = entry => entry.TID.ToLower().Contains(text); break;
-                    case "Area":
-                        predicate = entry => entry.Area.ToLower().Contains(text); break;
-                    case "Category":
-                        predicate = entry => entry.Category.ToLower().Contains(text); break;
-                    case "EventID":
-                        predicate = entry => entry.EventID.ToLower().Contains(text); break;
-                    case "Level":
-                        predicate = entry => entry.Level.ToLower().Contains(text); break;
-                    case "Message":
-                        predicate = entry => entry.Message.ToLower().Contains(text); break;
-                    case "Correlation":
-                    default:
-                        predicate = entry => entry.Correlation.ToLower().Contains(text); break;
+                    var predicates = from property in typeof(LogEntry).GetProperties()
+                                     select CreatePredicate(property.Name, text);
+                    predicate = entry => predicates.Any(p => p(entry));
                 }
+                else
+                    predicate = CreatePredicate(filterBy, text);               
                 List<LogEntry> filteredEntries = logEntries.FindAll(predicate);
                 this.DataContext = filteredEntries;
             }
         }
 
+        private static Predicate<LogEntry> CreatePredicate(string propertyName, string text)
+        {
+            Predicate<LogEntry> predicate;
+            predicate = delegate(LogEntry entry)
+            {
+                PropertyInfo property = typeof(LogEntry).GetProperty(propertyName);
+                if (property == null)
+                    return false;
+                string value = property.GetValue(entry, null) as String;
+                if (value == null)
+                    return false;
+                return value.ToLower().Contains(text);
+            };
+            return predicate;
+        }
+
         private void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("Copyright 2010 Overroot Inc.", "About NCachePoint", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Copyright 2010 Overroot Inc.\n\nhttp://www.overroot.com", "About NCachePoint", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void Grid_Drop(object sender, DragEventArgs e)
