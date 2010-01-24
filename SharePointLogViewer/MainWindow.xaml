@@ -3,7 +3,7 @@
     xmlns:local="clr-namespace:SharePointLogViewer"
     xmlns:controls="clr-namespace:SharePointLogViewer.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" >
+    Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" Icon="/SharePointLogViewer;component/Images/SPLV.ico">
     <Window.Resources>
         <local:BackgroundStripe x:Key="BackgroundStripe"/>
         <Style x:Key="alternatingListViewItemStyle" TargetType="{x:Type ListViewItem}">
