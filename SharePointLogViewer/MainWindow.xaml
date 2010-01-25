@@ -8,6 +8,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources\Miscellaneous.xaml" />
+                <ResourceDictionary Source="Resources\FilterableListView.xaml" />
                 <ResourceDictionary Source="Resources\GlassButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>        
@@ -34,7 +35,8 @@
                 </Button>
                 <Separator/>
                 <Label Content="Filter: " VerticalAlignment="Center" />
-                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100" Background="{StaticResource ResourceKey=BlueGradient}">
+                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100" 
+                          VerticalContentAlignment="Center" Background="{StaticResource ResourceKey=BlueGradient}">
                     <ComboBoxItem>Any field</ComboBoxItem>
                     <ComboBoxItem>Timestamp</ComboBoxItem>
                     <ComboBoxItem>Process</ComboBoxItem>
