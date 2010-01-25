@@ -214,11 +214,14 @@ namespace SharePointLogViewer.Controls
             lastDirection = direction;
             ICollectionView dataView = CollectionViewSource.GetDefaultView(this.ItemsSource);
 
-            dataView.SortDescriptions.Clear();
-            SortDescription sd = new SortDescription(sortBy, direction);
+            if (dataView != null)
+            {
+                dataView.SortDescriptions.Clear();
+                SortDescription sd = new SortDescription(sortBy, direction);
 
-            dataView.SortDescriptions.Add(sd);
-            dataView.Refresh();
+                dataView.SortDescriptions.Add(sd);
+                dataView.Refresh();
+            }
         }
 
     }

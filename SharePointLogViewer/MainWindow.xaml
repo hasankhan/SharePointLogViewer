@@ -15,6 +15,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
         <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
+        <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
         <CommandBinding Command="local:MainWindow.OpenFile" Executed="OpenFileExecuted" />
     </Window.CommandBindings>
     
@@ -23,7 +24,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />            
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>        
         <DockPanel Grid.Row="0" Background="{StaticResource ResourceKey=BlueGradient}">
             <StackPanel Height="30" Orientation="Horizontal" DockPanel.Dock="Left">
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"
@@ -50,6 +51,11 @@
                         ToolTip="Search" Background="SteelBlue"
                         Command="local:MainWindow.Filter" IsDefault="True">
                     <Image Source="Images\search.png" Stretch="None" />
+                </Button>
+                <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
+                        ToolTip="Search" Background="SteelBlue"
+                        Command="local:MainWindow.Refresh" >
+                    <Image Source="Images\refresh.png" Stretch="UniformToFill" />
                 </Button>
             </StackPanel>
             <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
@@ -78,8 +84,15 @@
             </local:LogFilterListView.View>
         </local:LogFilterListView>
         <Expander Grid.Row="2" IsExpanded="True">
-            <TextBox Height="100" VerticalScrollBarVisibility="Auto"
+            <TextBox Height="100" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
                      Text="{Binding ElementName=lstLog, Path=SelectedValue.Message, Mode=OneWay}" />
         </Expander>
+        <TextBlock x:Name="statusMessage" Grid.RowSpan="3" Visibility="Hidden"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 FontSize="15pt" Foreground="CornflowerBlue" Text="Loading...">
+              <TextBlock.BitmapEffect>
+                  <OuterGlowBitmapEffect GlowColor="LightBlue" GlowSize="2" />
+                </TextBlock.BitmapEffect>                        
+        </TextBlock>
     </Grid>    
 </Window>

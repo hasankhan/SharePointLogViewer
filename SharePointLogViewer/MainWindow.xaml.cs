@@ -24,96 +24,109 @@ namespace SharePointLogViewer
     public partial class MainWindow : Window
     {
         List<LogEntry> logEntries = new List<LogEntry>();
-        BackgroundWorker worker;
+        LogsLoader logsLoader = new LogsLoader();
+        ListSearcher<LogEntry> listSearcher = new ListSearcher<LogEntry>();
+        string[] files = new string[0];
 
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
         public static RoutedUICommand Filter = new RoutedUICommand("Filter", "Filter", typeof(MainWindow));
+        public static RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(MainWindow));
         public static RoutedUICommand OpenFile = new RoutedUICommand("OpenFile", "OpenFile", typeof(MainWindow));
 
         public MainWindow()
         {
-            worker = new BackgroundWorker();
-            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
             InitializeComponent();
+            logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
+            listSearcher.SearchComplete += new EventHandler<ListSearchCompleteEventArgs<LogEntry>>(listSearcher_SearchComplete);
         }
 
-        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
         {
             this.DataContext = null;
+            logEntries = (List<LogEntry>)e.LogEntries;
             this.DataContext = logEntries;
+            StopProcessing();
+            if (txtFilter.Text != String.Empty)
+                Search(txtFilter.Text);
         }
 
-        void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logEntries.Clear();
-            string[] files = e.Argument as string[];
-            foreach (string file in files)
-                logEntries.AddRange(LogParser.PraseLog(file));            
-        }
-
-        private void OpenFileExecuted(object sender, ExecutedRoutedEventArgs e)
+        void OpenFileExecuted(object sender, ExecutedRoutedEventArgs e)
         {            
             var dialog = new OpenFileDialog();
             dialog.Filter = "Log Files (*.log)|*.log";
             dialog.Multiselect = true;
             if (dialog.ShowDialog().Value)
-                LoadFiles(dialog.FileNames);
+            {
+                files = dialog.FileNames;
+                LoadFiles();
+            }
         }
 
-        private void LoadFiles(string[] files)
-        {
-            worker.RunWorkerAsync(files);
-        }
-
-        private void FilterExecuted(object sender, ExecutedRoutedEventArgs e)
+        void FilterExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             string text = txtFilter.Text.ToLower().Trim();
             string filterBy = cmbFilterBy.Text;
             if (text == String.Empty)
                 this.DataContext = logEntries;
             else
-            {                
-                Predicate<LogEntry> predicate;
-                if (cmbFilterBy.SelectedIndex == 0)
-                {
-                    var predicates = from property in typeof(LogEntry).GetProperties()
-                                     select CreatePredicate(property.Name, text);
-                    predicate = entry => predicates.Any(p => p(entry));
-                }
-                else
-                    predicate = CreatePredicate(filterBy, text);               
-                List<LogEntry> filteredEntries = logEntries.FindAll(predicate);
-                this.DataContext = filteredEntries;
+                Search(text);
+        }
+
+        void Search(string text)
+        {
+            string criterea = cmbFilterBy.SelectedIndex == 0 ? "*" : cmbFilterBy.Text;
+            listSearcher.Start(logEntries, criterea, text);
+            StartProcessing("Searching...");
+        }
+
+        void listSearcher_SearchComplete(object sender, ListSearchCompleteEventArgs<LogEntry> e)
+        {
+            this.DataContext = e.Result;
+            StopProcessing();
+        }
+
+        void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show("Copyright 2010 Overroot Inc.\n\nWebsite: http://www.overroot.com\nEmail: overrootinc@gmail.com", "About SharePointLogViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        void Grid_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                files = e.Data.GetData(DataFormats.FileDrop, false) as string[];
+                e.Handled = true;
+                LoadFiles();
             }
         }
 
-        private static Predicate<LogEntry> CreatePredicate(string propertyName, string text)
+        void Refresh_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            Predicate<LogEntry> predicate;
-            predicate = delegate(LogEntry entry)
-            {
-                PropertyInfo property = typeof(LogEntry).GetProperty(propertyName);
-                if (property == null)
-                    return false;
-                string value = property.GetValue(entry, null) as String;
-                if (value == null)
-                    return false;
-                return value.ToLower().Contains(text);
-            };
-            return predicate;
+            e.CanExecute = files.Length > 0;
         }
 
-        private void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
+        void Refresh_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("Copyright 2010 Overroot Inc.\n\nhttp://www.overroot.com", "About SharePointLogViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoadFiles();
         }
 
-        private void Grid_Drop(object sender, DragEventArgs e)
-        {            
-            string[] files = e.Data.GetData(DataFormats.FileDrop, false) as string[];
-            e.Handled = true;
-            LoadFiles(files);
+        void LoadFiles()
+        {
+            logsLoader.Start(files);
+            StartProcessing("Loading...");
+        }
+
+        void StartProcessing(string message)
+        {
+            statusMessage.Text = message;
+            statusMessage.Visibility = Visibility.Visible;
+            this.Cursor = Cursors.Wait;
+        }
+
+        void StopProcessing()
+        {
+            statusMessage.Visibility = Visibility.Hidden;
+            this.Cursor = Cursors.Arrow;
         }
     }
 }

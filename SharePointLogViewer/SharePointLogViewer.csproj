@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95DAD1C0-533D-4B0E-8CC6-A8CA09E1DE4B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -117,6 +117,8 @@
   <ItemGroup>
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogParser.cs" />
+    <Compile Include="LogsLoader.cs" />
+    <Compile Include="ListSearcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -172,6 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\SPLV.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
