@@ -75,7 +75,7 @@ namespace SharePointLogViewer
             else
             {                
                 Predicate<LogEntry> predicate;
-                if (filterBy == "*")
+                if (cmbFilterBy.SelectedIndex == 0)
                 {
                     var predicates = from property in typeof(LogEntry).GetProperties()
                                      select CreatePredicate(property.Name, text);

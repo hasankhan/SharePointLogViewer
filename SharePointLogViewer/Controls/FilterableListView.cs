@@ -230,12 +230,121 @@ namespace SharePointLogViewer.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected abstract void ShowFilterCommand(object sender, ExecutedRoutedEventArgs e);       
+        private void ShowFilterCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button button = e.OriginalSource as Button;
 
+            if (button != null)
+            {
+                // navigate up to the header
+                GridViewColumnHeader header = (GridViewColumnHeader)Helpers.FindElementOfTypeUp(button, typeof(GridViewColumnHeader));
+
+                // then down to the popup
+                Popup popup = (Popup)Helpers.FindElementOfType(header, typeof(Popup));
+
+                if (popup != null)
+                {
+                    // find the property name that we are filtering
+                    SortableGridViewColumn column = (SortableGridViewColumn)header.Column;
+                    String propertyName = column.SortPropertyName;
+
+
+                    // clear the previous filter
+                    if (filterList == null)
+                    {
+                        filterList = new ArrayList();
+                    }
+                    filterList.Clear();
+
+                    // if this property is currently being filtered, provide an option to clear the filter.
+                    if (IsPropertyFiltered(propertyName))
+                    {
+                        filterList.Add(new FilterItem("[clear]"));
+                    }
+                    else
+                    {
+                        bool containsNull = false;
+                        Type listItemType = GetListItemType();
+                        PropertyDescriptor filterPropDesc = TypeDescriptor.GetProperties(listItemType)[propertyName];
+
+                        // iterate over all the objects in the list
+                        foreach (Object item in Items)
+                        {
+                            object value = filterPropDesc.GetValue(item);
+                            if (value != null)
+                            {
+                                FilterItem filterItem = new FilterItem(value as IComparable);
+                                if (!filterList.Contains(filterItem))
+                                {
+                                    filterList.Add(filterItem);
+                                }
+                            }
+                            else
+                            {
+                                containsNull = true;
+                            }
+                        }
+
+                        filterList.Sort();
+
+                        if (containsNull)
+                        {
+                            filterList.Add(new FilterItem(null));
+                        }
+                    }
+
+                    // open the popup to display this list
+                    popup.DataContext = filterList;
+                    CollectionViewSource.GetDefaultView(filterList).Refresh();
+                    popup.IsOpen = true;
+
+                    // connect to the selection change event
+                    ListView listView = (ListView)popup.Child;
+                    listView.SelectionChanged += SelectionChangedHandler;
+                }
+            }
+        }
+
+        protected abstract Type GetListItemType();
         /// <summary>
         /// Applies the current filter to the list which is being viewed
         /// </summary>
-        protected abstract void ApplyCurrentFilters();
+        private void ApplyCurrentFilters()
+        {
+            if (currentFilters.Count == 0)
+            {
+                Items.Filter = null;
+                return;
+            }
+
+            // construct a filter and apply it               
+            Items.Filter = delegate(object item)
+            {
+                // when applying the filter to each item, iterate over all of
+                // the current filters
+                bool match = true;
+                foreach (FilterStruct filter in currentFilters.Values)
+                {
+                    // obtain the value for this property on the item under test
+                    Type listItemType = GetListItemType();
+                    PropertyDescriptor filterPropDesc = TypeDescriptor.GetProperties(listItemType)[filter.property];
+                    object itemValue = filterPropDesc.GetValue(item);
+
+                    if (itemValue != null)
+                    {
+                        // check to see if it meets our filter criteria
+                        if (!itemValue.Equals(filter.value.ItemView))
+                            match = false;
+                    }
+                    else
+                    {
+                        if (filter.value.Item != null)
+                            match = false;
+                    }
+                }
+                return match;
+            };
+        }
         
         /// <summary>
         /// Handles the selection change event from the filter popup
