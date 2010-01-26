@@ -34,8 +34,8 @@
                     <Image Source="Images\openfile.png" Stretch="None" />                    
                 </Button>
                 <Separator/>
-                <Label Content="Filter: " VerticalAlignment="Center" />
-                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100" 
+                <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
+                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100"
                           VerticalContentAlignment="Center" Background="{StaticResource ResourceKey=BlueGradient}">
                     <ComboBoxItem>Any field</ComboBoxItem>
                     <ComboBoxItem>Timestamp</ComboBoxItem>
@@ -48,7 +48,8 @@
                     <ComboBoxItem>Message</ComboBoxItem>
                     <ComboBoxItem>Correlation</ComboBoxItem>
                 </ComboBox>
-                <TextBox x:Name="txtFilter" Width="300" VerticalContentAlignment="Center" />
+                <TextBox x:Name="txtFilter" Height="25" Width="300"
+                         Margin="5,0,5,0"  VerticalContentAlignment="Center" />
                 <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
                         ToolTip="Search" Background="SteelBlue"
                         Command="local:MainWindow.Filter" IsDefault="True">
@@ -68,7 +69,7 @@
             </Button>
         </DockPanel>
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" ItemsSource="{Binding}"
-                               FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
+                                FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 
                                 AlternationCount="2" x:Name="lstLog">
             <local:LogFilterListView.View>
@@ -89,12 +90,9 @@
             <TextBox Height="100" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
                      Text="{Binding ElementName=lstLog, Path=SelectedValue.Message, Mode=OneWay}" />
         </Expander>
-        <TextBlock x:Name="statusMessage" Grid.RowSpan="3" Visibility="Hidden"
-                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                 FontSize="15pt" Foreground="CornflowerBlue" Text="Loading...">
-              <TextBlock.BitmapEffect>
-                  <OuterGlowBitmapEffect GlowColor="LightBlue" GlowSize="2" />
-                </TextBlock.BitmapEffect>                        
-        </TextBlock>
+        <Border x:Name="bdrShadow" Grid.RowSpan="3" Background="WhiteSmoke" Opacity="0.50" Visibility="Hidden" >
+            <controls:LoadingAnimation x:Name="loadingAnimation" Grid.RowSpan="3"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+         </Border>
     </Grid>    
 </Window>

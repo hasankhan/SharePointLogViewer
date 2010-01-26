@@ -118,14 +118,13 @@ namespace SharePointLogViewer
 
         void StartProcessing(string message)
         {
-            statusMessage.Text = message;
-            statusMessage.Visibility = Visibility.Visible;
-            this.Cursor = Cursors.Wait;
+            loadingAnimation.Message = message;
+            bdrShadow.Visibility = Visibility.Visible;
         }
 
         void StopProcessing()
         {
-            statusMessage.Visibility = Visibility.Hidden;
+            bdrShadow.Visibility = Visibility.Hidden;
             this.Cursor = Cursors.Arrow;
         }
     }
