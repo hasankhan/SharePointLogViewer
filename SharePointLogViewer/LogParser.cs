@@ -22,19 +22,8 @@ namespace SharePointLogViewer
 
                     while (!reader.EndOfStream)
                     {
-                        string[] fields = reader.ReadLine().Split(new char[] { '\t' });
-                        var entry = new LogEntry()
-                        {
-                            Timestamp = fields[0],
-                            Process = fields[1],
-                            TID = fields[2],
-                            Area = fields[3],
-                            Category = fields[4],
-                            EventID = fields[5],
-                            Level = fields[6],
-                            Message = fields[7],
-                            Correlation = fields[8]
-                        };
+                        string line = reader.ReadLine();
+                        var entry = LogEntry.Parse(line);
                         entries.Add(entry);
                         //TODO:
                         //if (row["Timestamp"].ToString().EndsWith("*"))
@@ -49,5 +38,7 @@ namespace SharePointLogViewer
 
             return entries;
         }
+
+        
     }
 }
