@@ -16,7 +16,7 @@ namespace SharePointLogViewer
             {
                 try
                 {
-                    RegistryKey key = Registry.LocalMachine.OpenSubKey( @"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
+                    RegistryKey key = GetWSSRegistryKey();
                     if (key != null)
                     {
                         object val = key.GetValue("SharePoint");
@@ -56,7 +56,7 @@ namespace SharePointLogViewer
         {
             get 
             {
-                string logsPath = SharePointInstallPath;
+                string logsPath = WSSInstallPath;
                 if (logsPath != String.Empty)
                     logsPath = Path.Combine(logsPath, "logs");
 
@@ -64,16 +64,16 @@ namespace SharePointLogViewer
             }
         }
 
-        public static string SharePointInstallPath
+        public static string WSSInstallPath
         {
             get
             {
                 string installPath = String.Empty;
                 try
                 {
-                    using (RegistryKey key = GetSharePointRegistryKey())
+                    using (RegistryKey key = GetWSSRegistryKey())
                         if (key != null)
-                            installPath = key.GetValue("InstallPath").ToString();
+                            installPath = key.GetValue("Location").ToString();
                 }
                 catch (SecurityException) { }
                 return installPath;
@@ -83,6 +83,12 @@ namespace SharePointLogViewer
         static RegistryKey GetSharePointRegistryKey()
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\12.0");
+            return key;
+        }
+       
+        static RegistryKey GetWSSRegistryKey()
+        {
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
             return key;
         }
     }

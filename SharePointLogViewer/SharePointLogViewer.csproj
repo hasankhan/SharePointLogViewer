@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95DAD1C0-533D-4B0E-8CC6-A8CA09E1DE4B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -126,12 +126,13 @@
     <Compile Include="Controls\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DynamicFilter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="FileTail.cs" />
     <Compile Include="LogDirectoryWatcher.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogParser.cs" />
     <Compile Include="LogsLoader.cs" />
-    <Compile Include="ListSearcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

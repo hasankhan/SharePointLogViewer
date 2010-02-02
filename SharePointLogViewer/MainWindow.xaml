@@ -18,13 +18,14 @@
         <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
         <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
         <CommandBinding Command="local:MainWindow.OpenFile" Executed="OpenFileExecuted" />
+        <CommandBinding Command="local:MainWindow.Live" Executed="LiveMode_Executed"/>
     </Window.CommandBindings>
     
     <Grid AllowDrop="True" Drop="Grid_Drop">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="30" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />            
+            <RowDefinition Height="Auto" MinHeight="123" />            
         </Grid.RowDefinitions>        
         <DockPanel Grid.Row="0" Background="{StaticResource ResourceKey=BlueGradient}">
             <StackPanel Height="30" Orientation="Horizontal" DockPanel.Dock="Left">
@@ -94,5 +95,9 @@
             <controls:LoadingAnimation x:Name="loadingAnimation" Grid.RowSpan="3"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
          </Border>
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,194,0" 
+                Name="Live_Mode" VerticalAlignment="Top" Width="75"
+                ToolTip="Start Live Monitoring"
+                Command="local:MainWindow.Live">Live</Button>
     </Grid>    
 </Window>

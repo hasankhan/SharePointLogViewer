@@ -15,6 +15,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Reflection;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace SharePointLogViewer
 {
@@ -23,31 +24,38 @@ namespace SharePointLogViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<LogEntry> logEntries = new List<LogEntry>();
+        ObservableCollection<LogEntry> logEntries = new ObservableCollection<LogEntry>();
         LogsLoader logsLoader = new LogsLoader();
-        ListSearcher<LogEntry> listSearcher = new ListSearcher<LogEntry>();
+        LogDirectoryWatcher watcher = null;
+        DynamicFilter filter;
+
         string[] files = new string[0];
 
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
         public static RoutedUICommand Filter = new RoutedUICommand("Filter", "Filter", typeof(MainWindow));
         public static RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(MainWindow));
         public static RoutedUICommand OpenFile = new RoutedUICommand("OpenFile", "OpenFile", typeof(MainWindow));
+        public static RoutedUICommand Live = new RoutedUICommand("Live", "Live", typeof(MainWindow));
+        public static RoutedUICommand Offline = new RoutedUICommand("Offline", "Offline", typeof(MainWindow));
 
         public MainWindow()
         {
             InitializeComponent();
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
-            listSearcher.SearchComplete += new EventHandler<ListSearchCompleteEventArgs<LogEntry>>(listSearcher_SearchComplete);
+            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
+        }
+
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateFilter();
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
         {
-            this.DataContext = null;
-            logEntries = (List<LogEntry>)e.LogEntries;
+            logEntries = new ObservableCollection<LogEntry>(e.LogEntries);
+            UpdateFilter();
             this.DataContext = logEntries;
             StopProcessing();
-            if (txtFilter.Text != String.Empty)
-                Search(txtFilter.Text);
         }
 
         void OpenFileExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -64,25 +72,17 @@ namespace SharePointLogViewer
 
         void FilterExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            string text = txtFilter.Text.ToLower().Trim();
-            string filterBy = cmbFilterBy.Text;
-            if (text == String.Empty)
-                this.DataContext = logEntries;
-            else
-                Search(text);
+            UpdateFilter();
         }
 
-        void Search(string text)
+        private void UpdateFilter()
         {
-            string criterea = cmbFilterBy.SelectedIndex == 0 ? "*" : cmbFilterBy.Text;
-            listSearcher.Start(logEntries, criterea, text);
-            StartProcessing("Searching...");
-        }
+            string criteria = cmbFilterBy.Text == "Any field" ? "*" : cmbFilterBy.Text;
+            filter = DynamicFilter.Create<LogEntry>(criteria, txtFilter.Text);
+            CollectionViewSource source = (CollectionViewSource)this.Resources["FilteredCollection"];
+            if(source.View != null)
+                source.View.Refresh();
 
-        void listSearcher_SearchComplete(object sender, ListSearchCompleteEventArgs<LogEntry> e)
-        {
-            this.DataContext = e.Result;
-            StopProcessing();
         }
 
         void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -110,6 +110,41 @@ namespace SharePointLogViewer
             LoadFiles();
         }
 
+        void LiveMode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!SPUtility.IsMOSSInstalled)
+            {
+                MessageBox.Show("Microsoft Sharepoint not installed on this machine");
+                return;
+            }
+            
+            watcher = new LogDirectoryWatcher(SPUtility.LogsLocations);
+            watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
+
+            ChangeMode(true);
+            logEntries.Clear();
+            this.DataContext = logEntries;
+
+            watcher.Start();
+        }
+
+        void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
+        {
+            logEntries.Add(e.LogEntry);            
+        }
+
+        void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (watcher != null)
+            {
+                watcher.Stop();
+                watcher.Dispose();
+                watcher = null;
+            }
+
+            ChangeMode(false);
+        }
+
         void LoadFiles()
         {
             logsLoader.Start(files);
@@ -126,6 +161,19 @@ namespace SharePointLogViewer
         {
             bdrShadow.Visibility = Visibility.Hidden;
             this.Cursor = Cursors.Arrow;
+        }
+
+        void ChangeMode(bool live)
+        {
+            btnBrowse.IsEnabled =
+                btnRefresh.IsEnabled = !live;
+            btnOffline.Visibility = (live ? Visibility.Visible : Visibility.Hidden);
+            btnLive.Visibility = (live ? Visibility.Hidden : Visibility.Visible);
+        }
+
+        void CollectionViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = filter.IsMatch(e.Item);
         }
     }
 }
