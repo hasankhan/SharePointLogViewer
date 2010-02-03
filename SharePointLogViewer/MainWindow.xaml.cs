@@ -26,7 +26,7 @@ namespace SharePointLogViewer
     {
         ObservableCollection<LogEntry> logEntries = new ObservableCollection<LogEntry>();
         LogsLoader logsLoader = new LogsLoader();
-        LogDirectoryWatcher watcher = null;
+        LogMonitor watcher = null;
         DynamicFilter filter;
         bool liveMode;
 
@@ -59,7 +59,7 @@ namespace SharePointLogViewer
             StopProcessing();
         }
 
-        void OpenFileExecuted(object sender, ExecutedRoutedEventArgs e)
+        void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
         {            
             var dialog = new OpenFileDialog();
             dialog.Filter = "Log Files (*.log)|*.log";
@@ -118,8 +118,9 @@ namespace SharePointLogViewer
                 MessageBox.Show("Microsoft Sharepoint not installed on this machine");
                 return;
             }
-            
-            watcher = new LogDirectoryWatcher(SPUtility.LogsLocations);
+            string folderPath = SPUtility.LogsLocations;
+
+            watcher = new LogMonitor(folderPath);
             watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
             ChangeMode(true);
@@ -131,7 +132,7 @@ namespace SharePointLogViewer
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
-            logEntries.Add(e.LogEntry);            
+            Dispatcher.Invoke((Action)(() => logEntries.Add(e.LogEntry)));
         }
 
         void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -144,7 +145,6 @@ namespace SharePointLogViewer
             }
 
             ChangeMode(false);
-
         }
 
         void LoadFiles()

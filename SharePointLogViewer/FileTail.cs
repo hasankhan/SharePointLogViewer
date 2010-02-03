@@ -13,28 +13,22 @@ namespace SharePointLogViewer
         public string Line { get; set; }
     }
 
-    class LogFileCreatedEventArgs : EventArgs
-    {
-        public string LogPath { get; set; }
-    }
-
-    class FileTail
+    class FileTail: IDisposable
     {
         static char[] seperators = { '\r', '\n' };
         BackgroundWorker worker;
         string filePath;
-        AutoResetEvent stopSync;
+        ManualResetEvent stopSync;
 
         public event EventHandler<LineDiscoveredEventArgs> LineDiscovered = delegate { };
 
         public FileTail()
         {
-            stopSync = new AutoResetEvent(false);
+            stopSync = new ManualResetEvent(true);
             worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
             worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
         }
 
@@ -48,6 +42,7 @@ namespace SharePointLogViewer
             if (IsBusy)
                 throw new InvalidOperationException("Can not start while in Busy state.");
             filePath = path;
+            stopSync.Reset();
             worker.RunWorkerAsync();
         }
 
@@ -55,31 +50,10 @@ namespace SharePointLogViewer
         {
             worker.CancelAsync();
             stopSync.WaitOne();
+            while (worker.IsBusy) ;
         }
 
         void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            foreach (string line in ReadLines())
-                if (worker.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                else
-                    worker.ReportProgress(0, line);
-        }
-
-        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            stopSync.Set();
-        }
-
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            LineDiscovered(this, new LineDiscoveredEventArgs() { Line = (String)e.UserState });
-        }
-
-        IEnumerable<string> ReadLines()
         {
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (StreamReader reader = new StreamReader(stream))
@@ -96,9 +70,25 @@ namespace SharePointLogViewer
                     data = data.EndsWith("\n") ? String.Empty : lines.Last();
                     int validLines = data == String.Empty ? lines.Length : lines.Length - 1;
                     foreach (string line in lines.Take(validLines))
-                        yield return line;
+                        worker.ReportProgress(0, line);                        
                 }
             }
+            stopSync.Set();
+        }        
+
+        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            LineDiscovered(this, new LineDiscoveredEventArgs() { Line = (String)e.UserState });
         }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            Stop();
+            worker.Dispose();
+        }
+
+        #endregion
     }
 }

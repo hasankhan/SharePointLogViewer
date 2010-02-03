@@ -11,7 +11,7 @@
         <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
         <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
         <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
-        <CommandBinding Command="local:MainWindow.OpenFile" CanExecute="OpenFile_CanExecute" Executed="OpenFileExecuted" />
+        <CommandBinding Command="local:MainWindow.OpenFile" CanExecute="OpenFile_CanExecute" Executed="OpenFile_Executed" />
         <CommandBinding Command="local:MainWindow.Live" Executed="LiveMode_Executed"/>
         <CommandBinding Command="local:MainWindow.Offline" Executed="OfflineMode_Executed"/>
     </Window.CommandBindings>
