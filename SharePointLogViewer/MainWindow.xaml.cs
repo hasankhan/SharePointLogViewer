@@ -28,6 +28,7 @@ namespace SharePointLogViewer
         LogsLoader logsLoader = new LogsLoader();
         LogDirectoryWatcher watcher = null;
         DynamicFilter filter;
+        bool liveMode;
 
         string[] files = new string[0];
 
@@ -102,7 +103,7 @@ namespace SharePointLogViewer
 
         void Refresh_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = files.Length > 0;
+            e.CanExecute = !liveMode && files.Length > 0;
         }
 
         void Refresh_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -143,6 +144,7 @@ namespace SharePointLogViewer
             }
 
             ChangeMode(false);
+
         }
 
         void LoadFiles()
@@ -165,15 +167,20 @@ namespace SharePointLogViewer
 
         void ChangeMode(bool live)
         {
-            btnBrowse.IsEnabled =
-                btnRefresh.IsEnabled = !live;
             btnOffline.Visibility = (live ? Visibility.Visible : Visibility.Hidden);
             btnLive.Visibility = (live ? Visibility.Hidden : Visibility.Visible);
+
+            liveMode = live;
         }
 
         void CollectionViewSource_Filter(object sender, FilterEventArgs e)
         {
             e.Accepted = filter.IsMatch(e.Item);
+        }
+
+        private void OpenFile_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = !liveMode;
         }
     }
 }

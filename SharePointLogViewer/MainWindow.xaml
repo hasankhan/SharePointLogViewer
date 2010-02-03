@@ -5,34 +5,30 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" Icon="/SharePointLogViewer;component/Images/SPLV.ico">
     <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources\Miscellaneous.xaml" />
-                <ResourceDictionary Source="Resources\FilterableListView.xaml" />
-                <ResourceDictionary Source="Resources\GlassButton.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>        
+        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>  
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
         <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
         <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
-        <CommandBinding Command="local:MainWindow.OpenFile" Executed="OpenFileExecuted" />
+        <CommandBinding Command="local:MainWindow.OpenFile" CanExecute="OpenFile_CanExecute" Executed="OpenFileExecuted" />
         <CommandBinding Command="local:MainWindow.Live" Executed="LiveMode_Executed"/>
+        <CommandBinding Command="local:MainWindow.Offline" Executed="OfflineMode_Executed"/>
     </Window.CommandBindings>
-    
+
     <Grid AllowDrop="True" Drop="Grid_Drop">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="30" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" MinHeight="123" />            
-        </Grid.RowDefinitions>        
+            <RowDefinition Height="Auto" MinHeight="123" />
+        </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Background="{StaticResource ResourceKey=BlueGradient}">
             <StackPanel Height="30" Orientation="Horizontal" DockPanel.Dock="Left">
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"
+                        Name="btnBrowse"
                         Width="30" ToolTip="Open File(s)" Command="local:MainWindow.OpenFile"
                         Background="SteelBlue">
-                    <Image Source="Images\openfile.png" Stretch="None" />                    
+                    <Image Source="Images\openfile.png" Stretch="None" />
                 </Button>
                 <Separator/>
                 <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
@@ -52,11 +48,13 @@
                 <TextBox x:Name="txtFilter" Height="25" Width="300"
                          Margin="5,0,5,0"  VerticalContentAlignment="Center" />
                 <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
+                        Name="btnSearch"
                         ToolTip="Search" Background="SteelBlue"
                         Command="local:MainWindow.Filter" IsDefault="True">
                     <Image Source="Images\search.png" Stretch="None" />
                 </Button>
                 <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
+                        Name="btnRefresh"
                         ToolTip="Search" Background="SteelBlue"
                         Command="local:MainWindow.Refresh" >
                     <Image Source="Images\refresh.png" Stretch="UniformToFill" />
@@ -66,10 +64,11 @@
                     ToolTip="About SharePoint LogViewer"
                     DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" 
                     Background="SteelBlue" HorizontalContentAlignment="Right">
-                    <Image Source="Images\about.png" Stretch="UniformToFill" Width="25" Height="25" />
+                <Image Source="Images\about.png" Stretch="UniformToFill" Width="25" Height="25" />
             </Button>
         </DockPanel>
-        <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" ItemsSource="{Binding}"
+        <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" 
+                                ItemsSource="{Binding Source={StaticResource FilteredCollection}}"
                                 FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 
                                 AlternationCount="2" x:Name="lstLog">
@@ -94,10 +93,14 @@
         <Border x:Name="bdrShadow" Grid.RowSpan="3" Background="WhiteSmoke" Opacity="0.50" Visibility="Hidden" >
             <controls:LoadingAnimation x:Name="loadingAnimation" Grid.RowSpan="3"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
-         </Border>
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,194,0" 
-                Name="Live_Mode" VerticalAlignment="Top" Width="75"
+        </Border>
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,3.5,226,0" 
+                Name="btnLive" VerticalAlignment="Top" Width="75"
                 ToolTip="Start Live Monitoring"
                 Command="local:MainWindow.Live">Live</Button>
-    </Grid>    
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,3.5,226,0" 
+                Name="btnOffline" VerticalAlignment="Top" Width="75"
+                ToolTip="Switch to offline mode" Visibility="Hidden"
+                Command="local:MainWindow.Offline">Offline</Button>
+    </Grid>
 </Window>
