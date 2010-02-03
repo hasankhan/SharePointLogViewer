@@ -32,7 +32,7 @@
                 </Button>
                 <Separator/>
                 <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
-                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100"
+                <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100" Height="23"
                           VerticalContentAlignment="Center" Background="{StaticResource ResourceKey=BlueGradient}">
                     <ComboBoxItem>Any field</ComboBoxItem>
                     <ComboBoxItem>Timestamp</ComboBoxItem>
@@ -45,7 +45,7 @@
                     <ComboBoxItem>Message</ComboBoxItem>
                     <ComboBoxItem>Correlation</ComboBoxItem>
                 </ComboBox>
-                <TextBox x:Name="txtFilter" Height="25" Width="300"
+                <TextBox x:Name="txtFilter" Height="23" Width="300"
                          Margin="5,0,5,0"  VerticalContentAlignment="Center" />
                 <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
                         Name="btnSearch"
@@ -59,6 +59,14 @@
                         Command="local:MainWindow.Refresh" >
                     <Image Source="Images\refresh.png" Stretch="UniformToFill" />
                 </Button>
+                <Button Height="23" Margin="10,0,0,0" 
+                    Name="btnLive" VerticalAlignment="Center" Width="75"
+                    ToolTip="Start Live Monitoring"
+                    Command="local:MainWindow.Live">Live</Button>
+                <Button Height="23" Margin="10,0,0,0" 
+                    Name="btnOffline" VerticalAlignment="Center" Width="75"
+                    ToolTip="Switch to offline mode" Visibility="Hidden"
+                    Command="local:MainWindow.Offline">Offline</Button>
             </StackPanel>
             <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
                     ToolTip="About SharePoint LogViewer"
@@ -94,13 +102,6 @@
             <controls:LoadingAnimation x:Name="loadingAnimation" Grid.RowSpan="3"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Border>
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,3.5,226,0" 
-                Name="btnLive" VerticalAlignment="Top" Width="75"
-                ToolTip="Start Live Monitoring"
-                Command="local:MainWindow.Live">Live</Button>
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,3.5,226,0" 
-                Name="btnOffline" VerticalAlignment="Top" Width="75"
-                ToolTip="Switch to offline mode" Visibility="Hidden"
-                Command="local:MainWindow.Offline">Offline</Button>
+        
     </Grid>
 </Window>
