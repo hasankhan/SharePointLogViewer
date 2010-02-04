@@ -35,7 +35,7 @@ namespace SharePointLogViewer
             {
                 try
                 {
-                    using (RegistryKey key = GetSharePointRegistryKey())
+                    using (RegistryKey key = GetMOSSRegistryKey())
                         if (key != null)
                         {
                             string versionStr = key.GetValue("BuildVersion") as string;
@@ -80,7 +80,7 @@ namespace SharePointLogViewer
             }
         }
 
-        static RegistryKey GetSharePointRegistryKey()
+        static RegistryKey GetMOSSRegistryKey()
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\12.0");
             return key;

@@ -29,7 +29,7 @@ namespace SharePointLogViewer
         LogMonitor watcher = null;
         DynamicFilter filter;
         bool liveMode;
-
+        OpenFileDialog dialog;
         string[] files = new string[0];
 
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
@@ -44,11 +44,16 @@ namespace SharePointLogViewer
             InitializeComponent();
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
+            dialog = new OpenFileDialog();
+            dialog.Filter = "Log Files (*.log)|*.log";
+            dialog.Multiselect = true;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateFilter();
+            if (SPUtility.IsWSSInstalled)
+                dialog.InitialDirectory = SPUtility.LogsLocations;
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
@@ -60,10 +65,7 @@ namespace SharePointLogViewer
         }
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
-        {            
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Log Files (*.log)|*.log";
-            dialog.Multiselect = true;
+        {                        
             if (dialog.ShowDialog().Value)
             {
                 files = dialog.FileNames;
@@ -113,7 +115,7 @@ namespace SharePointLogViewer
 
         void LiveMode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!SPUtility.IsMOSSInstalled)
+            if (!SPUtility.IsWSSInstalled)
             {
                 MessageBox.Show("Microsoft Sharepoint not installed on this machine");
                 return;
