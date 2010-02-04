@@ -50,7 +50,6 @@ namespace SharePointLogViewer
         {
             worker.CancelAsync();
             stopSync.WaitOne();
-            while (worker.IsBusy) ;
         }
 
         void worker_DoWork(object sender, DoWorkEventArgs e)

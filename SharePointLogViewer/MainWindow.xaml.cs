@@ -36,8 +36,7 @@ namespace SharePointLogViewer
         public static RoutedUICommand Filter = new RoutedUICommand("Filter", "Filter", typeof(MainWindow));
         public static RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(MainWindow));
         public static RoutedUICommand OpenFile = new RoutedUICommand("OpenFile", "OpenFile", typeof(MainWindow));
-        public static RoutedUICommand Live = new RoutedUICommand("Live", "Live", typeof(MainWindow));
-        public static RoutedUICommand Offline = new RoutedUICommand("Offline", "Offline", typeof(MainWindow));
+        public static RoutedUICommand ToggleLiveMonitoring = new RoutedUICommand("ToggleLiveMonitoring", "Live", typeof(MainWindow));
 
         public MainWindow()
         {
@@ -120,16 +119,33 @@ namespace SharePointLogViewer
                 MessageBox.Show("Microsoft Sharepoint not installed on this machine");
                 return;
             }
+
+            if (liveMode)
+            {
+                StopLiveMonitoring();
+                btnToggleLive.Style = (Style)FindResource("LiveStyle");
+                btnToggleLive.ToolTip = "Start Live Monitoring";
+            }
+            else
+            {
+                StartLiveMonitoring();
+                btnToggleLive.Style = (Style)FindResource("OffLineStyle");
+                btnToggleLive.ToolTip = "Stop Live Monitoring";
+            }
+        }
+
+        private void StartLiveMonitoring()
+        {
             string folderPath = SPUtility.LogsLocations;
 
             watcher = new LogMonitor(folderPath);
             watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
-            ChangeMode(true);
             logEntries.Clear();
             this.DataContext = logEntries;
 
             watcher.Start();
+            liveMode = true;
         }
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
@@ -139,14 +155,18 @@ namespace SharePointLogViewer
 
         void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            StopLiveMonitoring();
+        }
+
+        private void StopLiveMonitoring()
+        {
             if (watcher != null)
             {
-                watcher.Stop();
                 watcher.Dispose();
                 watcher = null;
             }
 
-            ChangeMode(false);
+            liveMode = false;
         }
 
         void LoadFiles()
@@ -165,14 +185,6 @@ namespace SharePointLogViewer
         {
             bdrShadow.Visibility = Visibility.Hidden;
             this.Cursor = Cursors.Arrow;
-        }
-
-        void ChangeMode(bool live)
-        {
-            btnOffline.Visibility = (live ? Visibility.Visible : Visibility.Hidden);
-            btnLive.Visibility = (live ? Visibility.Hidden : Visibility.Visible);
-
-            liveMode = live;
         }
 
         void CollectionViewSource_Filter(object sender, FilterEventArgs e)
