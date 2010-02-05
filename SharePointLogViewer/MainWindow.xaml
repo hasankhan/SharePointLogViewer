@@ -5,29 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" Icon="/SharePointLogViewer;component/Images/SPLV.ico">
     <Window.Resources>
-        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>
-        <Style x:Key="OffLineStyle" BasedOn="{StaticResource GlassButton}" TargetType="{x:Type Button}">
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid>
-                            <Image Source="Images\stop.png" Height="20" Width="20" />
-                        </Grid>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="LiveStyle" BasedOn="{StaticResource GlassButton}" TargetType="{x:Type Button}">
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid>
-                            <Image Source="Images\play.png" Height="20" Width="20" />
-                        </Grid>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>        
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
@@ -48,13 +26,14 @@
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"
                         Name="btnBrowse"
                         Width="30" ToolTip="Open File(s)" Command="local:MainWindow.OpenFile"
-                        Background="SteelBlue">
+                        Background="SteelBlue">                    
                     <Image Source="Images\openfile.png" Stretch="None" />
                 </Button>
-                <Button Style="{StaticResource LiveStyle}" Height="30" Margin="10,0,0,0" 
-                    Name="btnToggleLive" VerticalAlignment="Center" Width="30"
-                    ToolTip="Start Live Monitoring"
-                    Command="local:MainWindow.ToggleLiveMonitoring">
+                <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
+                        Name="btnToggleLive" Width="30" Tag="Images/play.png"
+                        ToolTip="Start Live Monitoring" Command="local:MainWindow.ToggleLiveMonitoring"
+                        Background="SteelBlue">
+                    <Image x:Name="imgPlay" Source="{Binding ElementName=btnToggleLive, Path=Tag}" Stretch="None" />
                 </Button>
                 <Separator/>
                 <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
@@ -83,14 +62,14 @@
                         Name="btnRefresh"
                         ToolTip="Search" Background="SteelBlue"
                         Command="local:MainWindow.Refresh" >
-                    <Image Source="Images\refresh.png" Stretch="UniformToFill" />
+                    <Image Source="Images\refresh.png" Stretch="None" />
                 </Button>
             </StackPanel>
             <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
                     ToolTip="About SharePoint LogViewer"
                     DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" 
                     Background="SteelBlue" HorizontalContentAlignment="Right">
-                <Image Source="Images\about.png" Stretch="UniformToFill" Width="25" Height="25" />
+                <Image Source="Images\about.png" Stretch="None" />
             </Button>
         </DockPanel>
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" 

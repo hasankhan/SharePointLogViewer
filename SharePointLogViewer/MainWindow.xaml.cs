@@ -123,14 +123,14 @@ namespace SharePointLogViewer
             if (liveMode)
             {
                 StopLiveMonitoring();
-                btnToggleLive.Style = (Style)FindResource("LiveStyle");
                 btnToggleLive.ToolTip = "Start Live Monitoring";
+                btnToggleLive.Tag = "Images/play.png";
             }
             else
             {
                 StartLiveMonitoring();
-                btnToggleLive.Style = (Style)FindResource("OffLineStyle");
                 btnToggleLive.ToolTip = "Stop Live Monitoring";
+                btnToggleLive.Tag = "Images/stop.png";
             }
         }
 
