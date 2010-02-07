@@ -103,7 +103,7 @@
             <TextBlock FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center">
                 SharePoint Log Viewer 1.0<LineBreak />
                 Copyright(C) 2010 Overroot Inc.<LineBreak /><LineBreak />
-                Website: <Hyperlink>www.overroot.com</Hyperlink><LineBreak />
+                Website: <Hyperlink NavigateUri="http://www.overroot.com" RequestNavigate="Hyperlink_RequestNavigate">www.overroot.com</Hyperlink><LineBreak />
                 Email: overrootinc@gmail.com
             </TextBlock>
         </Border>

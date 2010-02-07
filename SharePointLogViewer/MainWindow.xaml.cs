@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace SharePointLogViewer
 {
@@ -201,6 +202,12 @@ namespace SharePointLogViewer
         private void OpenFile_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = !liveMode;
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }
