@@ -39,8 +39,6 @@ namespace SharePointLogViewer
 
         public void Start(string path)
         {
-            if (IsBusy)
-                throw new InvalidOperationException("Can not start while in Busy state.");
             filePath = path;
             stopSync.Reset();
             worker.RunWorkerAsync();

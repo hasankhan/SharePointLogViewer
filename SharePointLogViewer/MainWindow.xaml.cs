@@ -114,11 +114,13 @@ namespace SharePointLogViewer
 
         void LiveMode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+#if !DEBUG
             if (!SPUtility.IsWSSInstalled)
             {
                 MessageBox.Show("Microsoft Sharepoint not installed on this machine");
                 return;
             }
+#endif
 
             if (liveMode)
             {
@@ -132,21 +134,7 @@ namespace SharePointLogViewer
                 btnToggleLive.ToolTip = "Stop Live Monitoring";
                 btnToggleLive.Tag = "Images/stop.png";
             }
-        }
-
-        private void StartLiveMonitoring()
-        {
-            string folderPath = SPUtility.LogsLocations;
-
-            watcher = new LogMonitor(folderPath);
-            watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
-
-            logEntries.Clear();
-            this.DataContext = logEntries;
-
-            watcher.Start();
-            liveMode = true;
-        }
+        }       
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
@@ -158,7 +146,25 @@ namespace SharePointLogViewer
             StopLiveMonitoring();
         }
 
-        private void StopLiveMonitoring()
+        void StartLiveMonitoring()
+        {
+#if DEBUG
+            string folderPath = @"X:\";
+#else
+            string folderPath = SPUtility.LogsLocations;
+#endif
+
+            watcher = new LogMonitor(folderPath);
+            watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
+
+            logEntries.Clear();
+            this.DataContext = logEntries;
+
+            watcher.Start();
+            liveMode = true;
+        }
+
+        void StopLiveMonitoring()
         {
             if (watcher != null)
             {
