@@ -89,7 +89,7 @@ namespace SharePointLogViewer
 
         void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("Copyright 2010 Overroot Inc.\n\nWebsite: http://www.overroot.com\nEmail: overrootinc@gmail.com", "About SharePointLogViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+            bdrAbout.Visibility = bdrAbout.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
         }
 
         void Grid_Drop(object sender, DragEventArgs e)
