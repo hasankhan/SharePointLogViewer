@@ -82,10 +82,16 @@ namespace SharePointLogViewer
         {
             string criteria = cmbFilterBy.Text == "Any field" ? "*" : cmbFilterBy.Text;
             filter = DynamicFilter.Create<LogEntry>(criteria, txtFilter.Text);
-            CollectionViewSource source = (CollectionViewSource)this.Resources["FilteredCollection"];
+            CollectionViewSource source = GetCollectionViewSource();
             if(source.View != null)
                 source.View.Refresh();
 
+        }
+
+        CollectionViewSource GetCollectionViewSource()
+        {
+            CollectionViewSource source = (CollectionViewSource)this.Resources["FilteredCollection"];
+            return source;
         }
 
         void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -139,7 +145,12 @@ namespace SharePointLogViewer
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
-            Dispatcher.Invoke((Action)(() => logEntries.Add(e.LogEntry)));
+            Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    logEntries.Add(e.LogEntry);
+                    lstLog.ScrollIntoView(e.LogEntry);
+                }
+            ));
         }
 
         void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
