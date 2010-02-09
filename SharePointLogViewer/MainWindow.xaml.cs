@@ -217,8 +217,12 @@ namespace SharePointLogViewer
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
+            try
+            {
+                Process.Start(e.Uri.AbsoluteUri);
+                e.Handled = true;
+            }
+            catch { }            
         }
     }
 }
