@@ -13,6 +13,7 @@
         <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
         <CommandBinding Command="local:MainWindow.OpenFile" CanExecute="OpenFile_CanExecute" Executed="OpenFile_Executed" />
         <CommandBinding Command="local:MainWindow.ToggleLiveMonitoring" Executed="LiveMode_Executed"/>
+        <CommandBinding Command="local:MainWindow.ExportLogEntries" Executed="ExportLogEntries_Executed"/>
     </Window.CommandBindings>
 
     <Grid AllowDrop="True" Drop="Grid_Drop">
@@ -34,6 +35,11 @@
                         ToolTip="Start Live Monitoring" Command="local:MainWindow.ToggleLiveMonitoring"
                         Background="SteelBlue">
                     <Image x:Name="imgPlay" Source="{Binding ElementName=btnToggleLive, Path=Tag}" Stretch="None" />
+                </Button>
+                <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
+                        Name="btnExport" Width="50" Content="Export"
+                        ToolTip="Export Log Entries" Command="local:MainWindow.ExportLogEntries"
+                        Background="SteelBlue">
                 </Button>
                 <Separator/>
                 <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
@@ -92,7 +98,7 @@
             </local:LogFilterListView.View>
         </local:LogFilterListView>
         <Expander Grid.Row="2" IsExpanded="True">
-            <TextBox Height="100" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+            <TextBox Height="100" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="True"
                      Text="{Binding ElementName=lstLog, Path=SelectedValue.Message, Mode=OneWay}" />
         </Expander>
         <Border x:Name="bdrShadow" Grid.RowSpan="3" Background="WhiteSmoke" Opacity="0.50" Visibility="Hidden" >

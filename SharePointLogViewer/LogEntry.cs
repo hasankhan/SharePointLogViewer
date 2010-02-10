@@ -16,6 +16,21 @@ namespace SharePointLogViewer
         public string Message {get; set; }
         public string Correlation {get; set; }
 
+        public override string ToString()
+        {
+            string stringRep = Timestamp + "\t";
+            stringRep += Process + "\t";
+            stringRep += TID + "\t";
+            stringRep += Area + "\t";
+            stringRep += Category + "\t";
+            stringRep += EventID + "\t";
+            stringRep += Level + "\t";
+            stringRep += Message + "\t";
+            stringRep += Correlation + "\t";
+            
+            return stringRep;
+        }
+
         public static LogEntry Parse(string line)
         {
             string[] fields = line.Split(new char[] { '\t' });

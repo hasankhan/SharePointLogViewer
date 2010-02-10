@@ -38,6 +38,7 @@ namespace SharePointLogViewer
         public static RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(MainWindow));
         public static RoutedUICommand OpenFile = new RoutedUICommand("OpenFile", "OpenFile", typeof(MainWindow));
         public static RoutedUICommand ToggleLiveMonitoring = new RoutedUICommand("ToggleLiveMonitoring", "Live", typeof(MainWindow));
+        public static RoutedUICommand ExportLogEntries = new RoutedUICommand("ExportLogEntries", "ExportLogEntries", typeof(MainWindow));
 
         public MainWindow()
         {
@@ -47,6 +48,8 @@ namespace SharePointLogViewer
             dialog = new OpenFileDialog();
             dialog.Filter = "Log Files (*.log)|*.log";
             dialog.Multiselect = true;
+
+            
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -223,6 +226,32 @@ namespace SharePointLogViewer
                 e.Handled = true;
             }
             catch { }            
+        }
+
+        private void ExportLogEntries_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".log";
+            dialog.FileName = "exportedlogentries";
+            dialog.Filter = "SharePoint log files (.log)|*.log";
+
+            bool? result = dialog.ShowDialog();
+            if(result == true)
+            {
+                CollectionViewSource cvs = GetCollectionViewSource();
+                var streamWriter = new System.IO.StreamWriter(dialog.FileName);
+                cvs.View.MoveCurrentToFirst();
+                
+                var logEntry = (LogEntry)cvs.View.CurrentItem;
+                streamWriter.WriteLine(logEntry.ToString());
+                while (cvs.View.MoveCurrentToNext())
+                {
+                    logEntry = (LogEntry)cvs.View.CurrentItem;
+                    streamWriter.WriteLine(logEntry.ToString());
+                }
+
+                streamWriter.Flush();
+            }
         }
     }
 }

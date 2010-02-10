@@ -25,11 +25,6 @@ namespace SharePointLogViewer
         public FileTail()
         {
             stopSync = new ManualResetEvent(true);
-            worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
         }
 
         public bool IsBusy
@@ -41,6 +36,11 @@ namespace SharePointLogViewer
         {
             filePath = path;
             stopSync.Reset();
+            worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
+            worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged); 
             worker.RunWorkerAsync();
         }
 
