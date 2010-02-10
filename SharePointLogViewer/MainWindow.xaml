@@ -37,7 +37,7 @@
                     <Image x:Name="imgPlay" Source="{Binding ElementName=btnToggleLive, Path=Tag}" Stretch="None" />
                 </Button>
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
-                        Name="btnExport" Width="50" Content="Export"
+                        Name="btnExport" Width="30" Content="Export" Foreground="White" FontSize="8"
                         ToolTip="Export Log Entries" Command="local:MainWindow.ExportLogEntries"
                         Background="SteelBlue">
                 </Button>

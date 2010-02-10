@@ -30,7 +30,8 @@ namespace SharePointLogViewer
         LogMonitor watcher = null;
         DynamicFilter filter;
         bool liveMode;
-        OpenFileDialog dialog;
+        OpenFileDialog openDialog;
+        SaveFileDialog saveDialog;
         string[] files = new string[0];
 
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
@@ -45,18 +46,18 @@ namespace SharePointLogViewer
             InitializeComponent();
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
-            dialog = new OpenFileDialog();
-            dialog.Filter = "Log Files (*.log)|*.log";
-            dialog.Multiselect = true;
-
-            
+            openDialog = new OpenFileDialog();
+            saveDialog = new SaveFileDialog();
+            saveDialog.Filter = openDialog.Filter = "Log Files (*.log)|*.log";
+            openDialog.Multiselect = true;
+            saveDialog.DefaultExt = ".log";            
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
-                dialog.InitialDirectory = SPUtility.LogsLocations;
+                openDialog.InitialDirectory = SPUtility.LogsLocations;
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
@@ -69,9 +70,9 @@ namespace SharePointLogViewer
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
         {                        
-            if (dialog.ShowDialog().Value)
+            if (openDialog.ShowDialog().Value)
             {
-                files = dialog.FileNames;
+                files = openDialog.FileNames;
                 LoadFiles();
             }
         }
@@ -229,29 +230,18 @@ namespace SharePointLogViewer
         }
 
         private void ExportLogEntries_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var dialog = new SaveFileDialog();
-            dialog.DefaultExt = ".log";
-            dialog.FileName = "exportedlogentries";
-            dialog.Filter = "SharePoint log files (.log)|*.log";
+        {            
+            bool? result = saveDialog.ShowDialog();
+            if (!result.Value)
+                return;
 
-            bool? result = dialog.ShowDialog();
-            if(result == true)
-            {
-                CollectionViewSource cvs = GetCollectionViewSource();
-                var streamWriter = new System.IO.StreamWriter(dialog.FileName);
-                cvs.View.MoveCurrentToFirst();
-                
-                var logEntry = (LogEntry)cvs.View.CurrentItem;
-                streamWriter.WriteLine(logEntry.ToString());
-                while (cvs.View.MoveCurrentToNext())
+            CollectionViewSource viewSource = GetCollectionViewSource();
+            if (viewSource.View != null)
+                using (var streamWriter = new StreamWriter(saveDialog.FileName))
                 {
-                    logEntry = (LogEntry)cvs.View.CurrentItem;
-                    streamWriter.WriteLine(logEntry.ToString());
+                    foreach (LogEntry logEntry in viewSource.View)
+                        streamWriter.WriteLine(logEntry.ToString());                    
                 }
-
-                streamWriter.Flush();
-            }
         }
     }
 }
