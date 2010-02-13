@@ -6,6 +6,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources\Miscellaneous.xaml" />
+                <ResourceDictionary Source="Resources\Brushes.xaml" />
                 <ResourceDictionary Source="Resources\FilterableListView.xaml" />
                 <ResourceDictionary Source="Resources\GlassButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>

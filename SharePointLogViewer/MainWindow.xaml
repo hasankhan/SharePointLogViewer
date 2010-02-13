@@ -15,30 +15,38 @@
         <CommandBinding Command="local:MainWindow.ToggleLiveMonitoring" Executed="LiveMode_Executed"/>
         <CommandBinding Command="local:MainWindow.ExportLogEntries" Executed="ExportLogEntries_Executed"/>
     </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="local:MainWindow.About" Key="F1"/>
+        <KeyBinding Command="local:MainWindow.Filter" Key="F3"/>
+        <KeyBinding Command="local:MainWindow.Refresh" Key="F5"/>
+        <KeyBinding Command="local:MainWindow.OpenFile" Key="O" Modifiers="Ctrl"/>
+        <KeyBinding Command="local:MainWindow.ToggleLiveMonitoring" Key="F5" Modifiers="Ctrl"/>
+        <KeyBinding Command="local:MainWindow.ExportLogEntries" Key="S" Modifiers="Ctrl"/>
+    </Window.InputBindings>
 
     <Grid AllowDrop="True" Drop="Grid_Drop">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="30" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" MinHeight="123" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Background="{StaticResource ResourceKey=BlueGradient}">
             <StackPanel Height="30" Orientation="Horizontal" DockPanel.Dock="Left">
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"
                         Name="btnBrowse"
-                        Width="30" ToolTip="Open File(s)" Command="local:MainWindow.OpenFile"
+                        Width="30" ToolTip="Open File(s) (Ctrl + O)" Command="local:MainWindow.OpenFile"
                         Background="SteelBlue">                    
                     <Image Source="Images\openfile.png" Stretch="None" />
                 </Button>
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
                         Name="btnToggleLive" Width="30" Tag="Images/play.png"
-                        ToolTip="Start Live Monitoring" Command="local:MainWindow.ToggleLiveMonitoring"
+                        ToolTip="Start Live Monitoring (Ctrl + F5)" Command="local:MainWindow.ToggleLiveMonitoring"
                         Background="SteelBlue">
                     <Image x:Name="imgPlay" Source="{Binding ElementName=btnToggleLive, Path=Tag}" Stretch="None" />
                 </Button>
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
                         Name="btnExport" Width="30" Content="Export" Foreground="White" FontSize="8"
-                        ToolTip="Export Log Entries" Command="local:MainWindow.ExportLogEntries"
+                        ToolTip="Export Log Entries (Ctrl + S)" Command="local:MainWindow.ExportLogEntries"
                         Background="SteelBlue">
                 </Button>
                 <Separator/>
@@ -60,19 +68,19 @@
                          Margin="5,0,5,0"  VerticalContentAlignment="Center" />
                 <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
                         Name="btnSearch"
-                        ToolTip="Search" Background="SteelBlue"
+                        ToolTip="Search (F3)" Background="SteelBlue"
                         Command="local:MainWindow.Filter" IsDefault="True">
                     <Image Source="Images\search.png" Stretch="None" />
                 </Button>
                 <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
                         Name="btnRefresh"
-                        ToolTip="Reload" Background="SteelBlue"
+                        ToolTip="Reload (F5)" Background="SteelBlue"
                         Command="local:MainWindow.Refresh" >
                     <Image Source="Images\refresh.png" Stretch="None" />
                 </Button>
             </StackPanel>
             <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
-                    ToolTip="About SharePoint LogViewer"
+                    ToolTip="About SharePoint LogViewer (F1)"
                     DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" 
                     Background="SteelBlue" HorizontalContentAlignment="Right">
                 <Image Source="Images\about.png" Stretch="None" />
@@ -97,10 +105,12 @@
                 </GridView>
             </local:LogFilterListView.View>
         </local:LogFilterListView>
-        <Expander Grid.Row="2" IsExpanded="True">
-            <TextBox Height="100" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="True"
-                     Text="{Binding ElementName=lstLog, Path=SelectedValue.Message, Mode=OneWay}" />
+        <Expander Grid.Row="2" HorizontalAlignment="Stretch" Header="Message" IsExpanded="True"
+                  VerticalAlignment="Top" ExpandDirection="Down" Padding="2" Background="{StaticResource PressedBrush}">
+                    <TextBox Height="100" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="True"
+                         Text="{Binding ElementName=lstLog, Path=SelectedValue.Message, Mode=OneWay}" />
         </Expander>
+
         <Border x:Name="bdrShadow" Grid.RowSpan="3" Background="WhiteSmoke" Opacity="0.50" Visibility="Hidden" >
             <controls:LoadingAnimation x:Name="loadingAnimation" Grid.RowSpan="3"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
