@@ -235,13 +235,10 @@ namespace SharePointLogViewer
             if (!result.Value)
                 return;
 
+            var exporter = new LogExporter();
             CollectionViewSource viewSource = GetCollectionViewSource();
             if (viewSource.View != null)
-                using (var streamWriter = new StreamWriter(saveDialog.FileName))
-                {
-                    foreach (LogEntry logEntry in viewSource.View)
-                        streamWriter.WriteLine(logEntry.ToString());                    
-                }
+                exporter.Save(saveDialog.OpenFile(), viewSource.View.Cast<LogEntry>());
         }
     }
 }

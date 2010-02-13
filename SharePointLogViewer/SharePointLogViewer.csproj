@@ -135,6 +135,7 @@
     <Compile Include="FileTail.cs" />
     <Compile Include="LogDirectoryWatcher.cs" />
     <Compile Include="LogEntry.cs" />
+    <Compile Include="LogExporter.cs" />
     <Compile Include="LogMonitor.cs" />
     <Compile Include="LogParser.cs" />
     <Compile Include="LogsLoader.cs" />
