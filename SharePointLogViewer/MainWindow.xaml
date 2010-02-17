@@ -50,9 +50,10 @@
                     <Image x:Name="imgPlay" Source="{Binding ElementName=btnToggleLive, Path=Tag}" Stretch="None" />
                 </Button>
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
-                        Name="btnExport" Width="30" Content="Export" Foreground="White" FontSize="8"
+                        Name="btnExport" Width="30" Foreground="White" FontSize="8"
                         ToolTip="Export Log Entries (Ctrl + S)" Command="local:MainWindow.ExportLogEntries"
                         Background="SteelBlue">
+                    <Image Source="Images/export.png" Stretch="None" />
                 </Button>
                 <Separator/>
                 <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
