@@ -44,6 +44,9 @@ namespace SharePointLogViewer
         public MainWindow()
         {
             InitializeComponent();
+            if (Properties.Settings.Default.Maximized)
+                WindowState = WindowState.Maximized;
+
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             openDialog = new OpenFileDialog();
@@ -239,6 +242,20 @@ namespace SharePointLogViewer
             CollectionViewSource viewSource = GetCollectionViewSource();
             if (viewSource.View != null)
                 exporter.Save(saveDialog.OpenFile(), viewSource.View.Cast<LogEntry>());
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.Maximized = (WindowState == WindowState.Maximized);
+        }
+
+        private void lvCopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            //TODO
+            //Copy the tab separated values of log entry.
+            //var logEntry = lstLog.SelectedItem as LogEntry;
+            //if (logEntry != null)
+            //    Clipboard.SetText(logEntry.ToString());
         }
     }
 }

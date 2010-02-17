@@ -3,7 +3,12 @@
     xmlns:local="clr-namespace:SharePointLogViewer"
     xmlns:controls="clr-namespace:SharePointLogViewer.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="SharePoint LogViewer" Height="580" Width="950" WindowStartupLocation="CenterScreen" Icon="/SharePointLogViewer;component/Images/SPLV.ico">
+    Title="SharePoint LogViewer" 
+    Height="{local:SettingBinding Height}"
+    Width="{local:SettingBinding Width}"
+    Left="{local:SettingBinding Left}"
+    Top="{local:SettingBinding Top}"
+    Icon="/SharePointLogViewer;component/Images/SPLV.ico" Closing="Window_Closing">
     <Window.Resources>
         <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>        
     </Window.Resources>
@@ -91,6 +96,9 @@
                                 FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 
                                 AlternationCount="2" x:Name="lstLog">
+            <ListView.CommandBindings>
+                <CommandBinding Command="Copy" Executed="lvCopyCommand_Executed"/>
+            </ListView.CommandBindings>
             <local:LogFilterListView.View>
                 <GridView>
                     <controls:SortableGridViewColumn Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp"/>
