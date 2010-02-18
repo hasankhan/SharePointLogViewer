@@ -13,11 +13,11 @@ namespace SharePointLogViewer
             using (var streamWriter = new StreamWriter(stream))
             {
                 foreach (LogEntry logEntry in entries)
-                    streamWriter.WriteLine(logEntry.ToString());
+                    streamWriter.WriteLine(Format(logEntry));
             }
         }
 
-        public string Format(LogEntry entry)
+        public static string Format(LogEntry entry)
         {            
             string stringRep = entry.Timestamp + "\t" +
                                entry.Process + "\t" +

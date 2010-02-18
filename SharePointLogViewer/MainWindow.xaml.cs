@@ -251,11 +251,9 @@ namespace SharePointLogViewer
 
         private void lvCopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //TODO
-            //Copy the tab separated values of log entry.
-            //var logEntry = lstLog.SelectedItem as LogEntry;
-            //if (logEntry != null)
-            //    Clipboard.SetText(logEntry.ToString());
+            var logEntry = lstLog.SelectedItem as LogEntry;
+            if (logEntry != null)
+                Clipboard.SetText(LogExporter.Format(logEntry));
         }
     }
 }
