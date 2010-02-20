@@ -163,7 +163,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Border Padding="{TemplateBinding Padding}" Background="Transparent">
-                        <Rectangle HorizontalAlignment="Center" Width="0.7" Fill="Gray"/>
+                        <Rectangle HorizontalAlignment="Center" Height="20" Width="1" Fill="LightGray"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
