@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using SharePointLogViewer.Properties;
 
 namespace SharePointLogViewer
 {
@@ -25,7 +26,7 @@ namespace SharePointLogViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<LogEntry> logEntries = new ObservableCollection<LogEntry>();
+        OverflowCollection<LogEntry> logEntries = new OverflowCollection<LogEntry>();        
         LogsLoader logsLoader = new LogsLoader();
         LogMonitor watcher = null;
         DynamicFilter filter;
@@ -46,7 +47,7 @@ namespace SharePointLogViewer
             InitializeComponent();
             if (Properties.Settings.Default.Maximized)
                 WindowState = WindowState.Maximized;
-
+            logEntries.MaxItems = Settings.Default.LiveLimit;
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             openDialog = new OpenFileDialog();
@@ -65,7 +66,8 @@ namespace SharePointLogViewer
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
         {
-            logEntries = new ObservableCollection<LogEntry>(e.LogEntries);
+            logEntries.Clear();
+            logEntries.AddRange(e.LogEntries);
             UpdateFilter();
             this.DataContext = logEntries;
             StopProcessing();
@@ -92,7 +94,6 @@ namespace SharePointLogViewer
             CollectionViewSource source = GetCollectionViewSource();
             if(source.View != null)
                 source.View.Refresh();
-
         }
 
         CollectionViewSource GetCollectionViewSource()

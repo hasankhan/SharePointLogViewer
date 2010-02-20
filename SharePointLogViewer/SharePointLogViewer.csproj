@@ -24,7 +24,7 @@
     <ManifestCertificateThumbprint>E9CD60CA20B8F4993738F637F08144EC244CE485</ManifestCertificateThumbprint>
     <ManifestKeyFile>SharePointLogViewer_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <PublishUrl>E:\temp\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -144,6 +144,7 @@
     <Compile Include="LogMonitor.cs" />
     <Compile Include="LogParser.cs" />
     <Compile Include="LogsLoader.cs" />
+    <Compile Include="OverflowCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
