@@ -194,10 +194,10 @@ namespace SharePointLogViewer.Controls
                 foreach (GridViewColumn gridViewColumn in gridView.Columns)
                 {
                     SortableGridViewColumn sc = gridViewColumn as SortableGridViewColumn;
-                    if(sc.CanBeFiltered)
-                        gridViewColumn.HeaderTemplate = (DataTemplate)dictionary["FilterGridHeaderTemplate"];                    
+                    if (sc.CanBeFiltered)
+                        gridViewColumn.HeaderTemplate = (DataTemplate)dictionary["FilterGridHeaderTemplate"];
                     else
-                        gridViewColumn.HeaderTemplate = (DataTemplate)dictionary["SortableGridHeaderTemplate"];                    
+                        gridViewColumn.HeaderTemplate = (DataTemplate)dictionary["SortableGridHeaderTemplate"];
                 }
             }
 

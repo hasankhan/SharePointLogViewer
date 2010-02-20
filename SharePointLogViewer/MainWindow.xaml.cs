@@ -54,7 +54,9 @@ namespace SharePointLogViewer
             saveDialog = new SaveFileDialog();
             saveDialog.Filter = openDialog.Filter = "Log Files (*.log)|*.log";
             openDialog.Multiselect = true;
-            saveDialog.DefaultExt = ".log";            
+            saveDialog.DefaultExt = ".log";
+
+            hdrCorrelation.Visible = false;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)

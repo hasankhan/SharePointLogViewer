@@ -19,6 +19,7 @@ namespace SharePointLogViewer.Controls
 {
     public class SortableGridViewColumn : GridViewColumn
     {
+        static Setter hideSetter = new Setter(GridViewColumnHeader.VisibilityProperty, Visibility.Collapsed);
 
         public string SortPropertyName
         {
@@ -47,6 +48,25 @@ namespace SharePointLogViewer.Controls
 
         public static readonly DependencyProperty CanBeFilteredColumnProperty =
             DependencyProperty.Register("CanBeFiltered", typeof(bool), typeof(SortableGridViewColumn), new UIPropertyMetadata(false));
+
+        public bool Visible
+        {
+            get { return (bool)GetValue(VisibleProperty); }
+            set 
+            { 
+                SetValue(VisibleProperty, value); 
+                if (HeaderContainerStyle == null)
+                    HeaderContainerStyle = new Style();
+                if (value)
+                    HeaderContainerStyle.Setters.Remove(hideSetter);
+                else
+                    HeaderContainerStyle.Setters.Add(hideSetter);
+            }
+        }
+
+        public static readonly DependencyProperty VisibleProperty =
+            DependencyProperty.Register("Visible", typeof(bool), typeof(SortableGridViewColumn), new UIPropertyMetadata(true));
+
 
     }
 }

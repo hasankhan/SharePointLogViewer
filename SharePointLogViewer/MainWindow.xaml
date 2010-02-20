@@ -96,21 +96,21 @@
                                 ItemsSource="{Binding Source={StaticResource FilteredCollection}}"
                                 FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 
-                                AlternationCount="2" x:Name="lstLog">
+                                AlternationCount="2" x:Name="lstLog">           
             <ListView.CommandBindings>
                 <CommandBinding Command="Copy" Executed="lvCopyCommand_Executed"/>
             </ListView.CommandBindings>
             <local:LogFilterListView.View>
-                <GridView>
-                    <controls:SortableGridViewColumn Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp"/>
-                    <controls:SortableGridViewColumn Header="Process" DisplayMemberBinding="{Binding Process}" CanBeFiltered="True" SortPropertyName="Process"/>
-                    <controls:SortableGridViewColumn Header="TID" DisplayMemberBinding="{Binding TID}" CanBeFiltered="False" SortPropertyName="TID"/>
-                    <controls:SortableGridViewColumn Header="Area" DisplayMemberBinding="{Binding Area}" CanBeFiltered="True" SortPropertyName="Area"/>
-                    <controls:SortableGridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" CanBeFiltered="True" SortPropertyName="Category"/>
-                    <controls:SortableGridViewColumn Header="EventID" DisplayMemberBinding="{Binding EventID}" CanBeFiltered="False" SortPropertyName="EventID"/>
-                    <controls:SortableGridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" CanBeFiltered="True" SortPropertyName="Level"/>
-                    <controls:SortableGridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" CanBeFiltered="False" SortPropertyName="Message"/>
-                    <controls:SortableGridViewColumn Header="Correlation" DisplayMemberBinding="{Binding Correlation}" CanBeFiltered="False" SortPropertyName="Correlation"/>
+                <GridView x:Name="grdLog">
+                    <controls:SortableGridViewColumn x:Name="hdrTimestamp" Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp" />
+                    <controls:SortableGridViewColumn x:Name="hdrProcess" Header="Process" DisplayMemberBinding="{Binding Process}" CanBeFiltered="True" SortPropertyName="Process"/>
+                    <controls:SortableGridViewColumn x:Name="hdrTid" Header="TID" DisplayMemberBinding="{Binding TID}" CanBeFiltered="False" SortPropertyName="TID"/>
+                    <controls:SortableGridViewColumn x:Name="hdrArea" Header="Area" DisplayMemberBinding="{Binding Area}" CanBeFiltered="True" SortPropertyName="Area"/>
+                    <controls:SortableGridViewColumn x:Name="hdrCategory" Header="Category" DisplayMemberBinding="{Binding Category}" CanBeFiltered="True" SortPropertyName="Category"/>
+                    <controls:SortableGridViewColumn x:Name="hdrEventID" Header="EventID" DisplayMemberBinding="{Binding EventID}" CanBeFiltered="False" SortPropertyName="EventID"/>
+                    <controls:SortableGridViewColumn x:Name="hdrLevel" Header="Level" DisplayMemberBinding="{Binding Level}" CanBeFiltered="True" SortPropertyName="Level"/>
+                    <controls:SortableGridViewColumn x:Name="hdrMessage" Header="Message" DisplayMemberBinding="{Binding Message}" CanBeFiltered="False" SortPropertyName="Message"/>
+                    <controls:SortableGridViewColumn x:Name="hdrCorrelation" Header="Correlation" DisplayMemberBinding="{Binding Correlation}" CanBeFiltered="False" SortPropertyName="Correlation"/>
                 </GridView>
             </local:LogFilterListView.View>
         </local:LogFilterListView>
