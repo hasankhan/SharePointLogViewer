@@ -5,8 +5,20 @@ using System.Text;
 
 namespace SharePointLogViewer
 {
+    class SPColumn
+    {
+        public bool IsSelected { get; set; }
+        public string Name { get; set; }
+    }
+
     class SettingsViewModel
     {
         public int LiveLimit { get; set; }
+        public List<SPColumn> Columns { get; private set; }
+
+        public SettingsViewModel()
+        {
+            Columns = new List<SPColumn>();
+        }
     }
 }

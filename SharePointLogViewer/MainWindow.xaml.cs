@@ -57,7 +57,15 @@ namespace SharePointLogViewer
             openDialog.Multiselect = true;
             saveDialog.DefaultExt = ".log";
 
-            hdrCorrelation.Visible = false;
+            hdrTimestamp.Visible = Properties.Settings.Default.Columns.Contains("Timestamp");
+            hdrProcess.Visible = Properties.Settings.Default.Columns.Contains("Process");
+            hdrTid.Visible = Properties.Settings.Default.Columns.Contains("TID");
+            hdrArea.Visible = Properties.Settings.Default.Columns.Contains("Area");
+            hdrCategory.Visible = Properties.Settings.Default.Columns.Contains("Category");
+            hdrEventID.Visible = Properties.Settings.Default.Columns.Contains("EventID");
+            hdrLevel.Visible = Properties.Settings.Default.Columns.Contains("Level");
+            hdrMessage.Visible = Properties.Settings.Default.Columns.Contains("Message");
+            hdrCorrelation.Visible = Properties.Settings.Default.Columns.Contains("Correlation");
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)

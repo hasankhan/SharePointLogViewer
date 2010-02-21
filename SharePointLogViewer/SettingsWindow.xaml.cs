@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Collections.Specialized;
 
 namespace SharePointLogViewer
 {
@@ -18,6 +19,8 @@ namespace SharePointLogViewer
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        SettingsViewModel settingsVm = new SettingsViewModel();
+
         public SettingsWindow()
         {
             InitializeComponent();
@@ -25,7 +28,9 @@ namespace SharePointLogViewer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            SettingsViewModel settingsVm = new SettingsViewModel();
+            settingsVm.Columns.AddRange(from prop in typeof(LogEntry).GetProperties()
+                                        select new SPColumn() { IsSelected = Properties.Settings.Default.Columns.Contains(prop.Name), Name = prop.Name });
+
             settingsVm.LiveLimit = Properties.Settings.Default.LiveLimit;
             this.DataContext = settingsVm;
         }
@@ -34,6 +39,22 @@ namespace SharePointLogViewer
         {
             if (e.Key == Key.Escape)
                 Close();
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void btnOK_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.LiveLimit = settingsVm.LiveLimit;
+            var columns = new StringCollection();
+            columns.AddRange((from col in settingsVm.Columns
+                             where col.IsSelected
+                             select col.Name).ToArray());
+            Properties.Settings.Default.Columns = columns;
+            Close();
         }
     }
 }

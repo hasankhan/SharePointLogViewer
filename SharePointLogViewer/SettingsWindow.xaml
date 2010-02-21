@@ -13,17 +13,31 @@
             Some settings will take effect after application restart.
             </TextBlock>
         </Grid>        
-        <Grid Grid.Row="1">
-            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top">
-                <TextBlock>Max log entries in live mode:</TextBlock>
-                <TextBox Text="{Binding Path=LiveLimit}" Width="200" Height="20" Margin="10,0,0,0" />  
-            </StackPanel>
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Max log entries in live mode:</TextBlock>
+            <TextBox Grid.Column="1" Text="{Binding Path=LiveLimit}" />
+            <TextBlock Grid.Row="1" Grid.Column="0">Columns to view:</TextBlock>
+            <ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Columns}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox IsChecked="{Binding Path=IsSelected}" Content="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
         <Grid Grid.Row="2">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Content="OK" Width="100" />
-                <Button Content="Cancel" Width="100" Margin="5,0,0,0" />
+                <Button Content="OK" Width="100" Click="btnOK_Click" />
+                <Button Content="Cancel" Width="100" Margin="5,0,0,0" Click="btnCancel_Click" />
             </StackPanel>            
-        </Grid>
+        </Grid>        
     </Grid>
 </Window>
