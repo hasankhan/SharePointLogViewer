@@ -22,5 +22,18 @@ namespace SharePointLogViewer
         {
             InitializeComponent();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            SettingsViewModel settingsVm = new SettingsViewModel();
+            settingsVm.LiveLimit = Properties.Settings.Default.LiveLimit;
+            this.DataContext = settingsVm;
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+        }
     }
 }

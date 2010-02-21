@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SharePointLogViewer.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Settings" Height="300" Width="452" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow">
+    Title="Settings" Height="300" Width="452" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -13,6 +13,12 @@
             Some settings will take effect after application restart.
             </TextBlock>
         </Grid>        
+        <Grid Grid.Row="1">
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top">
+                <TextBlock>Max log entries in live mode:</TextBlock>
+                <TextBox Text="{Binding Path=LiveLimit}" Width="200" Height="20" Margin="10,0,0,0" />  
+            </StackPanel>
+        </Grid>
         <Grid Grid.Row="2">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button Content="OK" Width="100" />
