@@ -70,6 +70,7 @@ namespace SharePointLogViewer
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            this.DataContext = logEntries;
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
                 openDialog.InitialDirectory = SPUtility.LogsLocations;
@@ -184,15 +185,16 @@ namespace SharePointLogViewer
 #else
             string folderPath = SPUtility.LogsLocations;
 #endif
+            if (Directory.Exists(folderPath))
+            {
+                watcher = new LogMonitor(folderPath);
+                watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
-            watcher = new LogMonitor(folderPath);
-            watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
+                logEntries.Clear();
 
-            logEntries.Clear();
-            this.DataContext = logEntries;
-
-            watcher.Start();
-            liveMode = true;
+                watcher.Start();
+                liveMode = true;
+            }
         }
 
         void StopLiveMonitoring()
