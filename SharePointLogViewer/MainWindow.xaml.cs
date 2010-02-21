@@ -35,6 +35,7 @@ namespace SharePointLogViewer
         SaveFileDialog saveDialog;
         string[] files = new string[0];
 
+        public static RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(MainWindow));
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
         public static RoutedUICommand Filter = new RoutedUICommand("Filter", "Filter", typeof(MainWindow));
         public static RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(MainWindow));
@@ -47,7 +48,7 @@ namespace SharePointLogViewer
             InitializeComponent();
             if (Properties.Settings.Default.Maximized)
                 WindowState = WindowState.Maximized;
-            logEntries.MaxItems = Settings.Default.LiveLimit;
+            logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             openDialog = new OpenFileDialog();
@@ -257,6 +258,13 @@ namespace SharePointLogViewer
             var logEntry = lstLog.SelectedItem as LogEntry;
             if (logEntry != null)
                 Clipboard.SetText(LogExporter.Format(logEntry));
+        }
+
+        private void Settings_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SettingsWindow settingsWin = new SettingsWindow();
+            settingsWin.Owner = this;
+            settingsWin.ShowDialog();
         }
     }
 }

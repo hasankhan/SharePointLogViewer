@@ -13,6 +13,7 @@
         <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>        
     </Window.Resources>
     <Window.CommandBindings>
+        <CommandBinding Command="local:MainWindow.Settings" Executed="Settings_Executed" />
         <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
         <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
         <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
@@ -72,7 +73,7 @@
                 </ComboBox>
                 <TextBox x:Name="txtFilter" Height="23" Width="300"
                          Margin="5,0,5,0"  VerticalContentAlignment="Center" />
-                <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
+                <Button Style="{StaticResource GlassButton}" Height="30" Width="30" 
                         Name="btnSearch"
                         ToolTip="Search (F3)" Background="SteelBlue"
                         Command="local:MainWindow.Filter" IsDefault="True">
@@ -84,12 +85,18 @@
                         Command="local:MainWindow.Refresh" >
                     <Image Source="Images\refresh.png" Stretch="None" />
                 </Button>
-            </StackPanel>
-            <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
+            </StackPanel>            
+            <Button Style="{StaticResource GlassButton}" Height="30" Width="30"  Margin="10,0,0,0" 
                     ToolTip="About SharePoint LogViewer (F1)"
                     DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" 
                     Background="SteelBlue" HorizontalContentAlignment="Right">
                 <Image Source="Images\about.png" Stretch="None" />
+            </Button>
+            <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
+                    ToolTip="Settings"
+                    DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.Settings" 
+                    Background="SteelBlue" HorizontalContentAlignment="Right">
+                <Image Source="Images\settings.png" Stretch="None" />
             </Button>
         </DockPanel>
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" 
