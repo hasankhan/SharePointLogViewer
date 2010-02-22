@@ -17,7 +17,7 @@ namespace SharePointLogViewer
         protected override void InsertItem(int index, T item)
         {                
             base.InsertItem(index, item);
-            if (Count > MaxItems)
+            if (MaxItems > 0 && Count > MaxItems)
                 RemoveAt(0);
         }
     }

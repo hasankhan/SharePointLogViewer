@@ -48,7 +48,6 @@ namespace SharePointLogViewer
             InitializeComponent();
             if (Properties.Settings.Default.Maximized)
                 WindowState = WindowState.Maximized;
-            logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             openDialog = new OpenFileDialog();
@@ -191,7 +190,7 @@ namespace SharePointLogViewer
                 watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
                 logEntries.Clear();
-
+                logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
                 watcher.Start();
                 liveMode = true;
             }
@@ -206,6 +205,7 @@ namespace SharePointLogViewer
             }
 
             liveMode = false;
+            logEntries.MaxItems = -1;
         }
 
         void LoadFiles()

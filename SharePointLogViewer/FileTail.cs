@@ -46,8 +46,11 @@ namespace SharePointLogViewer
 
         public void Stop()
         {
-            worker.CancelAsync();
-            stopSync.WaitOne();
+            if (worker != null)
+            {
+                worker.CancelAsync();
+                stopSync.WaitOne();
+            }
         }
 
         void worker_DoWork(object sender, DoWorkEventArgs e)
@@ -82,8 +85,11 @@ namespace SharePointLogViewer
 
         public void Dispose()
         {
-            Stop();
-            worker.Dispose();
+            if (worker != null)
+            {
+                Stop();
+                worker.Dispose();
+            }
         }
 
         #endregion
