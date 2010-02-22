@@ -54,8 +54,8 @@ namespace SharePointLogViewer
                              where col.IsSelected
                              select col.Name).ToArray());
             Properties.Settings.Default.Columns = columns;
-            Close();
             this.DialogResult = true;
+            Close();
         }
     }
 }

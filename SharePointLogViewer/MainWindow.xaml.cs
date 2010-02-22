@@ -179,11 +179,7 @@ namespace SharePointLogViewer
 
         void StartLiveMonitoring()
         {
-#if DEBUG
-            string folderPath = @"X:\";
-#else
             string folderPath = SPUtility.LogsLocations;
-#endif
             if (Directory.Exists(folderPath))
             {
                 watcher = new LogMonitor(folderPath);
@@ -274,7 +270,8 @@ namespace SharePointLogViewer
         {
             SettingsWindow settingsWin = new SettingsWindow();
             settingsWin.Owner = this;
-            settingsWin.ShowDialog();
+            if(settingsWin.ShowDialog().Value)
+                logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
         }
     }
 }
