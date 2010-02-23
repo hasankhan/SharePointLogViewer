@@ -82,6 +82,7 @@ namespace SharePointLogViewer
             UpdateFilter();
             this.DataContext = logEntries;
             StopProcessing();
+            lstLog.ScrollIntoView(lstLog.Items[0]);
         }
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -270,7 +271,7 @@ namespace SharePointLogViewer
         {
             SettingsWindow settingsWin = new SettingsWindow();
             settingsWin.Owner = this;
-            if(settingsWin.ShowDialog().Value)
+            if (settingsWin.ShowDialog().Value)
                 logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
         }
     }
