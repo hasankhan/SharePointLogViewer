@@ -1,11 +1,24 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="BlueGradient">
-        <GradientStop Color="White" Offset="0" />
-        <GradientStop Color="#DCE7F5" Offset="0.80" />
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="ExpanderBackGround">
-        <GradientStop Color="#ccc" Offset="0"/>
-        <GradientStop Color="#bbb" Offset="1"/>
-    </LinearGradientBrush>
+    <Style x:Key="SimpleListBoxItemStyle" TargetType="ListBoxItem">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border 
+                           Name="bdr"
+                           Padding="2"
+                           SnapsToDevicePixels="true" Background="#FFEAEAEA" Margin="0,1,0,0">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="bdr" Property="Background" Value="LightGray"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
