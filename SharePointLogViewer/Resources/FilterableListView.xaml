@@ -6,10 +6,16 @@
         <Style.Triggers>
             <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                 <Setter Property="Background" Value="#EFEFEF"></Setter>
+                <Setter Property="Opacity" Value="1"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource ListItemSelectedColor}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" Value="{StaticResource ListItemHoverColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
-
     <LinearGradientBrush x:Key="HeadingBrush" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Color="#828487" Offset="0"/>
         <GradientStop Color="#7E8083" Offset="0.5"/>

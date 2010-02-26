@@ -5,6 +5,22 @@
     <SolidColorBrush x:Key="WorkAreaBackgroud" Color="#FFD2D8DE"/>
     <SolidColorBrush x:Key="AuthorGradient" Color="#FFD2D8DE"/>
 
+    <LinearGradientBrush x:Key="ListItemHoverColor" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FFE9F8FF" Offset="0.504"/>
+        <GradientStop Color="#FFCEEFFD" Offset="1"/>
+        <GradientStop Color="Gray" Offset="0.504"/>
+        <GradientStop Color="#FFD9F3FE" Offset="0.504"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="ListItemSelectedColor" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FFE9F8FF" Offset="0.504"/>
+        <GradientStop Color="#FFA6E1FC" Offset="0.496"/>
+        <GradientStop Color="Gray" Offset="0.504"/>
+        <GradientStop Color="#FFCCEFFE" Offset="0.504"/>
+        <GradientStop Color="#FFDAF4FE" Offset="0.013"/>
+        <GradientStop Color="#FFA6E1FC" Offset="0.978"/>
+    </LinearGradientBrush>
+
     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="BlueGradient">
         <GradientStop Color="White" Offset="0" />
         <GradientStop Color="#DCE7F5" Offset="0.80" />
