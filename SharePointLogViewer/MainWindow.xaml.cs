@@ -306,6 +306,15 @@ namespace SharePointLogViewer
             LogEntryViewModel selected = lstLog.SelectedItem as LogEntryViewModel;
             if (selected != null)
                 selected.Bookmarked = !selected.Bookmarked;
-        }        
+        }
+
+        private void img_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var image = (Image)sender;
+            LogEntryViewModel selected = image.Tag as LogEntryViewModel;
+            if (selected != null)
+                selected.Bookmarked = !selected.Bookmarked;
+        }
+       
     }
 }

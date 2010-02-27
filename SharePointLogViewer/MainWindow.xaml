@@ -10,7 +10,16 @@
     Top="{local:SettingBinding Top}"
     Icon="/SharePointLogViewer;component/Images/SPLV.ico" Closing="Window_Closing">
     <Window.Resources>
-        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>        
+        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>
+        <DataTemplate x:Key="BookmarkColumnTemplate">
+                <Image x:Name="img" MouseDown="img_MouseDown" HorizontalAlignment="Stretch" ToolTip="Bookmark" Cursor="Hand" Tag="{Binding}" Source="Images\empty.png"/>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Bookmarked}" Value="True">
+                    <Setter TargetName="img" Property="Image.Source" Value="Images\bookmark.png"/>
+                    <Setter TargetName="img" Property="Image.ToolTip" Value="Delete Bookmark"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.Settings" Executed="Settings_Executed" />
@@ -125,24 +134,7 @@
             </ListView.CommandBindings>
             <local:LogFilterListView.View>
                 <GridView x:Name="grdLog">
-                    <GridViewColumn>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding Bookmarked}" Click="CheckBox_Click">
-                                    <CheckBox.Template>
-                                        <ControlTemplate>
-                                            <Image x:Name="imgBookmark" Source="Images\empty.png" />
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="CheckBox.IsChecked" Value="True">
-                                                    <Setter TargetName="imgBookmark" Property="Source" Value="Images\bookmark.png" />
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </CheckBox.Template>
-                                </CheckBox>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <controls:SortableGridViewColumn x:Name="hdrBookmark" SortPropertyName="Bookmarked" CanBeFiltered="False" CellTemplate="{StaticResource BookmarkColumnTemplate}" />
                     <controls:SortableGridViewColumn x:Name="hdrTimestamp" Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp" />
                     <controls:SortableGridViewColumn x:Name="hdrProcess" Header="Process" DisplayMemberBinding="{Binding Process}" CanBeFiltered="True" SortPropertyName="Process"/>
                     <controls:SortableGridViewColumn x:Name="hdrTid" Header="TID" DisplayMemberBinding="{Binding TID}" CanBeFiltered="False" SortPropertyName="TID"/>
