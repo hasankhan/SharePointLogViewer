@@ -136,6 +136,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookmarkNavigator.cs" />
     <Compile Include="Controls\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
     </Compile>
@@ -144,6 +145,7 @@
     <Compile Include="FileTail.cs" />
     <Compile Include="LogDirectoryWatcher.cs" />
     <Compile Include="LogEntry.cs" />
+    <Compile Include="LogEntryViewModel.cs" />
     <Compile Include="LogExporter.cs" />
     <Compile Include="LogMonitor.cs" />
     <Compile Include="LogParser.cs" />
@@ -240,6 +242,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bookmark.png" />
+    <Resource Include="Images\next.png" />
+    <Resource Include="Images\previous.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

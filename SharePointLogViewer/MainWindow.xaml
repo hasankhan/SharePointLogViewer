@@ -14,12 +14,15 @@
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.Settings" Executed="Settings_Executed" />
-        <CommandBinding Command="local:MainWindow.About" Executed="AboutExecuted" />
-        <CommandBinding Command="local:MainWindow.Filter" Executed="FilterExecuted" />
+        <CommandBinding Command="local:MainWindow.About" Executed="About_Executed" />
+        <CommandBinding Command="local:MainWindow.Filter" Executed="Filter_Executed" />
         <CommandBinding Command="local:MainWindow.Refresh" CanExecute="Refresh_CanExecute" Executed="Refresh_Executed" />
         <CommandBinding Command="local:MainWindow.OpenFile" CanExecute="OpenFile_CanExecute" Executed="OpenFile_Executed" />
         <CommandBinding Command="local:MainWindow.ToggleLiveMonitoring" Executed="LiveMode_Executed"/>
         <CommandBinding Command="local:MainWindow.ExportLogEntries" Executed="ExportLogEntries_Executed"/>
+        <CommandBinding Command="local:MainWindow.Previous" Executed="Previous_Executed"/>
+        <CommandBinding Command="local:MainWindow.Next" Executed="Next_Executed"/>
+        <CommandBinding Command="local:MainWindow.ToggleBookmark" Executed="ToggleBookmark_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Command="local:MainWindow.About" Key="F1"/>
@@ -28,6 +31,9 @@
         <KeyBinding Command="local:MainWindow.OpenFile" Key="O" Modifiers="Ctrl"/>
         <KeyBinding Command="local:MainWindow.ToggleLiveMonitoring" Key="F5" Modifiers="Ctrl"/>
         <KeyBinding Command="local:MainWindow.ExportLogEntries" Key="S" Modifiers="Ctrl"/>
+        <KeyBinding Command="local:MainWindow.Previous" Key="P" Modifiers="Ctrl" />
+        <KeyBinding Command="local:MainWindow.Next" Key="N" Modifiers="Ctrl" />
+        <KeyBinding Command="local:MainWindow.ToggleBookmark" Key="B" Modifiers="Ctrl" />
     </Window.InputBindings>
 
     <Grid AllowDrop="True" Drop="Grid_Drop">
@@ -59,7 +65,7 @@
                 <Separator/>
                 <Label Margin="10,0,0,0" Content="Filter: " VerticalAlignment="Center" />
                 <ComboBox x:Name="cmbFilterBy" SelectedIndex="0" Width="100" Height="23"
-                          VerticalContentAlignment="Center" Background="{StaticResource ResourceKey=BlueGradient}">
+                          VerticalContentAlignment="Center" Background="{StaticResource ResourceKey=BlueGradient}">                    
                     <ComboBoxItem>Any field</ComboBoxItem>
                     <ComboBoxItem>Timestamp</ComboBoxItem>
                     <ComboBoxItem>Process</ComboBoxItem>
@@ -85,7 +91,17 @@
                         Command="local:MainWindow.Refresh" >
                     <Image Source="Images\refresh.png" Stretch="None" />
                 </Button>
-            </StackPanel>            
+            </StackPanel>
+            <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
+                        ToolTip="Previous bookmark" Background="SteelBlue"
+                        Command="local:MainWindow.Previous" >
+                <Image Source="Images\previous.png" Stretch="None" />
+            </Button>
+            <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
+                        ToolTip="Next bookmark" Background="SteelBlue"
+                        Command="local:MainWindow.Next" >
+                <Image Source="Images\next.png" Stretch="None" />
+            </Button>
             <Button Style="{StaticResource GlassButton}" Height="30" Width="30"  Margin="10,0,0,0" 
                     ToolTip="About SharePoint LogViewer (F1)"
                     DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" 
@@ -109,6 +125,24 @@
             </ListView.CommandBindings>
             <local:LogFilterListView.View>
                 <GridView x:Name="grdLog">
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Bookmarked}" Click="CheckBox_Click">
+                                    <CheckBox.Template>
+                                        <ControlTemplate>
+                                            <Image x:Name="imgBookmark" Source="Images\empty.png" />
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="CheckBox.IsChecked" Value="True">
+                                                    <Setter TargetName="imgBookmark" Property="Source" Value="Images\bookmark.png" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </CheckBox.Template>
+                                </CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <controls:SortableGridViewColumn x:Name="hdrTimestamp" Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp" />
                     <controls:SortableGridViewColumn x:Name="hdrProcess" Header="Process" DisplayMemberBinding="{Binding Process}" CanBeFiltered="True" SortPropertyName="Process"/>
                     <controls:SortableGridViewColumn x:Name="hdrTid" Header="TID" DisplayMemberBinding="{Binding TID}" CanBeFiltered="False" SortPropertyName="TID"/>

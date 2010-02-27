@@ -18,7 +18,7 @@ namespace SharePointLogViewer
     {
         protected override Type GetListItemType()
         {
-            return typeof(LogEntry);
+            return typeof(LogEntryViewModel);
         }        
     }
 }

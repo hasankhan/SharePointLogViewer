@@ -26,7 +26,7 @@ namespace SharePointLogViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        OverflowCollection<LogEntry> logEntries = new OverflowCollection<LogEntry>();        
+        OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);        
         LogsLoader logsLoader = new LogsLoader();
         LogMonitor watcher = null;
         DynamicFilter filter;
@@ -34,6 +34,7 @@ namespace SharePointLogViewer
         OpenFileDialog openDialog;
         SaveFileDialog saveDialog;
         string[] files = new string[0];
+        BookmarkNavigator bookmarkNavigator;
 
         public static RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(MainWindow));
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
@@ -42,18 +43,28 @@ namespace SharePointLogViewer
         public static RoutedUICommand OpenFile = new RoutedUICommand("OpenFile", "OpenFile", typeof(MainWindow));
         public static RoutedUICommand ToggleLiveMonitoring = new RoutedUICommand("ToggleLiveMonitoring", "Live", typeof(MainWindow));
         public static RoutedUICommand ExportLogEntries = new RoutedUICommand("ExportLogEntries", "ExportLogEntries", typeof(MainWindow));
+        public static RoutedUICommand Previous = new RoutedUICommand("Previous", "Previous", typeof(MainWindow));
+        public static RoutedUICommand Next = new RoutedUICommand("Next", "Next", typeof(MainWindow));
+        public static RoutedUICommand ToggleBookmark = new RoutedUICommand("ToggleBookmark", "ToggleBookmark", typeof(MainWindow));
 
         public MainWindow()
         {
             InitializeComponent();
+            
             if (Properties.Settings.Default.Maximized)
                 WindowState = WindowState.Maximized;
+            
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
+            
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
+
+            bookmarkNavigator = new BookmarkNavigator(lstLog, logEntries);
+            
             openDialog = new OpenFileDialog();
+            openDialog.Multiselect = true;
+
             saveDialog = new SaveFileDialog();
             saveDialog.Filter = openDialog.Filter = "Log Files (*.log)|*.log";
-            openDialog.Multiselect = true;
             saveDialog.DefaultExt = ".log";
 
             hdrTimestamp.Visible = Properties.Settings.Default.Columns.Contains("Timestamp");
@@ -78,7 +89,7 @@ namespace SharePointLogViewer
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
         {
             logEntries.Clear();
-            logEntries.AddRange(e.LogEntries);
+            logEntries.AddRange(e.LogEntries.Select(le=>new LogEntryViewModel(le)));
             UpdateFilter();
             this.DataContext = logEntries;
             StopProcessing();
@@ -94,7 +105,7 @@ namespace SharePointLogViewer
             }
         }
 
-        void FilterExecuted(object sender, ExecutedRoutedEventArgs e)
+        void Filter_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             UpdateFilter();
         }
@@ -114,7 +125,7 @@ namespace SharePointLogViewer
             return source;
         }
 
-        void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
+        void About_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             bdrAbout.Visibility = bdrAbout.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
         }
@@ -148,7 +159,6 @@ namespace SharePointLogViewer
                 return;
             }
 #endif
-
             if (liveMode)
             {
                 StopLiveMonitoring();
@@ -167,7 +177,7 @@ namespace SharePointLogViewer
         {
             Dispatcher.BeginInvoke((Action)(() =>
                 {
-                    logEntries.Add(e.LogEntry);
+                    logEntries.Add(new LogEntryViewModel(e.LogEntry));
                     lstLog.ScrollIntoView(e.LogEntry);
                 }
             ));
@@ -274,5 +284,28 @@ namespace SharePointLogViewer
             if (settingsWin.ShowDialog().Value)
                 logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
         }
+
+        private void Previous_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            bookmarkNavigator.Previous();
+        }        
+
+        private void Next_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            bookmarkNavigator.Next();
+        }        
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            lstLog.SelectedItem = checkbox.DataContext;
+        }
+
+        private void ToggleBookmark_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            LogEntryViewModel selected = lstLog.SelectedItem as LogEntryViewModel;
+            if (selected != null)
+                selected.Bookmarked = !selected.Bookmarked;
+        }        
     }
 }

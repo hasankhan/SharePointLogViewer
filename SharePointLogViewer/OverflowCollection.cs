@@ -8,17 +8,25 @@ namespace SharePointLogViewer
 {
     class OverflowCollection<T>:ObservableCollection<T>
     {
+        Func<T, bool> evictionCriterea;
+
         public int MaxItems { get; set; }
 
-        public OverflowCollection() { }
+        public OverflowCollection(Func<T, bool> evictionCriterea) : base()
+        {
+            this.evictionCriterea = evictionCriterea;
+        }
 
         public OverflowCollection(IEnumerable<T> collection) : base(collection) { }
 
         protected override void InsertItem(int index, T item)
-        {                
-            base.InsertItem(index, item);
+        {
             if (MaxItems > 0 && Count > MaxItems)
-                RemoveAt(0);
+            {
+                var target = base.Items.FirstOrDefault<T>(evictionCriterea);
+                base.Remove(target);
+            }
+            base.InsertItem(index, item);            
         }
     }
 }
