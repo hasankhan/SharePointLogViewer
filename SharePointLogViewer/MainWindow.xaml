@@ -63,7 +63,7 @@
                 </Button>
                 <Button IsTabStop="False" Style="{StaticResource GlassButton}" Height="30"  Margin="10,0,0,0" 
                         Name="btnToggleLive" Width="30" Tag="Images/play.png"
-                        ToolTip="Start Live Monitoring (Ctrl + F5)" Command="local:MainWindow.ToggleLiveMonitoring"
+                        ToolTip="Start Live Monitoring. (Ctrl + F5)" Command="local:MainWindow.ToggleLiveMonitoring"
                         Background="SteelBlue">
                     <Image x:Name="imgPlay" Source="{Binding ElementName=btnToggleLive, Path=Tag}" Stretch="None" />
                 </Button>
@@ -104,17 +104,17 @@
                 </Button>
             </StackPanel>
             <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
-                        ToolTip="Toggle a bookmark on selected log entry" Background="SteelBlue"
+                        ToolTip="Toggle a bookmark on selected entry (Ctrl+B)" Background="SteelBlue"
                         Command="local:MainWindow.ToggleBookmark" >
                 <Image Source="Images\bookmark.png" Stretch="None" />
             </Button>
             <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
-                        ToolTip="Previous bookmark" Background="SteelBlue"
+                        ToolTip="Previous bookmark (Ctrl+P)" Background="SteelBlue"
                         Command="local:MainWindow.Previous" >
                 <Image Source="Images\previous.png" Stretch="None" />
             </Button>
             <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
-                        ToolTip="Next bookmark" Background="SteelBlue"
+                        ToolTip="Next bookmark (Ctrl+N)" Background="SteelBlue"
                         Command="local:MainWindow.Next" >
                 <Image Source="Images\next.png" Stretch="None" />
             </Button>
@@ -166,7 +166,7 @@
         </Border>
         <Border x:Name="bdrAbout" Grid.Row="1" Grid.RowSpan="2" Background="WhiteSmoke" Opacity="0.90" Visibility="Hidden">
             <TextBlock FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                SharePoint Log Viewer 1.1<LineBreak />
+                SharePoint Log Viewer <TextBlock x:Name="lblVersion" /><LineBreak />
                 Copyright(C) 2010 Overroot Inc.<LineBreak /><LineBreak />
                 Website: <Hyperlink NavigateUri="http://www.overroot.com" RequestNavigate="Hyperlink_RequestNavigate">www.overroot.com</Hyperlink><LineBreak />
                 Email: <Hyperlink NavigateUri="mailto:overrootinc@gmail.com" RequestNavigate="Hyperlink_RequestNavigate">overrootinc@gmail.com</Hyperlink>

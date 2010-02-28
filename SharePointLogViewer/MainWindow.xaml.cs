@@ -76,6 +76,8 @@ namespace SharePointLogViewer
             hdrLevel.Visible = Properties.Settings.Default.Columns.Contains("Level");
             hdrMessage.Visible = Properties.Settings.Default.Columns.Contains("Message");
             hdrCorrelation.Visible = Properties.Settings.Default.Columns.Contains("Correlation");
+
+            lblVersion.Text = typeof(MainWindow).Assembly.GetName().Version.ToString(3);
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
