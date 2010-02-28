@@ -188,8 +188,6 @@
                 <ControlTemplate TargetType="GridViewColumnHeader">
                     <Grid>
                         <Border Name="HeaderBorder"
-                                BorderThickness="0,1,0,1"
-                                BorderBrush="{StaticResource NormalBorderBrush}"
                                 Background="{StaticResource LightBrush}"
                                 Padding="2,0,2,0">
 

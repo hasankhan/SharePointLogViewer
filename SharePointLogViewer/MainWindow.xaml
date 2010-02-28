@@ -12,7 +12,9 @@
     <Window.Resources>
         <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>
         <DataTemplate x:Key="BookmarkColumnTemplate">
-                <Image x:Name="img" MouseDown="img_MouseDown" HorizontalAlignment="Stretch" ToolTip="Bookmark" Cursor="Hand" Tag="{Binding}" Source="Images\empty.png"/>
+            <Image x:Name="img" MouseLeftButtonUp="img_MouseLeftButtonUp" ToolTip="Bookmark" 
+                       Cursor="Hand" Source="Images\empty.png">
+            </Image>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Bookmarked}" Value="True">
                     <Setter TargetName="img" Property="Image.Source" Value="Images\bookmark.png"/>
@@ -31,7 +33,7 @@
         <CommandBinding Command="local:MainWindow.ExportLogEntries" Executed="ExportLogEntries_Executed"/>
         <CommandBinding Command="local:MainWindow.Previous" Executed="Previous_Executed"/>
         <CommandBinding Command="local:MainWindow.Next" Executed="Next_Executed"/>
-        <CommandBinding Command="local:MainWindow.ToggleBookmark" Executed="ToggleBookmark_Executed"/>
+        <CommandBinding Command="local:MainWindow.ToggleBookmark" CanExecute="ToogleBookmark_CanExecute" Executed="ToggleBookmark_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Command="local:MainWindow.About" Key="F1"/>
@@ -101,6 +103,11 @@
                     <Image Source="Images\refresh.png" Stretch="None" />
                 </Button>
             </StackPanel>
+            <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
+                        ToolTip="Toggle a bookmark on selected log entry" Background="SteelBlue"
+                        Command="local:MainWindow.ToggleBookmark" >
+                <Image Source="Images\bookmark.png" Stretch="None" />
+            </Button>
             <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
                         ToolTip="Previous bookmark" Background="SteelBlue"
                         Command="local:MainWindow.Previous" >

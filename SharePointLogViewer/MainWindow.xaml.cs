@@ -295,26 +295,26 @@ namespace SharePointLogViewer
             bookmarkNavigator.Next();
         }        
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        private void ToggleBookmark_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var checkbox = (CheckBox)sender;
-            lstLog.SelectedItem = checkbox.DataContext;
+            ToggleLogEntryBookmark();
         }
 
-        private void ToggleBookmark_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void ToogleBookmark_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = (lstLog != null && lstLog.SelectedItem != null);
+        }
+
+        private void img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ToggleLogEntryBookmark();
+        }
+
+        private void ToggleLogEntryBookmark()
         {
             LogEntryViewModel selected = lstLog.SelectedItem as LogEntryViewModel;
             if (selected != null)
                 selected.Bookmarked = !selected.Bookmarked;
-        }
-
-        private void img_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            var image = (Image)sender;
-            LogEntryViewModel selected = image.Tag as LogEntryViewModel;
-            if (selected != null)
-                selected.Bookmarked = !selected.Bookmarked;
-        }
-       
+        }        
     }
 }
