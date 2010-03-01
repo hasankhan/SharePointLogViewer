@@ -8,7 +8,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Margin="5">
+        <TextBlock Grid.Row="0" Margin="5" FontWeight="Bold">
                     Some settings will take effect after application restart.
         </TextBlock>
         <Border Grid.Row="1" Background="{StaticResource WorkAreaBackgroud}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="5">
