@@ -90,10 +90,9 @@ namespace SharePointLogViewer
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
         {
-            logEntries.Clear();
-            logEntries.AddRange(e.LogEntries.Select(le=>new LogEntryViewModel(le)));
+            logEntries.AddRange(from le in e.LogEntries.Skip(logEntries.Count())
+                                select new LogEntryViewModel(le));
             UpdateFilter();
-            this.DataContext = logEntries;
             StopProcessing();
             lstLog.ScrollIntoView(lstLog.Items[0]);
         }
