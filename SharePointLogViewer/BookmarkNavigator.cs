@@ -3,68 +3,92 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using System.ComponentModel;
 
 namespace SharePointLogViewer
 {
     class BookmarkNavigator
     {
+        Func<ICollectionView> getCollectionView;
         ListView lstLog;
-        IEnumerable<LogEntryViewModel> logEntries;
 
-        public BookmarkNavigator(ListView lstLog, IEnumerable<LogEntryViewModel> logEntries)
+        public BookmarkNavigator(ListView lstLog, Func<ICollectionView> getCollectionView)
         {
             this.lstLog = lstLog;
-            this.logEntries = logEntries;
+            this.getCollectionView = getCollectionView;
+        }
+
+        IEnumerable<LogEntryViewModel> LogEntries
+        {
+            get
+            {
+                IEnumerable<LogEntryViewModel> logEntries;
+                ICollectionView collectionView = getCollectionView();
+                if (collectionView == null)
+                    logEntries = Enumerable.Empty<LogEntryViewModel>();
+                else
+                    logEntries = collectionView.Cast<LogEntryViewModel>();
+                return logEntries;
+            }
+        }
+
+        object SelectedItem
+        {
+            get
+            {
+                return lstLog.SelectedItem;
+            }
+            set
+            {
+                lstLog.SelectedItem = value;
+                lstLog.ScrollIntoView(value);
+            }
         }
 
         public void Previous()
         {
-            if (lstLog.Items.Count == 0)
+            if (LogEntries.Count() == 0)
                 return;
-            var startFrom = lstLog.SelectedItem ?? lstLog.Items[0];
-            var prev = FindPreviousBookMark(startFrom);
+            var startFrom = SelectedItem ?? LogEntries.FirstOrDefault();
+            var prev = FindPreviousBookMark(startFrom, SelectedItem != null);
 
             if (prev == null)
-                prev = FindPreviousBookMark(logEntries.Last());
+                prev = FindPreviousBookMark(LogEntries.LastOrDefault(), false);
 
             if (prev != null)
-            {
-                lstLog.SelectedItem = prev;
-                lstLog.ScrollIntoView(prev);
-            }
+                SelectedItem = prev;
         }
 
         public void Next()
         {
-            if (lstLog.Items.Count == 0)
+            if (LogEntries.Count() == 0)
                 return;
-            var startFrom = lstLog.SelectedItem ?? lstLog.Items[0];
-            var next = FindNextBookMark(startFrom);
+            var startFrom = SelectedItem ?? LogEntries.FirstOrDefault();
+            var next = FindNextBookMark(startFrom, SelectedItem != null);
 
             if (next == null)
-                next = FindNextBookMark(logEntries.First());
+                next = FindNextBookMark(LogEntries.FirstOrDefault(), false);
 
             if (next != null)
-            {
-                lstLog.SelectedItem = next;
-                lstLog.ScrollIntoView(next);
-            }
+                SelectedItem = next;
         }
 
 
-        LogEntryViewModel FindPreviousBookMark(object startFrom)
+        LogEntryViewModel FindPreviousBookMark(object startFrom, bool skipStartItem)
         {
-            var prev = logEntries.Reverse()
+            int skip = skipStartItem ? 1 : 0;
+            var prev = LogEntries.Reverse()
                         .SkipWhile(le => le != startFrom)
-                        .Skip(1)
+                        .Skip(skip)
                         .FirstOrDefault(le => le.Bookmarked);
             return prev;
         }
 
-        LogEntryViewModel FindNextBookMark(object startFrom)
+        LogEntryViewModel FindNextBookMark(object startFrom, bool skipStartItem)
         {
-            var next = logEntries.SkipWhile(le => le != startFrom)
-                       .Skip(1)
+            int skip = skipStartItem ? 1 : 0;
+            var next = LogEntries.SkipWhile(le => le != startFrom)
+                       .Skip(skip)
                        .FirstOrDefault(le => le.Bookmarked);
             return next;
         }

@@ -58,7 +58,7 @@ namespace SharePointLogViewer
             
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
 
-            bookmarkNavigator = new BookmarkNavigator(lstLog, logEntries);
+            bookmarkNavigator = new BookmarkNavigator(lstLog, ()=>GetCollectionViewSource().View);
             
             openDialog = new OpenFileDialog();
             openDialog.Multiselect = true;
