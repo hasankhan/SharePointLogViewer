@@ -31,8 +31,8 @@
         <CommandBinding Command="local:MainWindow.OpenFile" CanExecute="OpenFile_CanExecute" Executed="OpenFile_Executed" />
         <CommandBinding Command="local:MainWindow.ToggleLiveMonitoring" Executed="LiveMode_Executed"/>
         <CommandBinding Command="local:MainWindow.ExportLogEntries" Executed="ExportLogEntries_Executed"/>
-        <CommandBinding Command="local:MainWindow.Previous" Executed="Previous_Executed"/>
-        <CommandBinding Command="local:MainWindow.Next" Executed="Next_Executed"/>
+        <CommandBinding Command="local:MainWindow.Previous" CanExecute="Navigate_CanExecute" Executed="Previous_Executed"/>
+        <CommandBinding Command="local:MainWindow.Next" CanExecute="Navigate_CanExecute" Executed="Next_Executed"/>
         <CommandBinding Command="local:MainWindow.ToggleBookmark" CanExecute="ToogleBookmark_CanExecute" Executed="ToggleBookmark_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>

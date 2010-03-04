@@ -316,6 +316,11 @@ namespace SharePointLogViewer
             LogEntryViewModel selected = lstLog.SelectedItem as LogEntryViewModel;
             if (selected != null)
                 selected.Bookmarked = !selected.Bookmarked;
-        }        
+        }   
+
+        private void Navigate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = logEntries.Any(le => le.Bookmarked);
+        }
     }
 }
