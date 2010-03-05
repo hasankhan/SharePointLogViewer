@@ -114,7 +114,7 @@ namespace SharePointLogViewer
         private void UpdateFilter()
         {
             string criteria = cmbFilterBy.Text == "Any field" ? "*" : cmbFilterBy.Text;
-            filter = DynamicFilter.Create<LogEntry>(criteria, txtFilter.Text);
+            filter = DynamicFilter.Create<LogEntryViewModel>(criteria, txtFilter.Text);
             CollectionViewSource source = GetCollectionViewSource();
             if(source.View != null)
                 source.View.Refresh();
