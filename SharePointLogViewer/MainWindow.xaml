@@ -10,6 +10,7 @@
     Top="{local:SettingBinding Top}"
     Icon="/SharePointLogViewer;component/Images/SPLV.ico" Closing="Window_Closing">
     <Window.Resources>
+        <local:HiglightBookmarkedValueConverter x:Key="BookmarkedAndNotSelected"/>
         <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>
         <DataTemplate x:Key="BookmarkColumnTemplate">
             <Image x:Name="img" MouseLeftButtonUp="img_MouseLeftButtonUp" ToolTip="Bookmark" 
@@ -22,6 +23,25 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+        <Style x:Key="LogEntryStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource AlternatingListViewItemStyle}">
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Value="True">
+                            <Condition.Binding>
+                                <MultiBinding Converter="{StaticResource BookmarkedAndNotSelected}">
+                                    <Binding RelativeSource="{RelativeSource self}" Path="DataContext.Bookmarked" />
+                                    <Binding Path="IsSelected" RelativeSource="{RelativeSource self}" />
+                                </MultiBinding>
+                            </Condition.Binding>
+                        </Condition>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="Background" Value="#FFA6BBDC" />
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="local:MainWindow.Settings" Executed="Settings_Executed" />
@@ -131,7 +151,7 @@
                 <Image Source="Images\settings.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
             </Button>
         </DockPanel>
-        <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource alternatingListViewItemStyle}" 
+        <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource LogEntryStyle}" 
                                 ItemsSource="{Binding Source={StaticResource FilteredCollection}}"
                                 FilterButtonActiveStyle="{StaticResource filterButtonActive}"           
                                 FilterButtonInactiveStyle="{StaticResource filterButtonInactive}" 
@@ -140,7 +160,7 @@
                 <CommandBinding Command="Copy" Executed="lvCopyCommand_Executed"/>
             </ListView.CommandBindings>
             <local:LogFilterListView.View>
-                <GridView x:Name="grdLog">
+                <GridView x:Name="grdLog" >
                     <controls:SortableGridViewColumn x:Name="hdrBookmark" SortPropertyName="Bookmarked" CanBeFiltered="False" CellTemplate="{StaticResource BookmarkColumnTemplate}" />
                     <controls:SortableGridViewColumn x:Name="hdrTimestamp" Header="Timestamp" DisplayMemberBinding="{Binding Timestamp}" CanBeFiltered="False" SortPropertyName="Timestamp" />
                     <controls:SortableGridViewColumn x:Name="hdrProcess" Header="Process" DisplayMemberBinding="{Binding Process}" CanBeFiltered="True" SortPropertyName="Process"/>

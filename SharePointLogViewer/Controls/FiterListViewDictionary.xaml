@@ -89,10 +89,10 @@
     </DataTemplate>
     
     <DataTemplate x:Key="SortableGridHeaderTemplate" >
-        <StackPanel Orientation="Horizontal">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding}"/>
-            <Label Name="sortIndicator" VerticalAlignment="Center" Style="{StaticResource HeaderTemplateTransparent}"/>                        
-        </StackPanel>
+        <DockPanel >
+            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" Text="{Binding}"/>
+            <Label Name="sortIndicator" DockPanel.Dock="Right" VerticalAlignment="Center" Style="{StaticResource HeaderTemplateTransparent}"/>                        
+        </DockPanel>
     </DataTemplate>
 
 

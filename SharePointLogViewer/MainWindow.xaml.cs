@@ -93,16 +93,18 @@ namespace SharePointLogViewer
             logEntries.AddRange(from le in e.LogEntries.Skip(logEntries.Count())
                                 select new LogEntryViewModel(le));
             UpdateFilter();
-            StopProcessing();
-            lstLog.ScrollIntoView(lstLog.Items[0]);
+            StopProcessing();            
         }
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
-        {                        
+        {
+            openDialog.FileName = SPUtility.LatestLogFile;
             if (openDialog.ShowDialog().Value)
             {
                 files = openDialog.FileNames;
                 LoadFiles();
+                if (lstLog.Items.Count > 0)
+                    lstLog.ScrollIntoView(lstLog.Items[0]);
             }
         }
 

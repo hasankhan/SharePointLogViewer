@@ -64,6 +64,17 @@ namespace SharePointLogViewer
             }
         }
 
+        public static string LatestLogFile
+        {
+            get
+            {
+                string lastAccessedFile = null;
+                if (IsWSSInstalled)
+                    lastAccessedFile = GetLastAccessedFile(LogsLocations);
+
+                return lastAccessedFile;
+            }
+        }
         public static string WSSInstallPath
         {
             get
@@ -78,6 +89,16 @@ namespace SharePointLogViewer
                 catch (SecurityException) { }
                 return installPath;
             }
+        }
+
+        public static string GetLastAccessedFile(string folderPath)
+        {
+            var dirInfo = new DirectoryInfo(folderPath);
+            var file = dirInfo.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
+            if (file != null)
+                return file.FullName;
+         
+            return null;
         }
 
         static RegistryKey GetMOSSRegistryKey()

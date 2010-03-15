@@ -31,7 +31,7 @@ namespace SharePointLogViewer
         public void Start()
         {
             watcher.Start();
-            string filePath = GetLastAccessedFile(folderPath);
+            string filePath = SPUtility.GetLastAccessedFile(folderPath);
             if (filePath != null)
                 fileTail.Start(filePath);
         }
@@ -54,14 +54,7 @@ namespace SharePointLogViewer
             LogEntryDiscovered(this, new LogEntryDiscoveredEventArgs() { LogEntry = entry });
         }
 
-        string GetLastAccessedFile(string folderPath)
-        {
-            var dirInfo = new DirectoryInfo(folderPath);
-            var file = dirInfo.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
-            if (file != null)
-                return file.FullName;
-            return null;
-        }
+        
 
         #region IDisposable Members
 
