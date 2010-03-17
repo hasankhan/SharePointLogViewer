@@ -85,7 +85,10 @@ namespace SharePointLogViewer
             this.DataContext = logEntries;
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
+            {
                 openDialog.InitialDirectory = SPUtility.LogsLocations;
+                openDialog.FileName = SPUtility.LatestLogFile;
+            }
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
@@ -97,11 +100,11 @@ namespace SharePointLogViewer
         }
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            openDialog.FileName = SPUtility.LatestLogFile;
+        {            
             if (openDialog.ShowDialog().Value)
             {
                 files = openDialog.FileNames;
+                openDialog.FileName = null;
                 LoadFiles();
                 if (lstLog.Items.Count > 0)
                     lstLog.ScrollIntoView(lstLog.Items[0]);
