@@ -14,11 +14,11 @@ using SharePointLogViewer.Controls;
 
 namespace SharePointLogViewer
 {
-    class LogFilterListView : SharePointLogViewer.Controls.FilterableListView
+    class LogFilterListView : FilterableListView
     {
-        protected override Type GetListItemType()
+        protected override Type ListItemType
         {
-            return typeof(LogEntryViewModel);
-        }        
+            get { return typeof(LogEntryViewModel); }
+        }
     }
 }

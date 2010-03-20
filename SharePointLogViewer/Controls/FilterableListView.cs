@@ -10,6 +10,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using BaseWPFHelpers;
+using System.Linq;
+
 
 namespace SharePointLogViewer.Controls
 {
@@ -18,6 +20,8 @@ namespace SharePointLogViewer.Controls
     /// </summary>
     public abstract class FilterableListView : SortableListView
     {
+        protected abstract Type ListItemType { get; }
+
         #region dependency properties
 
         /// <summary>
@@ -48,31 +52,38 @@ namespace SharePointLogViewer.Controls
 
         public static readonly ICommand ShowFilter = new RoutedCommand();
 
-        protected ArrayList filterList;
-                
         #region inner classes
 
         /// <summary>
         /// A simple data holder for passing information regarding filter clicks
         /// </summary>
-        protected struct FilterStruct
+        class FilterStruct
         {
-            public Button button;
-            public FilterItem value;
-            public String property;
+            public Button Button {get; private set; }
+            FilterItem value;
+            public PropertyDescriptor PropertyDescriptor { get; set; }
 
-            public FilterStruct(String property, Button button, FilterItem value)
+            public FilterStruct(PropertyDescriptor propertyDescriptor, Button button, FilterItem value)
             {
                 this.value = value;
-                this.button = button;
-                this.property = property;
+                this.Button = button;
+                PropertyDescriptor = propertyDescriptor;
+            }
+
+            public bool IsMatch(object item)
+            {
+                object itemValue = PropertyDescriptor.GetValue(item);
+                if (itemValue == null)
+                    return value.Item == null;
+                else
+                    return itemValue.Equals(value.ItemView);
             }
         }
 
         /// <summary>
         /// The items which are bound to the drop down filter list
         /// </summary>
-        protected class FilterItem : IComparable
+        class FilterItem : IComparable
         {
             /// <summary>
             /// The filter item instance
@@ -99,12 +110,17 @@ namespace SharePointLogViewer.Controls
 
             public FilterItem(IComparable item)
             {
-                this.itemView = item;
-                this.item = item.ToString();
                 if (item == null)
                 {
                     itemView = "[empty]";
+                    this.item = null;
                 }
+                else
+                {
+                    itemView = item;
+                    this.item = item.ToString();
+                }
+
             }
 
             public override int GetHashCode()
@@ -114,15 +130,14 @@ namespace SharePointLogViewer.Controls
 
             public override bool Equals(object obj)
             {
+                if (obj == null)
+                    return false;
+                
                 FilterItem otherItem = obj as FilterItem;
                 if (otherItem != null)
-                {
-                    if (otherItem.Item == this.Item)
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                    return this.item == otherItem.item;
+                
+                return base.Equals(obj);
             }
 
             public int CompareTo(object obj)
@@ -130,49 +145,30 @@ namespace SharePointLogViewer.Controls
                 FilterItem otherFilterItem = (FilterItem)obj;
 
                 if (this.Item == null && obj == null)
-                {
                     return 0;
-                }
                 else if (otherFilterItem.Item != null && this.Item != null)
-                {
                     return ((IComparable)item).CompareTo((IComparable)otherFilterItem.item);
-                }
                 else
-                {
                     return -1;
-                }
             }
-
         }
 
         #endregion
 
-        protected Hashtable currentFilters = new Hashtable();
+        Dictionary<string, FilterStruct> currentFilters = new Dictionary<string, FilterStruct>();
 
         private void AddFilter(String property, FilterItem value, Button button)
         {
-            if (currentFilters.ContainsKey(property))
-            {
-                currentFilters.Remove(property);
-            }
-            currentFilters.Add(property, new FilterStruct(property, button, value));
+            var descriptor = TypeDescriptor.GetProperties(ListItemType)[property];
+            var filter = new FilterStruct(descriptor, button, value);
+            currentFilters[property] = filter;
         }
 
         protected bool IsPropertyFiltered(String property)
         {
-            foreach (String filterProperty in currentFilters.Keys)
-            {
-                FilterStruct filter = (FilterStruct)currentFilters[filterProperty];
-                if (filter.property == property)
-                    return true;
-            }
-
-            return false;
+            return currentFilters.ContainsKey(property);
         }
         
-               
-        
-
         public FilterableListView()
         {
             CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand));            
@@ -224,7 +220,6 @@ namespace SharePointLogViewer.Controls
             
         }
 
-
         /// <summary>
         /// Handles the ShowFilter command to populate the filter list and display the popup
         /// </summary>
@@ -244,53 +239,34 @@ namespace SharePointLogViewer.Controls
 
                 if (popup != null)
                 {
-                    // find the property name that we are filtering
                     SortableGridViewColumn column = (SortableGridViewColumn)header.Column;
                     String propertyName = column.SortPropertyName;
 
+                    var filterList = new List<FilterItem>();
 
-                    // clear the previous filter
-                    if (filterList == null)
-                    {
-                        filterList = new ArrayList();
-                    }
-                    filterList.Clear();
+                    var uniqueValues = new HashSet<object>();
 
-                    // if this property is currently being filtered, provide an option to clear the filter.
                     if (IsPropertyFiltered(propertyName))
-                    {
                         filterList.Add(new FilterItem("[clear]"));
-                    }
                     else
                     {
                         bool containsNull = false;
-                        Type listItemType = GetListItemType();
-                        PropertyDescriptor filterPropDesc = TypeDescriptor.GetProperties(listItemType)[propertyName];
+                        PropertyDescriptor filterPropDesc = TypeDescriptor.GetProperties(ListItemType)[propertyName];
 
-                        // iterate over all the objects in the list
                         foreach (Object item in Items)
                         {
                             object value = filterPropDesc.GetValue(item);
                             if (value != null)
-                            {
-                                FilterItem filterItem = new FilterItem(value as IComparable);
-                                if (!filterList.Contains(filterItem))
-                                {
-                                    filterList.Add(filterItem);
-                                }
-                            }
-                            else
-                            {
-                                containsNull = true;
-                            }
+                                if (uniqueValues.Add(value))
+                                    filterList.Add(new FilterItem(value as IComparable));
+                                else
+                                    containsNull = true;
                         }
 
                         filterList.Sort();
 
                         if (containsNull)
-                        {
                             filterList.Add(new FilterItem(null));
-                        }
                     }
 
                     // open the popup to display this list
@@ -305,11 +281,10 @@ namespace SharePointLogViewer.Controls
             }
         }
 
-        protected abstract Type GetListItemType();
         /// <summary>
         /// Applies the current filter to the list which is being viewed
         /// </summary>
-        private void ApplyCurrentFilters()
+        void ApplyCurrentFilters()
         {
             if (currentFilters.Count == 0)
             {
@@ -317,33 +292,7 @@ namespace SharePointLogViewer.Controls
                 return;
             }
 
-            // construct a filter and apply it               
-            Items.Filter = delegate(object item)
-            {
-                // when applying the filter to each item, iterate over all of
-                // the current filters
-                bool match = true;
-                foreach (FilterStruct filter in currentFilters.Values)
-                {
-                    // obtain the value for this property on the item under test
-                    Type listItemType = GetListItemType();
-                    PropertyDescriptor filterPropDesc = TypeDescriptor.GetProperties(listItemType)[filter.property];
-                    object itemValue = filterPropDesc.GetValue(item);
-
-                    if (itemValue != null)
-                    {
-                        // check to see if it meets our filter criteria
-                        if (!itemValue.Equals(filter.value.ItemView))
-                            match = false;
-                    }
-                    else
-                    {
-                        if (filter.value.Item != null)
-                            match = false;
-                    }
-                }
-                return match;
-            };
+            Items.Filter = item => currentFilters.Values.Any(f => f.IsMatch(item));            
         }
         
         /// <summary>
@@ -366,7 +315,7 @@ namespace SharePointLogViewer.Controls
             if (!column.CanBeFiltered)
             {
                 FilterStruct filter = (FilterStruct)currentFilters[currentFilterProperty];
-                filter.button.Visibility = System.Windows.Visibility.Hidden;
+                filter.Button.Visibility = System.Windows.Visibility.Hidden;
 
                 return;
             }
@@ -379,11 +328,9 @@ namespace SharePointLogViewer.Controls
                 if (currentFilters.ContainsKey(currentFilterProperty))
                 {
                     FilterStruct filter = (FilterStruct)currentFilters[currentFilterProperty];
-                    filter.button.ContentTemplate = (DataTemplate)dictionary["filterButtonInactiveTemplate"];
+                    filter.Button.ContentTemplate = (DataTemplate)dictionary["filterButtonInactiveTemplate"];
                     if (FilterButtonInactiveStyle != null)
-                    {
-                        filter.button.Style = FilterButtonInactiveStyle;
-                    }
+                        filter.Button.Style = FilterButtonInactiveStyle;
                     currentFilters.Remove(currentFilterProperty);
                 }
 
@@ -396,9 +343,7 @@ namespace SharePointLogViewer.Controls
                 button.ContentTemplate = (DataTemplate)dictionary["filterButtonActiveTemplate"];
 
                 if (FilterButtonActiveStyle != null)
-                {
                     button.Style = FilterButtonActiveStyle;
-                }
 
                 AddFilter(currentFilterProperty, filterItem, button);
                 ApplyCurrentFilters();

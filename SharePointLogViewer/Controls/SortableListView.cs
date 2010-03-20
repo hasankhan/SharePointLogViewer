@@ -4,6 +4,8 @@ using System.Windows;
 using System.ComponentModel;
 using System.Windows.Data;
 using BaseWPFHelpers;
+using System.Collections;
+using System.Reflection;
 
 // SortableListView, from the following blog post:
 //
@@ -17,13 +19,10 @@ namespace SharePointLogViewer.Controls
     public class SortableListView : ListView
     {
         SortableGridViewColumn lastSortedOnColumn = null;
-
         GridViewColumnHeader lastSortedOnColumnHeader = null;
-
         ListSortDirection? lastDirection = ListSortDirection.Ascending;
 
         protected ResourceDictionary dictionary;
-
 
         #region New Dependency Properties
 
@@ -64,8 +63,6 @@ namespace SharePointLogViewer.Controls
 
         #endregion
 
-       
-
         ///
         /// Executes when the control is initialized completely the first time through. Runs only once.
         ///
@@ -94,9 +91,7 @@ namespace SharePointLogViewer.Controls
                     if (sortableGridViewColumn != null)
                     {
                         if (sortableGridViewColumn.IsDefaultSortColumn)
-                        {
                             break;
-                        }
                         sortableGridViewColumn = null;
                     }
                                      
@@ -109,9 +104,7 @@ namespace SharePointLogViewer.Controls
                     Sort(sortableGridViewColumn.SortPropertyName, ListSortDirection.Ascending);
 
                     if (!String.IsNullOrEmpty(this.ColumnHeaderSortedAscendingTemplate))
-                    {
                         sortableGridViewColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderSortedAscendingTemplate) as DataTemplate;
-                    }
 
                     this.SelectedIndex = 0;
                 }
@@ -120,10 +113,6 @@ namespace SharePointLogViewer.Controls
             base.OnInitialized(e);
 
         }
-
-
-
-
 
         ///
         /// Event Handler for the ColumnHeader Click Event.
@@ -159,17 +148,11 @@ namespace SharePointLogViewer.Controls
                     else
                     {
                         if (lastDirection == ListSortDirection.Ascending)
-                        {
                             direction = ListSortDirection.Descending;
-                        }
                         else if (lastDirection == ListSortDirection.Descending)
-                        {
                             direction = null; 
-                        }
                         else
-                        {
                             direction = ListSortDirection.Ascending;
-                        }
                     }
 
 
@@ -186,17 +169,11 @@ namespace SharePointLogViewer.Controls
                         new Helpers.FinderMatchName("sortIndicator"));
 
                     if (direction == null)
-                    {
                         sortIndicator.Style = (Style)dictionary["HeaderTemplateTransparent"];    
-                    }
                     if (direction == ListSortDirection.Ascending)
-                    {
                        sortIndicator.Style = (Style)dictionary["HeaderTemplateArrowUp"];                       
-                    }
                     else if(direction == ListSortDirection.Descending)
-                    {
                         sortIndicator.Style = (Style)dictionary["HeaderTemplateArrowDown"];                        
-                    }
 
                     // Remove arrow from previously sorted header
                     if (lastSortedOnColumnHeader != null && lastSortedOnColumnHeader!=headerClicked)
@@ -230,14 +207,11 @@ namespace SharePointLogViewer.Controls
         private void Sort(string sortBy, ListSortDirection direction)
         {
             lastDirection = direction;
-            ICollectionView dataView = CollectionViewSource.GetDefaultView(this.ItemsSource);
+            ListCollectionView dataView = CollectionViewSource.GetDefaultView(this.ItemsSource) as ListCollectionView;
 
             if (dataView != null)
             {
-                dataView.SortDescriptions.Clear();
-                SortDescription sd = new SortDescription(sortBy, direction);
-
-                dataView.SortDescriptions.Add(sd);
+                dataView.CustomSort = new ListSorter(sortBy, direction);
                 dataView.Refresh();
             }
         }
@@ -251,6 +225,40 @@ namespace SharePointLogViewer.Controls
                 dataView.SortDescriptions.Clear();
                 dataView.Refresh();
             }
+        }
+
+        class ListSorter: IComparer
+        {
+            FastInvokeHandler fastInvoke;
+            string sortBy;
+            ListSortDirection direction;
+
+            public ListSorter(string sortBy, ListSortDirection direction)
+            {
+                this.sortBy = sortBy;
+                this.direction = direction;
+            }
+
+            #region IComparer Members
+
+            public int Compare(object x, object y)
+            {
+                if (fastInvoke == null)
+                    fastInvoke = FastInvoke.GetMethodInvoker(x, "get_" + sortBy);
+                var x1 = fastInvoke.Invoke(x, null) as IComparable;
+                var y1 = fastInvoke.Invoke(y, null) as IComparable;
+                if (x1 == null || y1 == null)
+                    return 0;
+                else
+                {
+                    var result = x1.CompareTo(y1);
+                    if (direction == ListSortDirection.Descending)
+                        result = -result;
+                    return result;
+                }
+            }
+
+            #endregion
         }
 
     }
