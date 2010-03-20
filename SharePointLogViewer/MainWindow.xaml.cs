@@ -158,13 +158,11 @@ namespace SharePointLogViewer
 
         void LiveMode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-#if !DEBUG
             if (!SPUtility.IsWSSInstalled)
             {
                 MessageBox.Show("Microsoft Sharepoint not installed on this machine");
                 return;
             }
-#endif
             if (liveMode)
             {
                 StopLiveMonitoring();

@@ -181,6 +181,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\WssKey.reg" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
