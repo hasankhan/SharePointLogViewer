@@ -18,6 +18,8 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using SharePointLogViewer.Properties;
+using SharePointLogViewer.Controls.AutoCompleteTextBox;
+using System.Threading;
 
 namespace SharePointLogViewer
 {
@@ -27,6 +29,7 @@ namespace SharePointLogViewer
     public partial class MainWindow : Window
     {
         OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);        
+
         LogsLoader logsLoader = new LogsLoader();
         LogMonitor watcher = null;
         DynamicFilter filter;
@@ -83,6 +86,10 @@ namespace SharePointLogViewer
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = logEntries;
+            var query = (from entry in logEntries
+                         from word in entry.Message.Split(' ')
+                         select word).Distinct();
+            txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider(query);
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
             {
@@ -93,10 +100,11 @@ namespace SharePointLogViewer
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
         {
-            logEntries.AddRange(from le in e.LogEntries.Skip(logEntries.Count())
-                                select new LogEntryViewModel(le));
+            var newEntries = (from le in e.LogEntries.Skip(logEntries.Count)
+                              select new LogEntryViewModel(le));
+            logEntries.AddRange(newEntries);
             UpdateFilter();
-            StopProcessing();            
+            StopProcessing();
         }
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)

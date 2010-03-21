@@ -59,6 +59,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -100,6 +103,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\AutoCompleteTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Brushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -137,6 +144,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookmarkNavigator.cs" />
+    <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteManager.cs" />
+    <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.cs" />
+    <Compile Include="Controls\AutoCompleteTextBox\IAutoCompleteDataProvider.cs" />
+    <Compile Include="Controls\AutoCompleteTextBox\SimpleStaticDataProvider.cs" />
     <Compile Include="Controls\FastInvoke.cs" />
     <Compile Include="Controls\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
