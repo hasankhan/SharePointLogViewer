@@ -54,18 +54,13 @@ namespace SharePointLogViewer.Controls
             get { return (bool)GetValue(VisibleProperty); }
             set 
             {
-                if (Visible ^ value)
-                {
-                    SetValue(VisibleProperty, value);                        
-                    if (value && HeaderContainerStyle != null)
-                        HeaderContainerStyle.Setters.Remove(hideSetter);
-                    else if (!value)
-                    {
-                        if (HeaderContainerStyle == null)
-                            HeaderContainerStyle = new Style();
-                        HeaderContainerStyle.Setters.Add(hideSetter);
-                    }
-                }
+                SetValue(VisibleProperty, value);
+                if (HeaderContainerStyle == null)
+                    HeaderContainerStyle = new Style();
+                if (value)
+                    HeaderContainerStyle.Setters.Remove(hideSetter);
+                else
+                    HeaderContainerStyle.Setters.Add(hideSetter);
             }
         }
 

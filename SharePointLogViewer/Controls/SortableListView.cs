@@ -218,11 +218,11 @@ namespace SharePointLogViewer.Controls
 
         private void RemoveSort()
         { 
-            ICollectionView dataView = CollectionViewSource.GetDefaultView(this.ItemsSource);
+            ListCollectionView dataView = CollectionViewSource.GetDefaultView(this.ItemsSource) as ListCollectionView;
 
             if (dataView != null)
             {
-                dataView.SortDescriptions.Clear();
+                dataView.CustomSort = null;
                 dataView.Refresh();
             }
         }
