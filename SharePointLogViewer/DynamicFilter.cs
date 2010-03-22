@@ -23,18 +23,24 @@ namespace SharePointLogViewer
 
         static Predicate<object> CreatePredicate<T>(string propertyName, string searchText)
         {
-            Predicate<object> predicate;
+            if (searchText == null)
+                searchText = String.Empty;
 
-            if (String.IsNullOrEmpty(searchText))
+            Predicate<object> predicate;
+            if (searchText == String.Empty)
                 predicate = _ => true;
-            else if (propertyName == "*")
-            {
-                var predicates = from property in typeof(T).GetProperties()
-                                 select CreatePredicate(property, searchText);
-                predicate = entry => predicates.Any(p => p(entry));
-            }
             else
-                predicate = CreatePredicate(typeof(T).GetProperty(propertyName), searchText);
+            {
+                var keywords = searchText.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
+                if (propertyName == "*")
+                {
+                    var predicates = (from property in typeof(T).GetProperties()
+                                     select CreatePredicate(property, keywords)).ToList();
+                    predicate = entry => predicates.Any(p => p(entry));
+                }
+                else
+                    predicate = CreatePredicate(typeof(T).GetProperty(propertyName), keywords);
+            }
                                         
             return predicate;
         }
@@ -44,9 +50,9 @@ namespace SharePointLogViewer
             return predicate(item);
         }
 
-        static Predicate<object> CreatePredicate(PropertyInfo property, string searchText)
+        static Predicate<object> CreatePredicate(PropertyInfo property, params string[] keywords)
         {
-            var comparer = new PropertyValueComparer(property, searchText);
+            var comparer = new PropertyValueComparer(property, keywords);
             return new Predicate<object>(comparer.IsMatch);
         }
 
@@ -54,24 +60,26 @@ namespace SharePointLogViewer
 
         class PropertyValueComparer
         {
-            PropertyInfo property;
-            string searchText;
+            FastInvokeHandler fastInvoker;
+            string[] keywords;
 
-            public PropertyValueComparer(PropertyInfo property, string searchText)
+            public PropertyValueComparer(PropertyInfo property, params string[] keywords)
             {
-                this.property = property;
-                this.searchText = searchText;
+                this.keywords = keywords;
+                this.fastInvoker = FastInvoke.GetMethodInvoker(property.GetGetMethod());
             }
 
-            public PropertyValueComparer(Type type, string propertyName, string searchText)
-                : this(type.GetProperty(propertyName), searchText) { }
+            public PropertyValueComparer(Type type, string propertyName, params string[] keywords)
+                : this(type.GetProperty(propertyName), keywords) { }
 
             public bool IsMatch(object entry)
             {
-                object value = property.GetValue(entry, null);
+                object value = fastInvoker(entry, null);
                 if (value == null)
                     return false;
-                return value.ToString().ToLower().Contains(searchText);
+                string text = value.ToString().ToLower();
+                bool result = keywords.Any(word => text.Contains(word));
+                return result;
             }
         } 
 

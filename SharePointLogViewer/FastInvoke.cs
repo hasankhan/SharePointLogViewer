@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace SharePointLogViewer.Controls
+namespace SharePointLogViewer
 {
     public delegate object FastInvokeHandler(object target, object[] paramters);
 

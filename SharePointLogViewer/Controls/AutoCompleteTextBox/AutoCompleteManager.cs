@@ -203,11 +203,12 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
             _resizeGrip.PreviewMouseUp += ResizeGrip_PreviewMouseUp;
         }
 
+        
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_textChangedByCode || Disabled || _dataProvider == null)
                 return;
-            var text = _textBox.Text;
+            string text = GetWordUnderCursor();
             if (string.IsNullOrEmpty(text))
             {
                 _popup.IsOpen = false;
@@ -233,7 +234,7 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
                 var items = _dataProvider.GetItems(text);
                 PopulatePopupList(items);
             }
-        }
+        }        
 
         private void PopulatePopupList(IEnumerable<string> items)
         {
@@ -260,10 +261,7 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
                 return;
             }
             if (e.Key == Key.Enter)
-            {
-                _popup.IsOpen = false;
-                _textBox.SelectAll();
-            }
+                _popup.IsOpen = false;         
             else if (e.Key == Key.Escape)
             {
                 _popup.IsOpen = false;
@@ -277,59 +275,39 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
             if (e.Key == Key.PageUp)
             {
                 if (index == -1)
-                {
                     index = _listBox.Items.Count - 1;
-                }
                 else if (index == 0)
-                {
                     index = -1;
-                }
                 else if (index == _scrollBar.Value)
                 {
                     index -= (int) _scrollBar.ViewportSize;
                     if (index < 0)
-                    {
                         index = 0;
-                    }
                 }
                 else
-                {
                     index = (int) _scrollBar.Value;
-                }
             }
             else if (e.Key == Key.PageDown)
             {
                 if (index == -1)
-                {
                     index = 0;
-                }
                 else if (index == _listBox.Items.Count - 1)
-                {
                     index = -1;
-                }
                 else if (index == _scrollBar.Value + _scrollBar.ViewportSize - 1)
                 {
                     index += (int) _scrollBar.ViewportSize - 1;
                     if (index > _listBox.Items.Count - 1)
-                    {
                         index = _listBox.Items.Count - 1;
-                    }
                 }
                 else
-                {
                     index = (int) (_scrollBar.Value + _scrollBar.ViewportSize - 1);
-                }
             }
             else if (e.Key == Key.Up)
             {
                 if (index == -1)
-                {
                     index = _listBox.Items.Count - 1;
-                }
                 else
-                {
                     --index;
-                }
             }
             else if (e.Key == Key.Down)
             {
@@ -353,16 +331,14 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
                 UpdateText(text, false);
                 e.Handled = true;
             }
-        }
+        }       
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pos = e.GetPosition(_listBox);
             var hitTestResult = VisualTreeHelper.HitTest(_listBox, pos);
             if (hitTestResult == null)
-            {
                 return;
-            }
             var d = hitTestResult.VisualHit;
             while (d != null)
             {
@@ -378,15 +354,11 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
         private void ListBox_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.Captured != null)
-            {
                 return;
-            }
             var pos = e.GetPosition(_listBox);
             var hitTestResult = VisualTreeHelper.HitTest(_listBox, pos);
             if (hitTestResult == null)
-            {
                 return;
-            }
             var d = hitTestResult.VisualHit;
             while (d != null)
             {
@@ -602,14 +574,46 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
 
         private void UpdateText(string text, bool selectAll)
         {
+            int start, end;
+            GetWordUnderCursor(out start, out end);
+
+            string prefix = start < _textBeforeChangedByCode.Length ? _textBeforeChangedByCode.Substring(0, start) : String.Empty;
+            string suffix = end < _textBeforeChangedByCode.Length ? _textBeforeChangedByCode.Substring(end + 1) : String.Empty;
+
             _textChangedByCode = true;
-            Debug.Print("@@@@@@@" + text);
-            _textBox.Text = text;
+            Debug.Print("@@@@@@@" + text);            
+            _textBox.Text = prefix + text + suffix;
+            
             if (selectAll)
-                _textBox.SelectAll();
+                SelectRange(start, end);
             else
-                _textBox.SelectionStart = text.Length;
+                _textBox.SelectionStart = _textBox.Text.Length;
             _textChangedByCode = false;
+        }
+
+        string GetWordUnderCursor()
+        {
+            int start, end;
+            return GetWordUnderCursor(out start, out end);
+        }
+
+        string GetWordUnderCursor(out int start, out int end)
+        {
+            string text = _textBox.Text;
+
+            end = text.IndexOf(' ', _textBox.SelectionStart);
+            if (end == -1)
+                end = text.Length - 1;
+            text = text.Substring(0, end + 1);
+            start = text.LastIndexOf(' ') + 1;
+            text = text.Substring(start);
+
+            return text;
+        }
+
+        void SelectRange(int start, int end)
+        {
+            _textBox.Select(start, end - start + 1);
         }
     }
 }
