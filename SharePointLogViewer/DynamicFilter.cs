@@ -60,7 +60,7 @@ namespace SharePointLogViewer
 
         class PropertyValueComparer
         {
-            FastInvokeHandler fastInvoker;
+            FastMethodInvoker fastInvoker;
             string[] keywords;
 
             public PropertyValueComparer(PropertyInfo property, params string[] keywords)
@@ -78,7 +78,7 @@ namespace SharePointLogViewer
                 if (value == null)
                     return false;
                 string text = value.ToString().ToLower();
-                bool result = keywords.Any(word => text.Contains(word));
+                bool result = keywords.All(word => text.Contains(word));
                 return result;
             }
         } 

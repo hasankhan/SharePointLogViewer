@@ -229,7 +229,7 @@ namespace SharePointLogViewer.Controls
 
         class ListSorter: IComparer
         {
-            FastInvokeHandler fastInvoke;
+            FastMethodInvoker fastInvoker;
             string sortBy;
             ListSortDirection direction;
 
@@ -243,10 +243,13 @@ namespace SharePointLogViewer.Controls
 
             public int Compare(object x, object y)
             {
-                if (fastInvoke == null)
-                    fastInvoke = FastInvoke.GetMethodInvoker(x, "get_" + sortBy);
-                var x1 = fastInvoke.Invoke(x, null) as IComparable;
-                var y1 = fastInvoke.Invoke(y, null) as IComparable;
+                if (fastInvoker == null)
+                {
+                    var propInfo = x.GetType().GetProperty(sortBy);
+                    fastInvoker = FastInvoke.GetMethodInvoker(propInfo.GetGetMethod());
+                }
+                var x1 = fastInvoker.Invoke(x, null) as IComparable;
+                var y1 = fastInvoker.Invoke(y, null) as IComparable;
                 if (x1 == null || y1 == null)
                     return 0;
                 else

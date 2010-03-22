@@ -7,11 +7,11 @@ using System.Reflection.Emit;
 
 namespace SharePointLogViewer
 {
-    public delegate object FastInvokeHandler(object target, object[] paramters);
+    public delegate object FastMethodInvoker(object target, object[] paramters);
 
     public class FastInvoke
     {
-        FastInvokeHandler MyDelegate;
+        FastMethodInvoker MyDelegate;
         public MethodInfo MyMethodInfo;
         public ParameterInfo[] MyParameters;
         Object HostObject;
@@ -22,7 +22,7 @@ namespace SharePointLogViewer
             HostObject = MyObject;
             Type t2 = MyObject.GetType();
             MethodInfo m2 = t2.GetMethod(MyName);
-            MyDelegate = GetMethodInvoker(MyObject, MyName);
+            MyDelegate = GetMethodInvoker(m2);
             NumberOfArguments = m2.GetParameters().Length;
             MyMethodInfo = m2;
             MyParameters = m2.GetParameters();
@@ -44,15 +44,7 @@ namespace SharePointLogViewer
 
         }
 
-        public static FastInvokeHandler GetMethodInvoker(object obj, string methodName)
-        {
-            Type type = obj.GetType();
-            MethodInfo methodInfo = type.GetMethod(methodName);
-            var handler = GetMethodInvoker(methodInfo);
-            return handler;
-        }
-
-        public static FastInvokeHandler GetMethodInvoker(MethodInfo methodInfo)
+        public static FastMethodInvoker GetMethodInvoker(MethodInfo methodInfo)
         {
             DynamicMethod dynamicMethod = new DynamicMethod(string.Empty,
                           typeof(object), new Type[] { typeof(object), 
@@ -116,8 +108,8 @@ namespace SharePointLogViewer
             }
 
             il.Emit(OpCodes.Ret);
-            FastInvokeHandler invoder = (FastInvokeHandler)
-               dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
+            FastMethodInvoker invoder = (FastMethodInvoker)
+               dynamicMethod.CreateDelegate(typeof(FastMethodInvoker));
             return invoder;
         }
 
