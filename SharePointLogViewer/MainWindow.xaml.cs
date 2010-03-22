@@ -285,7 +285,7 @@ namespace SharePointLogViewer
 
         private void lvCopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var logEntry = lstLog.SelectedItem as LogEntry;
+            var logEntry = lstLog.SelectedItem as LogEntryViewModel;
             if (logEntry != null)
                 Clipboard.SetText(LogExporter.Format(logEntry));
         }

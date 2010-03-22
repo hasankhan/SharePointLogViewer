@@ -104,6 +104,7 @@ namespace SharePointLogViewer
                 OnPropertyChanged("Message"); 
             }
         }
+        
         public string Correlation
         {
             get { return entry.Correlation; }
@@ -117,6 +118,16 @@ namespace SharePointLogViewer
         void OnPropertyChanged(string propertyName)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public static implicit operator LogEntry(LogEntryViewModel entryViewModel)
+        {
+            return entryViewModel.entry;
+        }
+
+        public static implicit operator LogEntryViewModel(LogEntry entry)
+        {
+            return new LogEntryViewModel(entry);
         }
     }
 }
