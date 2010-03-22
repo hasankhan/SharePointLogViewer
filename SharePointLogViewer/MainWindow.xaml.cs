@@ -70,6 +70,7 @@ namespace SharePointLogViewer
             saveDialog.Filter = openDialog.Filter = "Log Files (*.log)|*.log";
             saveDialog.DefaultExt = ".log";
 
+            hdrBookmark.Visible = true; // if not set the header style is not applied
             hdrTimestamp.Visible = Properties.Settings.Default.Columns.Contains("Timestamp");
             hdrProcess.Visible = Properties.Settings.Default.Columns.Contains("Process");
             hdrTid.Visible = Properties.Settings.Default.Columns.Contains("TID");

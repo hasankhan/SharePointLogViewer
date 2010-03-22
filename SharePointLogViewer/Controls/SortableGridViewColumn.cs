@@ -64,9 +64,6 @@ namespace SharePointLogViewer.Controls
             }
         }
 
-        public static readonly DependencyProperty VisibleProperty =
-            DependencyProperty.Register("Visible", typeof(bool), typeof(SortableGridViewColumn), new UIPropertyMetadata(true));
-
-
+        public static readonly DependencyProperty VisibleProperty = DependencyProperty.Register("Visible", typeof(bool), typeof(SortableGridViewColumn), new UIPropertyMetadata(true));
     }
 }
