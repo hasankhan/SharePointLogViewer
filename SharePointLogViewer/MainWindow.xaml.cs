@@ -87,10 +87,7 @@ namespace SharePointLogViewer
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = logEntries;
-            var query = (from entry in logEntries
-                         from word in entry.Message.Split(' ')
-                         select word).Distinct();
-            txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider(query);
+            txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider((new LogEntryTokenizer(logEntries)).Distinct());
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
             {
