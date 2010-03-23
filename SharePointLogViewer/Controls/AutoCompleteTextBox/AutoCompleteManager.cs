@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Microsoft.Windows.Themes;
+using System.Linq;
 
 namespace SharePointLogViewer.Controls.AutoCompleteTextBox
 {
@@ -41,8 +42,7 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
 
         private IAutoCompleteDataProvider _dataProvider;
         private bool _disabled;
-        private bool _asynchronous;
-        private Thread _asyncThread;
+        Timer popupDelay;
 
         public IAutoCompleteDataProvider DataProvider
         {
@@ -66,12 +66,6 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
         public bool AutoCompleting
         {
             get { return _popup.IsOpen; }
-        }
-
-        public bool Asynchronous
-        {
-            get { return _asynchronous; }
-            set { _asynchronous = value; }
         }
 
         public AutoCompleteManager()
@@ -207,33 +201,23 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_textChangedByCode || Disabled || _dataProvider == null)
-                return;
-            string text = GetWordUnderCursor();
-            if (string.IsNullOrEmpty(text))
-            {
-                _popup.IsOpen = false;
-                return;
-            }
-            if (_asynchronous)
-            {
+                return;           
 
-                if (_asyncThread != null && _asyncThread.IsAlive)
-                    _asyncThread.Abort();
-                _asyncThread = new Thread(() => {
-                    var items = _dataProvider.GetItems(text);
+            if (popupDelay == null)
+                popupDelay = new Timer(_ =>
+                {
                     var dispatcher = Application.Current.Dispatcher;
-                    var currentText = dispatcher.Invoke(new Func<string>(() => _textBox.Text)).ToString();
-                    if (text != currentText)
-                        return;
-                    dispatcher.Invoke(new Action(() => PopulatePopupList(items)));
-                });
-                _asyncThread.Start();
-            }
+                    string text = (string)dispatcher.Invoke(new Func<string>(() => GetWordUnderCursor()));
+                    if (String.IsNullOrEmpty(text))
+                        dispatcher.Invoke((Action)(() => _popup.IsOpen = false));
+                    else
+                    {
+                        var items = _dataProvider.GetItems(text).ToList();
+                        dispatcher.Invoke((Action)(() => PopulatePopupList(items)));
+                    }
+                }, null, 100, Timeout.Infinite);
             else
-            {
-                var items = _dataProvider.GetItems(text);
-                PopulatePopupList(items);
-            }
+                popupDelay.Change(100, Timeout.Infinite);
         }        
 
         private void PopulatePopupList(IEnumerable<string> items)
@@ -451,12 +435,6 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
             }
         }
 
-        /*+---------------------------------------------------------------------+
-          |                                                                     |
-          |                    Window Event Handling                            |
-          |                                                                     |
-          +---------------------------------------------------------------------*/
-
         private void OwnerWindow_Deactivated(object sender, EventArgs e)
         {
             _popup.IsOpen = false;
@@ -483,12 +461,6 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
             }
             return IntPtr.Zero;
         }
-
-        /*+---------------------------------------------------------------------+
-          |                                                                     |
-          |                    AcTb State And Behaviors                         |
-          |                                                                     |
-          +---------------------------------------------------------------------*/
 
         private bool PopupOnTop
         {
