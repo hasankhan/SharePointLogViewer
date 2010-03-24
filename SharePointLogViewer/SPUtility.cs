@@ -42,7 +42,7 @@ namespace SharePointLogViewer
                             if (versionStr != null)
                             {
                                 Version buildVersion = new Version(versionStr);
-                                if (buildVersion.Major == 12)
+                                if (buildVersion.Major == 12 || buildVersion.Major == 14)
                                     return true;
                             }
                         }
@@ -104,12 +104,16 @@ namespace SharePointLogViewer
         static RegistryKey GetMOSSRegistryKey()
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\12.0");
+            if (key == null)
+                key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\14.0");
             return key;
         }
        
         static RegistryKey GetWSSRegistryKey()
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
+            if (key == null)
+                Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
             return key;
         }
     }
