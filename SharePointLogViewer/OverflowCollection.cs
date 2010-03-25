@@ -32,11 +32,20 @@ namespace SharePointLogViewer
 
         protected override void InsertItem(int index, T item)
         {
+            bool itemFound = false;
             T removeItem = default(T);
+
             if (MaxItems > 0 && Count > MaxItems)
-                removeItem = base.Items.FirstOrDefault<T>(evictionCriterea);
+                foreach (var target in base.Items)
+                    if (evictionCriterea(target))
+                    {
+                        removeItem = target;
+                        itemFound = true;
+                        break;
+                    }
+
             base.InsertItem(index, item);
-            if (!removeItem.Equals(default(T)))
+            if (itemFound)
                 base.Remove(removeItem);
         }
 
