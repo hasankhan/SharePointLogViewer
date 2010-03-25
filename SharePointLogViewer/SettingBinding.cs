@@ -8,13 +8,7 @@ namespace SharePointLogViewer
 {
     public class SettingBinding : Binding
     {
-        public SettingBinding()
-        {
-            Initialize();
-        }
-
-        public SettingBinding(string path)
-            : base(path)
+        public SettingBinding(string path): base(path)
         {
             Initialize();
         }

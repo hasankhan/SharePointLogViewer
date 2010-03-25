@@ -208,15 +208,18 @@ namespace SharePointLogViewer
                 watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
                 if (files.Length > 0)
-                {
-                    logEntries.Clear();
-                    files = new string[0];
-                }
+                    Reset();
 
                 logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
                 watcher.Start();
                 liveMode = true;
             }
+        }
+
+        void Reset()
+        {
+            logEntries.Clear();
+            files = new string[0];
         }
 
         void StopLiveMonitoring()
@@ -345,8 +348,7 @@ namespace SharePointLogViewer
 
         private void ClearLogs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            logEntries.Clear();
-            files = new string[0];
+            Reset();
         }
     }
 }

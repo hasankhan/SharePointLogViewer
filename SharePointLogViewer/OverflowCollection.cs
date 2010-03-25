@@ -35,7 +35,7 @@ namespace SharePointLogViewer
             bool itemFound = false;
             T removeItem = default(T);
 
-            if (MaxItems > 0 && Count > MaxItems)
+            if (MaxItems > 0 && Count == MaxItems)
                 foreach (var target in base.Items)
                     if (evictionCriterea(target))
                     {
