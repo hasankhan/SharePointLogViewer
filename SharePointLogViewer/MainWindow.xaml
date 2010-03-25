@@ -55,6 +55,7 @@
         <CommandBinding Command="local:MainWindow.Previous" CanExecute="Navigate_CanExecute" Executed="Previous_Executed"/>
         <CommandBinding Command="local:MainWindow.Next" CanExecute="Navigate_CanExecute" Executed="Next_Executed"/>
         <CommandBinding Command="local:MainWindow.ToggleBookmark" CanExecute="ToogleBookmark_CanExecute" Executed="ToggleBookmark_Executed"/>
+        <CommandBinding Command="local:MainWindow.ClearLogs" CanExecute="ClearLogs_CanExecute" Executed="ClearLogs_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Command="local:MainWindow.About" Key="F1"/>
@@ -123,33 +124,39 @@
                         Command="local:MainWindow.Refresh" >
                     <Image Source="Images\refresh.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
                 </Button>
-            </StackPanel>
-            <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
+                <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
+                        Name="btnClear"
+                        ToolTip="Clear All Logs" Background="SteelBlue"
+                        Command="local:MainWindow.ClearLogs" >
+                    <Image Source="Images\clearall.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
+                </Button>
+                <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
                         ToolTip="Toggle a bookmark on selected entry (Ctrl+B)" Background="SteelBlue"
                         Command="local:MainWindow.ToggleBookmark" >
-                <Image Source="Images\bookmark.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
-            </Button>
-            <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
+                    <Image Source="Images\bookmark.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
+                </Button>
+                <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
                         ToolTip="Previous bookmark (Ctrl+P)" Background="SteelBlue"
                         Command="local:MainWindow.Previous" >
-                <Image Source="Images\previous.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
-            </Button>
-            <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
+                    <Image Source="Images\previous.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
+                </Button>
+                <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0"  Height="30" Width="30"
                         ToolTip="Next bookmark (Ctrl+N)" Background="SteelBlue"
                         Command="local:MainWindow.Next" >
-                <Image Source="Images\next.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
-            </Button>
+                    <Image Source="Images\next.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
+                </Button>
+                <Button Style="{StaticResource GlassButton}" Margin="10,0,0,0" Height="30" Width="30"
+                    ToolTip="Settings"
+                    DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.Settings" 
+                    Background="SteelBlue" HorizontalContentAlignment="Right">
+                    <Image Source="Images\settings.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
+                </Button>
+            </StackPanel>
             <Button Style="{StaticResource GlassButton}" Height="30" Width="30"  Margin="10,0,0,0" 
                     ToolTip="About SharePoint LogViewer (F1)"
                     DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.About" 
                     Background="SteelBlue" HorizontalContentAlignment="Right">
                 <Image Source="Images\about.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
-            </Button>
-            <Button Style="{StaticResource GlassButton}" Height="30" Width="30"
-                    ToolTip="Settings"
-                    DockPanel.Dock="Right" HorizontalAlignment="Right" Command="local:MainWindow.Settings" 
-                    Background="SteelBlue" HorizontalContentAlignment="Right">
-                <Image Source="Images\settings.png" Style="{StaticResource ToolBarImageStyle}" Stretch="None" />
             </Button>
         </DockPanel>
         <local:LogFilterListView Grid.Row="1" ItemContainerStyle="{StaticResource LogEntryStyle}" 

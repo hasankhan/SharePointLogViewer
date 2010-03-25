@@ -49,6 +49,7 @@ namespace SharePointLogViewer
         public static RoutedUICommand Previous = new RoutedUICommand("Previous", "Previous", typeof(MainWindow));
         public static RoutedUICommand Next = new RoutedUICommand("Next", "Next", typeof(MainWindow));
         public static RoutedUICommand ToggleBookmark = new RoutedUICommand("ToggleBookmark", "ToggleBookmark", typeof(MainWindow));
+        public static RoutedUICommand ClearLogs = new RoutedUICommand("ClearLogs", "ClearLogs", typeof(MainWindow));
 
         public MainWindow()
         {
@@ -206,7 +207,12 @@ namespace SharePointLogViewer
                 watcher = new LogMonitor(folderPath);
                 watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
-                logEntries.Clear();
+                if (files.Length > 0)
+                {
+                    logEntries.Clear();
+                    files = new string[0];
+                }
+
                 logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
                 watcher.Start();
                 liveMode = true;
@@ -330,6 +336,17 @@ namespace SharePointLogViewer
         private void Navigate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = logEntries.Any(le => le.Bookmarked);
+        }
+
+        private void ClearLogs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = logEntries.Count > 0;
+        }
+
+        private void ClearLogs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            logEntries.Clear();
+            files = new string[0];
         }
     }
 }
