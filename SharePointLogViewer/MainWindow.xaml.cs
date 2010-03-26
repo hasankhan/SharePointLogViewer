@@ -112,6 +112,7 @@ namespace SharePointLogViewer
             {
                 files = openDialog.FileNames;
                 openDialog.FileName = null;
+                logEntries.Clear();
                 LoadFiles();
                 if (lstLog.Items.Count > 0)
                     lstLog.ScrollIntoView(lstLog.Items[0]);
