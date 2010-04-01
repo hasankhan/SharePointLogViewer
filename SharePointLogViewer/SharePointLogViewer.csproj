@@ -164,6 +164,7 @@
     <Compile Include="LogParser.cs" />
     <Compile Include="LogsLoader.cs" />
     <Compile Include="HiglightBookmarkedValueConverter.cs" />
+    <Compile Include="MultiLogMonitor.cs" />
     <Compile Include="OverflowCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

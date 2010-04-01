@@ -54,8 +54,6 @@ namespace SharePointLogViewer
             LogEntryDiscovered(this, new LogEntryDiscoveredEventArgs() { LogEntry = entry });
         }
 
-        
-
         #region IDisposable Members
 
         public void Dispose()
