@@ -10,6 +10,24 @@ namespace SharePointLogViewer
 {
     class SPUtility
     {
+        public static SPVersion SPVersion
+        {
+            get
+            {
+                try
+                {
+                    var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
+                    if (key != null)
+                        return SPVersion.SP2007;
+                    key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
+                    if (key != null)
+                        return SPVersion.SP2010;
+                }
+                catch (SecurityException){}                 
+                return SPVersion.Unknown;
+            }
+        }
+
         public static bool IsWSSInstalled
         {
             get
