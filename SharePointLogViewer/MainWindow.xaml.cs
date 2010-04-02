@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
 using System.ComponentModel;
-using System.Reflection;
 using System.Linq;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using SharePointLogViewer.Properties;
 using SharePointLogViewer.Controls.AutoCompleteTextBox;
-using System.Threading;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SharePointLogViewer
 {
@@ -31,7 +22,7 @@ namespace SharePointLogViewer
         OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);        
 
         LogsLoader logsLoader = new LogsLoader();
-        LogMonitor watcher = null;
+        MultiLogMonitor logMonitor = null;
         DynamicFilter filter;
         bool liveMode;
         OpenFileDialog openDialog;
@@ -205,17 +196,18 @@ namespace SharePointLogViewer
             string folderPath = SPUtility.LogsLocations;
             if (Directory.Exists(folderPath))
             {
-                watcher = new LogMonitor(folderPath);
-                watcher.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
+                IEnumerable<string> folderPaths = GetLogDirectoryPaths();
+                logMonitor = new MultiLogMonitor(folderPaths);
+                logMonitor.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
                 if (files.Length > 0)
                     Reset();
 
                 logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
-                watcher.Start();
+                logMonitor.Start();
                 liveMode = true;
             }
-        }
+        }        
 
         void Reset()
         {
@@ -225,10 +217,10 @@ namespace SharePointLogViewer
 
         void StopLiveMonitoring()
         {
-            if (watcher != null)
+            if (logMonitor != null)
             {
-                watcher.Dispose();
-                watcher = null;
+                logMonitor.Dispose();
+                logMonitor = null;
             }
 
             liveMode = false;
@@ -350,6 +342,16 @@ namespace SharePointLogViewer
         private void ClearLogs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Reset();
+        }
+
+        IEnumerable<string> GetLogDirectoryPaths()
+        {
+            string localLogDir = SPUtility.LogsLocations.Replace(':', '$');
+            IEnumerable<string> serverNames = SPUtility.GetServerNames();
+            List<string> logDirs = new List<string>(from server in serverNames
+                                                    let path = "\\\\" + server + "\\" + localLogDir
+                                                    select path);
+            return logDirs;
         }
     }
 }

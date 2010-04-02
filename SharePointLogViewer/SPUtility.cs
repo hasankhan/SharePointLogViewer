@@ -119,6 +119,11 @@ namespace SharePointLogViewer
             return null;
         }
 
+        public static IEnumerable<string> GetServerNames()
+        {
+            return Enumerable.Empty<string>();
+        }
+
         static RegistryKey GetMOSSRegistryKey()
         {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\12.0");
@@ -133,6 +138,6 @@ namespace SharePointLogViewer
             if (key == null)
                 key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
             return key;
-        }
+        }        
     }
 }
