@@ -136,10 +136,10 @@ namespace SharePointLogViewer
                 object localFarm = propLocalFarm.GetValue(null, null);
                 PropertyInfo propServers = localFarm.GetType().GetProperty("Servers", BindingFlags.Public | BindingFlags.Instance);
                 IEnumerable servers = (IEnumerable)propServers.GetValue(localFarm, null);
-                foreach (object o in servers)
+                foreach (object server in servers)
                 {
-                    PropertyInfo propServerName = o.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
-                    string serverName = (string)propServerName.GetValue(o, null);
+                    PropertyInfo propServerName = server.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
+                    string serverName = (string)propServerName.GetValue(server, null);
                     yield return serverName;
                 }
             }

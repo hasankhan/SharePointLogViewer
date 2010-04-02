@@ -196,8 +196,8 @@ namespace SharePointLogViewer
             string folderPath = SPUtility.LogsLocations;
             if (Directory.Exists(folderPath))
             {
-                IEnumerable<string> folderPaths = GetLogDirectoryPaths();
-                logMonitor = new MultiLogMonitor(folderPaths);
+                var logMonitors = GetLogMonitors();
+                logMonitor = new MultiLogMonitor(logMonitors);
                 logMonitor.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
                 if (files.Length > 0)
@@ -343,6 +343,23 @@ namespace SharePointLogViewer
         {
             Reset();
         }
+
+        List<LogMonitor> GetLogMonitors()
+        {
+            IEnumerable<string> folderPaths = GetLogDirectoryPaths();
+            var logMonitors = new List<LogMonitor>();
+            foreach (var path in folderPaths)
+            {
+                try
+                {
+                    var monitor = new LogMonitor(path);
+                    logMonitors.Add(monitor);
+                }
+                catch { }
+
+            }
+            return logMonitors;
+        }        
 
         IEnumerable<string> GetLogDirectoryPaths()
         {

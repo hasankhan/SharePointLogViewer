@@ -11,10 +11,9 @@ namespace SharePointLogViewer
 
         public event EventHandler<LogEntryDiscoveredEventArgs> LogEntryDiscovered = delegate { };
 
-        public MultiLogMonitor(IEnumerable<string> folderPaths)
+        public MultiLogMonitor(IEnumerable<LogMonitor> logMonitors)
         {
-            logMonitors = new List<LogMonitor>(from folderPath in folderPaths
-                                               select new LogMonitor(folderPath));
+            this.logMonitors = new List<LogMonitor>(logMonitors);
         }
 
         public void Start()
