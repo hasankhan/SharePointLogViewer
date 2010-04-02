@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using Microsoft.Win32;
 using System.Security;
+using System.Reflection;
+using System.Collections;
 
 namespace SharePointLogViewer
 {
@@ -121,7 +123,26 @@ namespace SharePointLogViewer
 
         public static IEnumerable<string> GetServerNames()
         {
-            return Enumerable.Empty<string>();
+            Type farmType = null;
+
+            if(SPUtility.SPVersion == SPVersion.SP2007)
+                farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            else if(SPUtility.SPVersion == SPVersion.SP2010)
+                farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+
+            if (farmType != null)
+            {
+                PropertyInfo propLocalFarm = farmType.GetProperty("Local", BindingFlags.Public | BindingFlags.Static);
+                object localFarm = propLocalFarm.GetValue(null, null);
+                PropertyInfo propServers = localFarm.GetType().GetProperty("Servers", BindingFlags.Public | BindingFlags.Instance);
+                IEnumerable servers = (IEnumerable)propServers.GetValue(localFarm, null);
+                foreach (object o in servers)
+                {
+                    PropertyInfo propServerName = o.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
+                    string serverName = (string)propServerName.GetValue(o, null);
+                    yield return serverName;
+                }
+            }
         }
 
         static RegistryKey GetMOSSRegistryKey()
