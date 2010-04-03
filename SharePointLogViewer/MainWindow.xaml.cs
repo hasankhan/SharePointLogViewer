@@ -22,7 +22,7 @@ namespace SharePointLogViewer
         OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);        
 
         LogsLoader logsLoader = new LogsLoader();
-        MultiLogMonitor logMonitor = null;
+        ILogMonitor logMonitor = null;
         DynamicFilter filter;
         bool liveMode;
         OpenFileDialog openDialog;
@@ -197,7 +197,11 @@ namespace SharePointLogViewer
             if (Directory.Exists(folderPath))
             {
                 var logMonitors = GetLogMonitors();
-                logMonitor = new MultiLogMonitor(logMonitors);
+                if (logMonitors.Any())
+                    logMonitor = new MultiLogMonitor(logMonitors);
+                else
+                    logMonitor = new LogMonitor(folderPath);
+
                 logMonitor.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
                 if (files.Length > 0)

@@ -155,6 +155,7 @@
     <Compile Include="DynamicFilter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FileTail.cs" />
+    <Compile Include="ILogMonitor.cs" />
     <Compile Include="LogDirectoryWatcher.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogEntryTokenizer.cs" />

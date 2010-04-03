@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SharePointLogViewer
 {
-    class MultiLogMonitor: IDisposable
+    class MultiLogMonitor: ILogMonitor
     {
         List<LogMonitor> logMonitors;
 

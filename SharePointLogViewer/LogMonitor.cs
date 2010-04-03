@@ -5,13 +5,8 @@ using System.Text;
 using System.IO;
 
 namespace SharePointLogViewer
-{
-    class LogEntryDiscoveredEventArgs : EventArgs
-    {
-        public LogEntry LogEntry { get; set; }
-    }
-
-    class LogMonitor: IDisposable
+{    
+    class LogMonitor: ILogMonitor
     {
         FileTail fileTail;
         string folderPath;
