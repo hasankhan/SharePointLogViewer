@@ -72,7 +72,7 @@ namespace SharePointLogViewer
             }
         }        
 
-        public static string LogsLocations
+        public static string LogsLocation
         {
             get 
             {
@@ -90,7 +90,7 @@ namespace SharePointLogViewer
             {
                 string lastAccessedFile = null;
                 if (IsWSSInstalled)
-                    lastAccessedFile = GetLastAccessedFile(LogsLocations);
+                    lastAccessedFile = GetLastAccessedFile(LogsLocation);
 
                 return lastAccessedFile;
             }
