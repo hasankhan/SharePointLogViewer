@@ -22,7 +22,7 @@ namespace SharePointLogViewer
         OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);        
 
         LogsLoader logsLoader = new LogsLoader();
-        ILogMonitor logMonitor = null;
+        MultiLogMonitor logMonitor = null;
         DynamicFilter filter;
         bool liveMode;
         OpenFileDialog openDialog;
@@ -60,7 +60,7 @@ namespace SharePointLogViewer
 
             saveDialog = new SaveFileDialog();
             saveDialog.Filter = openDialog.Filter = "Log Files (*.log)|*.log";
-            saveDialog.DefaultExt = ".log";            
+            saveDialog.DefaultExt = ".log";
 
             hdrBookmark.Visible = true; // if not set the header style is not applied
             hdrTimestamp.Visible = Properties.Settings.Default.Columns.Contains("Timestamp");
@@ -82,7 +82,10 @@ namespace SharePointLogViewer
             txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider((new LogEntryTokenizer(logEntries)).Distinct());
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
-                openDialog.InitialDirectory = SPUtility.LogsLocation;
+            {
+                openDialog.InitialDirectory = SPUtility.LogsLocations;
+                openDialog.FileName = SPUtility.LatestLogFile;
+            }
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
@@ -95,11 +98,11 @@ namespace SharePointLogViewer
         }
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            openDialog.FileName = SPUtility.LatestLogFile;            
+        {            
             if (openDialog.ShowDialog().Value)
             {
                 files = openDialog.FileNames;
+                openDialog.FileName = null;
                 logEntries.Clear();
                 LoadFiles();
                 if (lstLog.Items.Count > 0)
@@ -190,15 +193,11 @@ namespace SharePointLogViewer
 
         void StartLiveMonitoring()
         {
-            string folderPath = SPUtility.LogsLocation;
+            string folderPath = SPUtility.LogsLocations;
             if (Directory.Exists(folderPath))
             {
-                var logMonitors = GetLogMonitors();
-                if (logMonitors.Any())
-                    logMonitor = new MultiLogMonitor(logMonitors);
-                else
-                    logMonitor = new LogMonitor(folderPath);
-
+                IEnumerable<string> folderPaths = GetLogDirectoryPaths();
+                logMonitor = new MultiLogMonitor(folderPaths);
                 logMonitor.LogEntryDiscovered += new EventHandler<LogEntryDiscoveredEventArgs>(watcher_LogEntryDiscovered);
 
                 if (files.Length > 0)
@@ -345,30 +344,16 @@ namespace SharePointLogViewer
             Reset();
         }
 
-        List<LogMonitor> GetLogMonitors()
-        {
-            IEnumerable<string> folderPaths = GetLogDirectoryPaths();
-            var logMonitors = new List<LogMonitor>();
-            foreach (var path in folderPaths)
-            {
-                try
-                {
-                    var monitor = new LogMonitor(path);
-                    logMonitors.Add(monitor);
-                }
-                catch { }
-
-            }
-            return logMonitors;
-        }        
-
         IEnumerable<string> GetLogDirectoryPaths()
         {
-            string localLogDir = SPUtility.LogsLocation.Replace(':', '$');
+            string localLogDir = SPUtility.LogsLocations.Replace(':', '$');
             IEnumerable<string> serverNames = SPUtility.GetServerNames();
-            List<string> logDirs = new List<string>(from server in serverNames
+            IEnumerable<string> logDirs = new List<string>(from server in serverNames
                                                     let path = "\\\\" + server + "\\" + localLogDir
                                                     select path);
+
+            logDirs = logDirs.Where(logDir => Directory.Exists(logDir));
+
             return logDirs;
         }
     }

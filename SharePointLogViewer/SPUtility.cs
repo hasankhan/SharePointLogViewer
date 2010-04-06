@@ -72,7 +72,7 @@ namespace SharePointLogViewer
             }
         }        
 
-        public static string LogsLocation
+        public static string LogsLocations
         {
             get 
             {
@@ -90,7 +90,7 @@ namespace SharePointLogViewer
             {
                 string lastAccessedFile = null;
                 if (IsWSSInstalled)
-                    lastAccessedFile = GetLastAccessedFile(LogsLocation);
+                    lastAccessedFile = GetLastAccessedFile(LogsLocations);
 
                 return lastAccessedFile;
             }
@@ -126,9 +126,9 @@ namespace SharePointLogViewer
             Type farmType = null;
 
             if(SPUtility.SPVersion == SPVersion.SP2007)
-                farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
-            else if(SPUtility.SPVersion == SPVersion.SP2010)
                 farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            else if(SPUtility.SPVersion == SPVersion.SP2010)
+                farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
 
             if (farmType != null)
             {
@@ -136,10 +136,10 @@ namespace SharePointLogViewer
                 object localFarm = propLocalFarm.GetValue(null, null);
                 PropertyInfo propServers = localFarm.GetType().GetProperty("Servers", BindingFlags.Public | BindingFlags.Instance);
                 IEnumerable servers = (IEnumerable)propServers.GetValue(localFarm, null);
-                foreach (object server in servers)
+                foreach (object o in servers)
                 {
-                    PropertyInfo propServerName = server.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
-                    string serverName = (string)propServerName.GetValue(server, null);
+                    PropertyInfo propServerName = o.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
+                    string serverName = (string)propServerName.GetValue(o, null);
                     yield return serverName;
                 }
             }
