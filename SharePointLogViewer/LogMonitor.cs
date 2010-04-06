@@ -16,6 +16,8 @@ namespace SharePointLogViewer
 
         public LogMonitor(string folderPath)
         {
+            if (!Directory.Exists(folderPath))
+                throw new ArgumentException("Directory does not exist.", folderPath);
             this.folderPath = folderPath;
             fileTail = new FileTail();
             fileTail.LineDiscovered += new EventHandler<LineDiscoveredEventArgs>(fileTail_LineDiscovered);
