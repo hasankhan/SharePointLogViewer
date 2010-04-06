@@ -168,8 +168,13 @@ namespace SharePointLogViewer
             else
             {
                 StartLiveMonitoring();
-                btnToggleLive.ToolTip = "Stop Live Monitoring";
-                btnToggleLive.Tag = "Images/stop.png";
+                if (liveMode)
+                {
+                    btnToggleLive.ToolTip = "Stop Live Monitoring";
+                    btnToggleLive.Tag = "Images/stop.png";
+                }
+                else
+                    MessageBox.Show("Could not start live monitoring.\nPlease make sure the wss/moss log directory is accessible.", "Live monitoring failed!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }       
 
