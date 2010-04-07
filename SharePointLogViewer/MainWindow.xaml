@@ -12,7 +12,7 @@
     Icon="/SharePointLogViewer;component/Images/SPLV.ico" Closing="Window_Closing">
     <Window.Resources>
         <local:HiglightBookmarkedValueConverter x:Key="BookmarkedAndNotSelected"/>
-        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}" Filter="CollectionViewSource_Filter"/>
+        <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}"/>
         <DataTemplate x:Key="BookmarkColumnTemplate">
             <Image x:Name="img" MouseLeftButtonUp="img_MouseLeftButtonUp" ToolTip="Bookmark" 
                        Cursor="Hand" Source="Images\empty.png">

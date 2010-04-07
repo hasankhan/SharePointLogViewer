@@ -113,11 +113,13 @@ namespace SharePointLogViewer
 
         public static string GetLastAccessedFile(string folderPath)
         {
-            var dirInfo = new DirectoryInfo(folderPath);
-            var file = dirInfo.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
-            if (file != null)
-                return file.FullName;
-         
+            if (Directory.Exists(folderPath))
+            {
+                var dirInfo = new DirectoryInfo(folderPath);
+                var file = dirInfo.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
+                if (file != null)
+                    return file.FullName;
+            }
             return null;
         }
 

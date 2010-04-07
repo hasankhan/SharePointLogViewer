@@ -116,6 +116,7 @@ namespace SharePointLogViewer
         {
             string criteria = cmbFilterBy.Text == "Any field" ? "*" : cmbFilterBy.Text;
             filter = DynamicFilter.Create<LogEntryViewModel>(criteria, txtFilter.Text);
+            lstLog.ExtraFilter = item => filter.IsMatch(item);
             CollectionViewSource source = GetCollectionViewSource();
             if(source.View != null)
                 source.View.Refresh();
@@ -249,11 +250,6 @@ namespace SharePointLogViewer
         {
             bdrShadow.Visibility = Visibility.Hidden;
             this.Cursor = Cursors.Arrow;
-        }
-
-        void CollectionViewSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = filter.IsMatch(e.Item);
         }
 
         private void OpenFile_CanExecute(object sender, CanExecuteRoutedEventArgs e)

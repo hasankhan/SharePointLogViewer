@@ -155,6 +155,17 @@ namespace SharePointLogViewer.Controls
 
         #endregion
 
+        Predicate<object> extraFilter;
+        public Predicate<object> ExtraFilter
+        {
+            get { return extraFilter; }
+            set
+            {
+                extraFilter = value;
+                ApplyCurrentFilters();
+            }
+        }
+
         Dictionary<string, FilterStruct> currentFilters = new Dictionary<string, FilterStruct>();
 
         private void AddFilter(String property, FilterItem value, Button button)
@@ -171,9 +182,8 @@ namespace SharePointLogViewer.Controls
         
         public FilterableListView()
         {
-            CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand));            
+            CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand));
         }
-
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -288,11 +298,17 @@ namespace SharePointLogViewer.Controls
         {
             if (currentFilters.Count == 0)
             {
-                Items.Filter = null;
+                Items.Filter = ExtraFilter;
                 return;
             }
 
-            Items.Filter = item => currentFilters.Values.Any(f => f.IsMatch(item));            
+            Items.Filter = item => 
+            {
+                bool accept = currentFilters.Values.Any(f => f.IsMatch(item));
+                if (accept && ExtraFilter != null)
+                    accept = ExtraFilter(item);
+                return accept;
+            };
         }
         
         /// <summary>
