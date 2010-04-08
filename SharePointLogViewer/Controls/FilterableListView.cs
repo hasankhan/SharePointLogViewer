@@ -267,10 +267,12 @@ namespace SharePointLogViewer.Controls
                         {
                             object value = filterPropDesc.GetValue(item);
                             if (value != null)
+                            {
                                 if (uniqueValues.Add(value))
                                     filterList.Add(new FilterItem(value as IComparable));
-                                else
-                                    containsNull = true;
+                            }
+                            else
+                                containsNull = true;
                         }
 
                         filterList.Sort();
@@ -304,7 +306,7 @@ namespace SharePointLogViewer.Controls
 
             Items.Filter = item => 
             {
-                bool accept = currentFilters.Values.Any(f => f.IsMatch(item));
+                bool accept = currentFilters.Values.All(f => f.IsMatch(item));
                 if (accept && ExtraFilter != null)
                     accept = ExtraFilter(item);
                 return accept;
