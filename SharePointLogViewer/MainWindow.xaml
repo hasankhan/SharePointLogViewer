@@ -9,7 +9,7 @@
     Width="{local:SettingBinding Width}"
     Left="{local:SettingBinding Left}"
     Top="{local:SettingBinding Top}"
-    Icon="/SharePointLogViewer;component/Images/SPLV.ico" Closing="Window_Closing">
+    Icon="/SharePointLogViewer;component/Images/SPLV.ico" Closing="Window_Closing" StateChanged="Window_StateChanged" >
     <Window.Resources>
         <local:HiglightBookmarkedValueConverter x:Key="BookmarkedAndNotSelected"/>
         <CollectionViewSource x:Key="FilteredCollection" Source="{Binding}"/>

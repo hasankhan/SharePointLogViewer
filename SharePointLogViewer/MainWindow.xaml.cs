@@ -29,6 +29,8 @@ namespace SharePointLogViewer
         SaveFileDialog saveDialog;
         string[] files = new string[0];
         BookmarkNavigator bookmarkNavigator;
+        SystemTrayNotifier trayNotifier;
+        WindowState lastWindowState;
 
         public static RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(MainWindow));
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
@@ -48,32 +50,44 @@ namespace SharePointLogViewer
             
             if (Properties.Settings.Default.Maximized)
                 WindowState = WindowState.Maximized;
-            
+
+            lastWindowState = WindowState;
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
 
             bookmarkNavigator = new BookmarkNavigator(lstLog, ()=>GetCollectionViewSource().View);
+
+            trayNotifier = new SystemTrayNotifier();
+            trayNotifier.Click += new EventHandler(trayIcon_Click);
             
+            InitializeDialogs();
+            SetListHeadersState();
+
+            lblVersion.Text = typeof(MainWindow).Assembly.GetName().Version.ToString(3);
+
+            if (App.RunInBackground)
+            {
+                RunInLiveMode();
+                RunInBackground(false);
+            }
+        }
+
+        void trayIcon_Click(object sender, EventArgs e)
+        {
+            Show();
+            CheckTrayIcon();
+            WindowState = lastWindowState;
+        }
+
+        private void InitializeDialogs()
+        {
             openDialog = new OpenFileDialog();
             openDialog.Multiselect = true;
 
             saveDialog = new SaveFileDialog();
             saveDialog.Filter = openDialog.Filter = "Log Files (*.log)|*.log";
-            saveDialog.DefaultExt = ".log";            
-
-            hdrBookmark.Visible = true; // if not set the header style is not applied
-            hdrTimestamp.Visible = Properties.Settings.Default.Columns.Contains("Timestamp");
-            hdrProcess.Visible = Properties.Settings.Default.Columns.Contains("Process");
-            hdrTid.Visible = Properties.Settings.Default.Columns.Contains("TID");
-            hdrArea.Visible = Properties.Settings.Default.Columns.Contains("Area");
-            hdrCategory.Visible = Properties.Settings.Default.Columns.Contains("Category");
-            hdrEventID.Visible = Properties.Settings.Default.Columns.Contains("EventID");
-            hdrLevel.Visible = Properties.Settings.Default.Columns.Contains("Level");
-            hdrMessage.Visible = Properties.Settings.Default.Columns.Contains("Message");
-            hdrCorrelation.Visible = Properties.Settings.Default.Columns.Contains("Correlation");
-
-            lblVersion.Text = typeof(MainWindow).Assembly.GetName().Version.ToString(3);
+            saveDialog.DefaultExt = ".log";
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -157,36 +171,54 @@ namespace SharePointLogViewer
         {
             if (!SPUtility.IsWSSInstalled)
             {
-                MessageBox.Show("Microsoft Sharepoint not installed on this machine");
+                MessageBox.Show("Microsoft Sharepoint is not installed on this machine");
                 return;
             }
             if (liveMode)
+                RunInOfflineMode();
+            else
+                RunInLiveMode();
+        }
+
+        void RunInOfflineMode()
+        {
+            StopLiveMonitoring();
+            btnToggleLive.ToolTip = "Start Live Monitoring";
+            btnToggleLive.Tag = "Images/play.png";
+        }
+
+        void RunInLiveMode()
+        {
+            StartLiveMonitoring();
+            if (liveMode)
             {
-                StopLiveMonitoring();
-                btnToggleLive.ToolTip = "Start Live Monitoring";
-                btnToggleLive.Tag = "Images/play.png";
+                btnToggleLive.ToolTip = "Stop Live Monitoring";
+                btnToggleLive.Tag = "Images/stop.png";
             }
             else
-            {
-                StartLiveMonitoring();
-                if (liveMode)
-                {
-                    btnToggleLive.ToolTip = "Stop Live Monitoring";
-                    btnToggleLive.Tag = "Images/stop.png";
-                }
-                else
-                    MessageBox.Show("Could not start live monitoring.\nPlease make sure the wss/moss log directory is accessible.", "Live monitoring failed!", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                MessageBox.Show("Could not start live monitoring.\nPlease make sure the wss/moss log directory is accessible.", "Live monitoring failed!", MessageBoxButton.OK, MessageBoxImage.Error);
         }       
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
             Dispatcher.BeginInvoke((Action)(() =>
                 {
-                    logEntries.Add(new LogEntryViewModel(e.LogEntry));
-                    lstLog.ScrollIntoView(e.LogEntry);
+                    var le = new LogEntryViewModel(e.LogEntry);
+                    logEntries.Add(le);
+                    lstLog.ScrollIntoView(le);
+                    NotifyIfRequired(e.LogEntry);
                 }
             ));
+        }
+
+        private void NotifyIfRequired(LogEntryViewModel logEntry)
+        {
+            bool accepted = true;
+            if (lstLog.Items.Filter != null)
+                accepted = lstLog.Items.Filter(logEntry);
+
+            if(accepted)
+                trayNotifier.ShowPopup(logEntry.Message, 2000);
         }
 
         void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -282,6 +314,11 @@ namespace SharePointLogViewer
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             Properties.Settings.Default.Maximized = (WindowState == WindowState.Maximized);
+            if (trayNotifier != null)
+            {
+                trayNotifier.Dispose();
+                trayNotifier = null;
+            }
         }
 
         private void lvCopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -373,5 +410,46 @@ namespace SharePointLogViewer
                                                     select path);
             return logDirs;
         }
+
+        void SetListHeadersState()
+        {
+            hdrBookmark.Visible = true; // if not set the header style is not applied
+            hdrTimestamp.Visible = Properties.Settings.Default.Columns.Contains("Timestamp");
+            hdrProcess.Visible = Properties.Settings.Default.Columns.Contains("Process");
+            hdrTid.Visible = Properties.Settings.Default.Columns.Contains("TID");
+            hdrArea.Visible = Properties.Settings.Default.Columns.Contains("Area");
+            hdrCategory.Visible = Properties.Settings.Default.Columns.Contains("Category");
+            hdrEventID.Visible = Properties.Settings.Default.Columns.Contains("EventID");
+            hdrLevel.Visible = Properties.Settings.Default.Columns.Contains("Level");
+            hdrMessage.Visible = Properties.Settings.Default.Columns.Contains("Message");
+            hdrCorrelation.Visible = Properties.Settings.Default.Columns.Contains("Correlation");
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.HideToSystemTray)
+            {
+                if (WindowState == WindowState.Minimized)
+                    RunInBackground(true);
+                else
+                    lastWindowState = WindowState;
+            }
+        }
+
+        private void RunInBackground(bool showMessage)
+        {
+            Hide();
+            CheckTrayIcon();
+            if (showMessage)
+                trayNotifier.ShowPopup("The app has been minimised. Click the tray icon to show.", 2000);
+        }
+
+        void CheckTrayIcon()
+        {
+            if(trayNotifier != null)
+                trayNotifier.Show(!IsVisible);
+        }
+
+        
     }
 }

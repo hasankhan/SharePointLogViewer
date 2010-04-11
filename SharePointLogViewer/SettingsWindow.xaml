@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SharePointLogViewer.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Settings" Height="340" Width="500" Background="{DynamicResource DialogBackground}" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
+    Title="Settings" Height="380" Width="500" Background="{DynamicResource DialogBackground}" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,6 +20,8 @@
                 <Grid Grid.Row="1" Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="5" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -27,10 +29,12 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0">Max log entries in live mode:</TextBlock>
-                    <TextBox Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Path=LiveLimit}" />
-                    <TextBlock Grid.Row="2" Grid.Column="0">Columns to view:</TextBlock>
-                    <ListBox Grid.Row="2" Grid.Column="1" ItemContainerStyle="{StaticResource SimpleListBoxItemStyle}"
+                    <CheckBox Grid.Column="1" Content="Hide to system tray when minimized" IsChecked="{Binding Path=HideToSystemTray}" Margin="0,0,0,5"/>
+                    <CheckBox Grid.Row="1" Content="Run at startup" IsChecked="{Binding Path=RunAtStartup}" Margin="0,0,0,5" Grid.Column="1"/>
+                    <TextBlock Grid.Row="2"  Grid.Column="0">Max log entries in live mode:</TextBlock>
+                    <TextBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Path=LiveLimit}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0">Columns to view:</TextBlock>
+                    <ListBox Grid.Row="4" Grid.Column="1" ItemContainerStyle="{StaticResource SimpleListBoxItemStyle}"
                              ItemsSource="{Binding Path=Columns}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

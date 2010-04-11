@@ -13,6 +13,8 @@ namespace SharePointLogViewer
 
     class SettingsViewModel
     {
+        public bool RunAtStartup { get; set; }
+        public bool HideToSystemTray { get; set; }
         public int LiveLimit { get; set; }
         public List<SPColumn> Columns { get; private set; }
 

@@ -11,9 +11,17 @@ namespace SharePointLogViewer
     /// </summary>
     public partial class App : Application
     {
+        public static bool RunInBackground { get; set; }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             SharePointLogViewer.Properties.Settings.Default.Save();
+        }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            if (e.Args.Length > 0)
+                RunInBackground = e.Args[0] == "/background";
         }
     }
 }
