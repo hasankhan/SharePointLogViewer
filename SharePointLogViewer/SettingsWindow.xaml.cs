@@ -31,7 +31,8 @@ namespace SharePointLogViewer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             settingsVm.Columns.AddRange(from prop in typeof(LogEntry).GetProperties()
-                                        select new SPColumn() { IsSelected = Properties.Settings.Default.Columns.Contains(prop.Name), Name = prop.Name });
+                                        select new SPColumn() { IsSelected = Properties.Settings.Default.Columns.Contains(prop.Name),
+                                                                Name = prop.Name });
 
             settingsVm.LiveLimit = Properties.Settings.Default.LiveLimit;
             settingsVm.HideToSystemTray = Properties.Settings.Default.HideToSystemTray;
@@ -57,8 +58,8 @@ namespace SharePointLogViewer
             SetRunAtStartup(settingsVm.RunAtStartup);
             var columns = new StringCollection();
             columns.AddRange((from col in settingsVm.Columns
-                             where col.IsSelected
-                             select col.Name).ToArray());
+                              where col.IsSelected
+                              select col.Name).ToArray());
             Properties.Settings.Default.Columns = columns;
             this.DialogResult = true;
             Close();
@@ -66,15 +67,12 @@ namespace SharePointLogViewer
 
         private bool GetRunAtStartup()
         {
-            RegistryKey localMachine = Registry.LocalMachine;
-            RegistryKey runKey;
-            //access the regitry key where you want to add your registry key            
             try
             {
-                runKey = localMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+                var runKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
                 bool run = runKey.GetValue("splv") != null;
 
-                return true;
+                return run;
             }
             catch (Exception)
             {
@@ -84,23 +82,17 @@ namespace SharePointLogViewer
 
         private void SetRunAtStartup(bool run)
         {
-            RegistryKey localMachine = Registry.LocalMachine; 
-            RegistryKey runKey;
-            //access the regitry key where you want to add your registry key   
             try
             {
-                runKey = localMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+                var runKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
                 if (run)
-                {
-                    if (runKey.GetValue("splv") == null)
-                        runKey.SetValue("splv", Assembly.GetExecutingAssembly().Location, RegistryValueKind.ExpandString);
-                }
+                    runKey.SetValue("splv", Assembly.GetExecutingAssembly().Location);
                 else
-                    runKey.DeleteSubKey("splv");
+                    runKey.DeleteValue("splv", false);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Could not set SPLV to run at startup due to lack of administrative priviliges. "+ex.Message, "SharePoint LogViewer");
+                MessageBox.Show("Could not set SPLV to run at startup due to exception: " + ex.Message, "SharePoint LogViewer", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

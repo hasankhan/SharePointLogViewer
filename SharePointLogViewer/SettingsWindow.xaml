@@ -29,7 +29,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <CheckBox Grid.Column="1" Content="Hide to system tray when minimized" IsChecked="{Binding Path=HideToSystemTray}" Margin="0,0,0,5"/>
+                    <CheckBox Grid.Column="1" Content="Minimize to tray" IsChecked="{Binding Path=HideToSystemTray}" Margin="0,0,0,5"/>
                     <CheckBox Grid.Row="1" Content="Run at startup" IsChecked="{Binding Path=RunAtStartup}" Margin="0,0,0,5" Grid.Column="1"/>
                     <TextBlock Grid.Row="2"  Grid.Column="0">Max log entries in live mode:</TextBlock>
                     <TextBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Path=LiveLimit}" />

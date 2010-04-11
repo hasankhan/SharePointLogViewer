@@ -206,17 +206,14 @@ namespace SharePointLogViewer
                     var le = new LogEntryViewModel(e.LogEntry);
                     logEntries.Add(le);
                     lstLog.ScrollIntoView(le);
-                    NotifyIfRequired(e.LogEntry);
+                    NotifyIfRequired(le);
                 }
             ));
         }
 
         private void NotifyIfRequired(LogEntryViewModel logEntry)
         {
-            bool accepted = true;
-            if (lstLog.Items.Filter != null)
-                accepted = lstLog.Items.Filter(logEntry);
-
+            bool accepted = lstLog.Items.Filter == null || lstLog.Items.Filter(logEntry);
             if(accepted)
                 trayNotifier.ShowPopup(logEntry.Message, 2000);
         }
