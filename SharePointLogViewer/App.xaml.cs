@@ -21,7 +21,7 @@ namespace SharePointLogViewer
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             if (e.Args.Length > 0)
-                RunInBackground = e.Args[0] == "/background";
+                RunInBackground = e.Args[0].Trim() == "/background";
         }
     }
 }

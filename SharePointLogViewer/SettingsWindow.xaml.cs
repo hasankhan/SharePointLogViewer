@@ -86,7 +86,7 @@ namespace SharePointLogViewer
             {
                 var runKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
                 if (run)
-                    runKey.SetValue("splv", Assembly.GetExecutingAssembly().Location);
+                    runKey.SetValue("splv", Assembly.GetExecutingAssembly().Location + " /background");
                 else
                     runKey.DeleteValue("splv", false);
             }
