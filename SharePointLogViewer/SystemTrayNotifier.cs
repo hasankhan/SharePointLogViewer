@@ -6,7 +6,7 @@ using System.IO;
 
 namespace SharePointLogViewer
 {
-    class SystemTrayNotifier : IDisposable
+    class SystemTrayNotifier : INotifier, IDisposable
     {
         private System.Windows.Forms.NotifyIcon notifier;
 
@@ -22,14 +22,19 @@ namespace SharePointLogViewer
             notifier.Click += new EventHandler(notifyIcon_Click);
         }
 
-        public void ShowPopup(string message, int timeout)
+        public void Notify(LogEntryViewModel logEntry)
+        {
+            Notify(logEntry.Message);
+        }
+
+        public void Notify(string message)
         {
             if (notifier != null && notifier.Visible)
             {
                 notifier.BalloonTipText = message;
                 notifier.BalloonTipTitle = "SharePoint LogViewer";
                 notifier.Text = "SharePoint LogViewer";
-                notifier.ShowBalloonTip(timeout);
+                notifier.ShowBalloonTip(2000);
             }
         }
 

@@ -129,5 +129,101 @@ namespace SharePointLogViewer.Properties {
                 this["HideToSystemTray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableSystemTrayNotifications {
+            get {
+                return ((bool)(this["EnableSystemTrayNotifications"]));
+            }
+            set {
+                this["EnableSystemTrayNotifications"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableEmailNotifications {
+            get {
+                return ((bool)(this["EnableEmailNotifications"]));
+            }
+            set {
+                this["EnableEmailNotifications"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableEventLogNotifications {
+            get {
+                return ((bool)(this["EnableEventLogNotifications"]));
+            }
+            set {
+                this["EnableEventLogNotifications"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string EmailSenders {
+            get {
+                return ((string)(this["EmailSenders"]));
+            }
+            set {
+                this["EmailSenders"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string EmailRecepients {
+            get {
+                return ((string)(this["EmailRecepients"]));
+            }
+            set {
+                this["EmailRecepients"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SmtpServer {
+            get {
+                return ((string)(this["SmtpServer"]));
+            }
+            set {
+                this["SmtpServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool HonourFilters {
+            get {
+                return ((bool)(this["HonourFilters"]));
+            }
+            set {
+                this["HonourFilters"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MinimumSeverity {
+            get {
+                return ((string)(this["MinimumSeverity"]));
+            }
+            set {
+                this["MinimumSeverity"] = value;
+            }
+        }
     }
 }

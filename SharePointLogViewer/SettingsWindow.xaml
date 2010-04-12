@@ -1,55 +1,117 @@
 ﻿<Window x:Class="SharePointLogViewer.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Settings" Height="380" Width="500" Background="{DynamicResource DialogBackground}" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Margin="5" FontWeight="Bold">
-                    Some settings will take effect after application restart.
-        </TextBlock>
-        <Border Grid.Row="1" Background="{StaticResource WorkAreaBackgroud}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="5">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1" Margin="5">
+    Title="Settings" Height="400" Width="500" Background="{DynamicResource DialogBackground}" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
+    <Grid>
+        <TabControl>
+            <TabItem Header="General">
+                <Grid >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox Grid.Column="1" Content="Minimize to tray" IsChecked="{Binding Path=HideToSystemTray}" Margin="0,0,0,5"/>
-                    <CheckBox Grid.Row="1" Content="Run at startup" IsChecked="{Binding Path=RunAtStartup}" Margin="0,0,0,5" Grid.Column="1"/>
-                    <TextBlock Grid.Row="2"  Grid.Column="0">Max log entries in live mode:</TextBlock>
-                    <TextBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Path=LiveLimit}" />
-                    <TextBlock Grid.Row="4" Grid.Column="0">Columns to view:</TextBlock>
-                    <ListBox Grid.Row="4" Grid.Column="1" ItemContainerStyle="{StaticResource SimpleListBoxItemStyle}"
-                             ItemsSource="{Binding Path=Columns}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding Path=IsSelected}" Content="{Binding Name}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <TextBlock Grid.Row="0" Margin="5" FontWeight="Bold">
+                    Some settings will take effect after application restart.
+                    </TextBlock>
+                    <Border Grid.Row="1" Background="{StaticResource WorkAreaBackgroud}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="1" Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="5" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="1" Content="Minimize to tray" IsChecked="{Binding Path=GeneralSettings.HideToSystemTray}" Margin="0,0,0,5"/>
+                                <CheckBox Grid.Row="1" Content="Run at startup" IsChecked="{Binding Path=GeneralSettings.RunAtStartup}" Margin="0,0,0,5" Grid.Column="1"/>
+                                <TextBlock Grid.Row="2"  Grid.Column="0">Max log entries in live mode:</TextBlock>
+                                <TextBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Path=GeneralSettings.LiveLimit}" />
+                                <TextBlock Grid.Row="4" Grid.Column="0">Columns to view:</TextBlock>
+                                <ListBox Grid.Row="4" Grid.Column="1" ItemContainerStyle="{StaticResource SimpleListBoxItemStyle}"
+                             ItemsSource="{Binding Path=GeneralSettings.Columns}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding Path=IsSelected}" Content="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Row="2">
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                            <Button Content="OK" Width="70" Click="btnOK_Click" />
+                            <Button Content="Cancel" Width="70" Margin="5,0,0,0" Click="btnCancel_Click" />
+                        </StackPanel>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Border>
-        <Grid Grid.Row="2">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Content="OK" Width="70" Click="btnOK_Click" />
-                <Button Content="Cancel" Width="70" Margin="5,0,0,0" Click="btnCancel_Click" />
-            </StackPanel>            
-        </Grid>        
+            </TabItem>
+            <TabItem Header="Notifications">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Margin="5" FontWeight="Bold">
+                    Specify the details of notifications to be received once a log entry is discovered.
+                    </TextBlock>
+                    <Border Grid.Row="1" Background="{StaticResource WorkAreaBackgroud}" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Margin="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="1" Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="1" Content="Honour Listview Filters" IsChecked="{Binding Path=NotificationSettings.HonourFilters}" Margin="0,0,0,5"/>
+                                <TextBlock Text="Minimum Severity:" Grid.Row="1" Margin="0,0,5,0"/>
+                                <TextBox Grid.Row="1" Text="{Binding Path=NotificationSettings.MinimumSeverity}" Margin="0,0,0,5" Grid.Column="1"/>
+                                <CheckBox Grid.Row="2" Grid.Column="1" Content="Enable System Tray Notifications" Margin="0,0,0,5" IsChecked="{Binding Path=NotificationSettings.EnableSystemTrayNotification}"/>
+                                <CheckBox Grid.Row="3" Grid.Column="1" Content="Enable Event Log Notifications" Margin="0,0,0,5" IsChecked="{Binding Path=NotificationSettings.EnableEventLogNotification}"/>
+                                <CheckBox Grid.Row="4" Grid.Column="1" Content="Enable Email Notifications" Margin="0,0,0,5" IsChecked="{Binding Path=NotificationSettings.EnableEmailNotification}"/>
+                                <TextBlock Grid.Row="5" Grid.Column="0">Sender Email Address:</TextBlock>
+                                <TextBox Grid.Row="5" Grid.Column="1" IsEnabled="{Binding Path=NotificationSettings.EnableEmailNotification}" Text="{Binding Path=NotificationSettings.EmailSender}" Margin="0,0,0,5"/>
+                                <TextBlock Grid.Row="6" Grid.Column="0">Recepients Email Address:</TextBlock>
+                                <TextBox Grid.Row="6" Grid.Column="1" IsEnabled="{Binding Path=NotificationSettings.EnableEmailNotification}" Text="{Binding Path=NotificationSettings.EmailRecepients}" Height="50" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Margin="0,0,0,5"/>
+                                <TextBlock Grid.Row="7" Grid.Column="0">Smtp Server:</TextBlock>
+                                <TextBox Grid.Row="7" Grid.Column="1" IsEnabled="{Binding Path=NotificationSettings.EnableEmailNotification}" Text="{Binding Path=NotificationSettings.SmtpServer}" Margin="0,0,0,5"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Row="2">
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                            <Button Content="OK" Width="70" Click="btnOK_Click" />
+                            <Button Content="Cancel" Width="70" Margin="5,0,0,0" Click="btnCancel_Click" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
     </Grid>
+   
 </Window>

@@ -68,6 +68,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider">
@@ -150,6 +151,8 @@
     <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\IAutoCompleteDataProvider.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\SimpleStaticDataProvider.cs" />
+    <Compile Include="EmailNotifier.cs" />
+    <Compile Include="EventLogNotifier.cs" />
     <Compile Include="FastInvoke.cs" />
     <Compile Include="Controls\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
@@ -158,6 +161,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="FileTail.cs" />
     <Compile Include="ILogMonitor.cs" />
+    <Compile Include="INotifier.cs" />
     <Compile Include="LogDirectoryWatcher.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogEntryTokenizer.cs" />

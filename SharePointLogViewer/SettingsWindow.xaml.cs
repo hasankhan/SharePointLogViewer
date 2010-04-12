@@ -30,14 +30,35 @@ namespace SharePointLogViewer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            settingsVm.Columns.AddRange(from prop in typeof(LogEntry).GetProperties()
-                                        select new SPColumn() { IsSelected = Properties.Settings.Default.Columns.Contains(prop.Name),
-                                                                Name = prop.Name });
-
-            settingsVm.LiveLimit = Properties.Settings.Default.LiveLimit;
-            settingsVm.HideToSystemTray = Properties.Settings.Default.HideToSystemTray;
-            settingsVm.RunAtStartup = GetRunAtStartup();
+            LoadGeneralSettings();
+            LoadNotificationSettings();
             this.DataContext = settingsVm;
+        }
+
+        private void LoadNotificationSettings()
+        {
+            settingsVm.NotificationSettings.EnableSystemTrayNotification = Properties.Settings.Default.EnableSystemTrayNotifications;
+            settingsVm.NotificationSettings.EnableEmailNotification = Properties.Settings.Default.EnableEmailNotifications;
+            settingsVm.NotificationSettings.EnableEventLogNotification = Properties.Settings.Default.EnableEventLogNotifications;
+            settingsVm.NotificationSettings.HonourFilters = Properties.Settings.Default.HonourFilters;
+            settingsVm.NotificationSettings.MinimumSeverity = Properties.Settings.Default.MinimumSeverity;
+            settingsVm.NotificationSettings.EmailSender = Properties.Settings.Default.EmailSenders;
+            settingsVm.NotificationSettings.EmailRecepients = Properties.Settings.Default.EmailRecepients;
+            settingsVm.NotificationSettings.SmtpServer = Properties.Settings.Default.SmtpServer;
+        }
+
+        private void LoadGeneralSettings()
+        {
+            settingsVm.GeneralSettings.Columns.AddRange(from prop in typeof(LogEntry).GetProperties()
+                                                        select new SPColumn()
+                                                        {
+                                                            IsSelected = Properties.Settings.Default.Columns.Contains(prop.Name),
+                                                            Name = prop.Name
+                                                        });
+
+            settingsVm.GeneralSettings.LiveLimit = Properties.Settings.Default.LiveLimit;
+            settingsVm.GeneralSettings.HideToSystemTray = Properties.Settings.Default.HideToSystemTray;
+            settingsVm.GeneralSettings.RunAtStartup = GetRunAtStartup();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -53,16 +74,34 @@ namespace SharePointLogViewer
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.LiveLimit = settingsVm.LiveLimit;
-            Properties.Settings.Default.HideToSystemTray = settingsVm.HideToSystemTray;
-            SetRunAtStartup(settingsVm.RunAtStartup);
+            SaveGeneralSettings();
+            SaveNotificationSettings();
+            this.DialogResult = true;
+            Close();
+        }
+
+        private void SaveNotificationSettings()
+        {
+            Properties.Settings.Default.EnableSystemTrayNotifications = settingsVm.NotificationSettings.EnableSystemTrayNotification;
+            Properties.Settings.Default.EnableEmailNotifications = settingsVm.NotificationSettings.EnableEmailNotification;
+            Properties.Settings.Default.EnableEventLogNotifications = settingsVm.NotificationSettings.EnableEventLogNotification;
+            Properties.Settings.Default.HonourFilters = settingsVm.NotificationSettings.HonourFilters;
+            Properties.Settings.Default.MinimumSeverity = settingsVm.NotificationSettings.MinimumSeverity;
+            Properties.Settings.Default.EmailSenders = settingsVm.NotificationSettings.EmailSender;
+            Properties.Settings.Default.EmailRecepients = settingsVm.NotificationSettings.EmailRecepients;
+            Properties.Settings.Default.SmtpServer = settingsVm.NotificationSettings.SmtpServer;
+        }
+
+        private void SaveGeneralSettings()
+        {
+            Properties.Settings.Default.LiveLimit = settingsVm.GeneralSettings.LiveLimit;
+            Properties.Settings.Default.HideToSystemTray = settingsVm.GeneralSettings.HideToSystemTray;
+            SetRunAtStartup(settingsVm.GeneralSettings.RunAtStartup);
             var columns = new StringCollection();
-            columns.AddRange((from col in settingsVm.Columns
+            columns.AddRange((from col in settingsVm.GeneralSettings.Columns
                               where col.IsSelected
                               select col.Name).ToArray());
             Properties.Settings.Default.Columns = columns;
-            this.DialogResult = true;
-            Close();
         }
 
         private bool GetRunAtStartup()

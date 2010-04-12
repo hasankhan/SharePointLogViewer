@@ -213,9 +213,11 @@ namespace SharePointLogViewer
 
         private void NotifyIfRequired(LogEntryViewModel logEntry)
         {
-            bool accepted = lstLog.Items.Filter == null || lstLog.Items.Filter(logEntry);
+            bool accepted = false;
+            if(Properties.Settings.Default.HonourFilters)
+                accepted = lstLog.Items.Filter == null || lstLog.Items.Filter(logEntry);
             if(accepted)
-                trayNotifier.ShowPopup(logEntry.Message, 2000);
+                trayNotifier.Notify(logEntry);
         }
 
         void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -438,7 +440,7 @@ namespace SharePointLogViewer
             Hide();
             CheckTrayIcon();
             if (showMessage)
-                trayNotifier.ShowPopup("The app has been minimised. Click the tray icon to show.", 2000);
+                trayNotifier.Notify("The app has been minimised. Click the tray icon to show.");
         }
 
         void CheckTrayIcon()
