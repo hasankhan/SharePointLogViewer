@@ -84,7 +84,6 @@ namespace SharePointLogViewer
 
         void LoadSettings()
         {
-            throw new NotImplementedException();
         }
 
         void trayIcon_Click(object sender, EventArgs e)
@@ -326,8 +325,7 @@ namespace SharePointLogViewer
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             Properties.Settings.Default.Maximized = (WindowState == WindowState.Maximized);
-            foreach (var notifier in notifiers)
-                notifier.Dispose();
+            trayNotifier.Dispose();
         }
 
         private void lvCopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -342,7 +340,13 @@ namespace SharePointLogViewer
             SettingsWindow settingsWin = new SettingsWindow();
             settingsWin.Owner = this;
             if (settingsWin.ShowDialog().Value)
-                logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
+            {
+                filters.Clear();
+                notifiers.Clear();
+                LoadSettings();
+                if (liveMode)
+                    logEntries.MaxItems = Properties.Settings.Default.LiveLimit;
+            }
         }
 
         private void Previous_Executed(object sender, ExecutedRoutedEventArgs e)

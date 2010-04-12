@@ -6,7 +6,7 @@ using System.Net.Mail;
 
 namespace SharePointLogViewer.Notifiers
 {
-    class EmailNotifier : INotifier
+    class EmailNotifier: INotifier
     {
         string sender;
         string recepients;
@@ -29,14 +29,6 @@ namespace SharePointLogViewer.Notifiers
             message.Subject = "SharePoint Log";
             message.Body = logEntry.Message;            
             client.Send(message);
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
         }
 
         #endregion

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SharePointLogViewer.Notifiers
 {
-    interface INotifier: IDisposable
+    interface INotifier
     {
         void Notify(LogEntryViewModel logEntry);
     }

@@ -25,13 +25,5 @@ namespace SharePointLogViewer.Notifiers
         }
 
         #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-        }
-
-        #endregion
     }
 }
