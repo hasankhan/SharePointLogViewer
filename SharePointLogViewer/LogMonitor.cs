@@ -47,8 +47,12 @@ namespace SharePointLogViewer
 
         void fileTail_LineDiscovered(object sender, LineDiscoveredEventArgs e)
         {
-            var entry = LogEntry.Parse(e.Line);
-            LogEntryDiscovered(this, new LogEntryDiscoveredEventArgs() { LogEntry = entry });
+            if (!String.IsNullOrEmpty(e.Line.Trim()))
+            {
+                var entry = LogEntry.Parse(e.Line);
+                if (entry != null)
+                    LogEntryDiscovered(this, new LogEntryDiscoveredEventArgs() { LogEntry = entry });
+            }
         }
 
         #region IDisposable Members

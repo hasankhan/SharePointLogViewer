@@ -19,19 +19,24 @@ namespace SharePointLogViewer
         public static LogEntry Parse(string line)
         {
             string[] fields = line.Split('\t');
-            var entry = new LogEntry()
+            if (fields.Length > 8)
             {
-                Timestamp = fields[0].Trim(),
-                Process = fields[1].Trim(),
-                TID = fields[2].Trim(),
-                Area = fields[3].Trim(),
-                Category = fields[4].Trim(),
-                EventID = fields[5].Trim(),
-                Level = fields[6].Trim(),
-                Message = fields[7].Trim(),
-                Correlation = fields[8].Trim()
-            };
-            return entry;
+                var entry = new LogEntry()
+                {
+                    Timestamp = fields[0].Trim(),
+                    Process = fields[1].Trim(),
+                    TID = fields[2].Trim(),
+                    Area = fields[3].Trim(),
+                    Category = fields[4].Trim(),
+                    EventID = fields[5].Trim(),
+                    Level = fields[6].Trim(),
+                    Message = fields[7].Trim(),
+                    Correlation = fields[8].Trim()
+                };
+                return entry;
+            }
+            else
+                return null;
         }
     }
 }
