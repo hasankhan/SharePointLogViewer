@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using SharePointLogViewer.Searching;
 using SharePointLogViewer.Monitoring;
 using SharePointLogViewer.Notifiers;
+using SharePointLogViewer.Filters;
 
 namespace SharePointLogViewer
 {
@@ -32,9 +33,11 @@ namespace SharePointLogViewer
         SaveFileDialog saveDialog;
         string[] files = new string[0];
         BookmarkNavigator bookmarkNavigator;
-        SystemTrayNotifier trayNotifier;
+        IList<INotifier> notifiers;
+        IList<IFilter> filters;
         WindowState lastWindowState;
-
+        SystemTrayNotifier trayNotifier;
+ 
         public static RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(MainWindow));
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
         public static RoutedUICommand Filter = new RoutedUICommand("Filter", "Filter", typeof(MainWindow));
@@ -58,22 +61,30 @@ namespace SharePointLogViewer
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
-
-            bookmarkNavigator = new BookmarkNavigator(lstLog, ()=>GetCollectionViewSource().View);
-
             trayNotifier = new SystemTrayNotifier();
             trayNotifier.Click += new EventHandler(trayIcon_Click);
+
+            bookmarkNavigator = new BookmarkNavigator(lstLog, ()=>GetCollectionViewSource().View);           
             
             InitializeDialogs();
             SetListHeadersState();
 
             lblVersion.Text = typeof(MainWindow).Assembly.GetName().Version.ToString(3);
+            notifiers = new List<INotifier>();
+            filters = new List<IFilter>();
+
+            LoadSettings();
 
             if (App.RunInBackground)
             {
                 RunInLiveMode();
                 RunInBackground(false);
             }
+        }
+
+        void LoadSettings()
+        {
+            throw new NotImplementedException();
         }
 
         void trayIcon_Click(object sender, EventArgs e)
@@ -216,11 +227,10 @@ namespace SharePointLogViewer
 
         private void NotifyIfRequired(LogEntryViewModel logEntry)
         {
-            bool accepted = false;
-            if(Properties.Settings.Default.HonourFilters)
-                accepted = lstLog.Items.Filter == null || lstLog.Items.Filter(logEntry);
-            if(accepted)
-                trayNotifier.Notify(logEntry);
+            bool accepted = filters.All(filter=>filter.Accept(logEntry));
+            if (accepted)
+                foreach (INotifier notifier in notifiers)
+                    notifier.Notify(logEntry);
         }
 
         void OfflineMode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -316,11 +326,8 @@ namespace SharePointLogViewer
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             Properties.Settings.Default.Maximized = (WindowState == WindowState.Maximized);
-            if (trayNotifier != null)
-            {
-                trayNotifier.Dispose();
-                trayNotifier = null;
-            }
+            foreach (var notifier in notifiers)
+                notifier.Dispose();
         }
 
         private void lvCopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)

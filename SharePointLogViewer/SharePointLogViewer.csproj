@@ -146,6 +146,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\IFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filters\ListViewFilter.cs" />
+    <Compile Include="Filters\SeverityFilter.cs" />
     <Compile Include="Searching\BookmarkNavigator.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteManager.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.cs" />
