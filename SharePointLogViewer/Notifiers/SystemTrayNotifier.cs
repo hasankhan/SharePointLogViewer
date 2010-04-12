@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Notifiers
 {
     class SystemTrayNotifier : INotifier, IDisposable
     {
@@ -16,9 +16,7 @@ namespace SharePointLogViewer
         {
             notifier = new System.Windows.Forms.NotifyIcon();
             using (Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,/Images/SPLV.ico")).Stream)
-            {
                 notifier.Icon = new System.Drawing.Icon(iconStream);
-            }
             notifier.Click += new EventHandler(notifyIcon_Click);
         }
 

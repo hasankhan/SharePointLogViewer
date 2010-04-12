@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Searching
 {
     class OverflowCollection<T>:ObservableCollection<T>
     {

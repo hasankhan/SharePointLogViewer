@@ -11,6 +11,9 @@ using System.Diagnostics;
 using SharePointLogViewer.Controls.AutoCompleteTextBox;
 using System.Collections;
 using System.Collections.Generic;
+using SharePointLogViewer.Searching;
+using SharePointLogViewer.Monitoring;
+using SharePointLogViewer.Notifiers;
 
 namespace SharePointLogViewer
 {

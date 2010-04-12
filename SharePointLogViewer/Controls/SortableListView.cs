@@ -3,9 +3,9 @@ using System.Windows.Controls;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Data;
-using BaseWPFHelpers;
 using System.Collections;
 using System.Reflection;
+using SharePointLogViewer.Searching;
 
 // SortableListView, from the following blog post:
 //

@@ -5,7 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Monitoring
 {
     class LoadCompletedEventArgs : EventArgs
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.ComponentModel;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Searching
 {
     class BookmarkNavigator
     {

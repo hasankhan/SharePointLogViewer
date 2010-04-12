@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Collections.Specialized;
 using Microsoft.Win32;
 using System.Reflection;
+using SharePointLogViewer.Monitoring;
 
 namespace SharePointLogViewer
 {

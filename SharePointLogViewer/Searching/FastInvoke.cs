@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Searching
 {
     public delegate object FastMethodInvoker(object target, object[] paramters);
 

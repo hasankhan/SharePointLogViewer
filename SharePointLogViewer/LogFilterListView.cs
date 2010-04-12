@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using BaseWPFHelpers;
 using SharePointLogViewer.Controls;
 
 namespace SharePointLogViewer

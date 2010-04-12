@@ -5,7 +5,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Monitoring
 {
     class LogParser
     {

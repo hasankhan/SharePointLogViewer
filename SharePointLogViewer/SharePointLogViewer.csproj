@@ -146,33 +146,33 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BookmarkNavigator.cs" />
+    <Compile Include="Searching\BookmarkNavigator.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteManager.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\AutoCompleteTextBox.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\IAutoCompleteDataProvider.cs" />
     <Compile Include="Controls\AutoCompleteTextBox\SimpleStaticDataProvider.cs" />
-    <Compile Include="EmailNotifier.cs" />
-    <Compile Include="EventLogNotifier.cs" />
-    <Compile Include="FastInvoke.cs" />
+    <Compile Include="Notifiers\EmailNotifier.cs" />
+    <Compile Include="Notifiers\EventLogNotifier.cs" />
+    <Compile Include="Searching\FastInvoke.cs" />
     <Compile Include="Controls\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DynamicFilter.cs" />
+    <Compile Include="Searching\DynamicFilter.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="FileTail.cs" />
-    <Compile Include="ILogMonitor.cs" />
-    <Compile Include="INotifier.cs" />
-    <Compile Include="LogDirectoryWatcher.cs" />
-    <Compile Include="LogEntry.cs" />
-    <Compile Include="LogEntryTokenizer.cs" />
+    <Compile Include="Monitoring\FileTail.cs" />
+    <Compile Include="Monitoring\ILogMonitor.cs" />
+    <Compile Include="Notifiers\INotifier.cs" />
+    <Compile Include="Monitoring\LogDirectoryWatcher.cs" />
+    <Compile Include="Monitoring\LogEntry.cs" />
+    <Compile Include="Searching\LogEntryTokenizer.cs" />
     <Compile Include="LogEntryViewModel.cs" />
-    <Compile Include="LogExporter.cs" />
-    <Compile Include="LogMonitor.cs" />
-    <Compile Include="LogParser.cs" />
-    <Compile Include="LogsLoader.cs" />
+    <Compile Include="Monitoring\LogExporter.cs" />
+    <Compile Include="Monitoring\LogMonitor.cs" />
+    <Compile Include="Monitoring\LogParser.cs" />
+    <Compile Include="Monitoring\LogsLoader.cs" />
     <Compile Include="HiglightBookmarkedValueConverter.cs" />
-    <Compile Include="MultiLogMonitor.cs" />
-    <Compile Include="OverflowCollection.cs" />
+    <Compile Include="Monitoring\MultiLogMonitor.cs" />
+    <Compile Include="Searching\OverflowCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -193,7 +193,7 @@
     </Compile>
     <Compile Include="SPUtility.cs" />
     <Compile Include="SPVersion.cs" />
-    <Compile Include="SystemTrayNotifier.cs" />
+    <Compile Include="Notifiers\SystemTrayNotifier.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

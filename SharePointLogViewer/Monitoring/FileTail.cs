@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.IO;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Monitoring
 {
     class LineDiscoveredEventArgs : EventArgs
     {

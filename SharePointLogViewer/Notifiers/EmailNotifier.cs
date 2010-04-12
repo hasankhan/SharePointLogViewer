@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mail;
 
-namespace SharePointLogViewer
+namespace SharePointLogViewer.Notifiers
 {
     class EmailNotifier : INotifier
     {

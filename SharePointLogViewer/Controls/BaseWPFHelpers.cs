@@ -27,7 +27,7 @@ using System.Windows.Navigation;
 #endregion
 
 
-namespace BaseWPFHelpers
+namespace SharePointLogViewer.Controls
 {
     public class Helpers
     {
