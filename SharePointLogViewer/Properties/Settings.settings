@@ -52,14 +52,14 @@
     <Setting Name="EmailRecepients" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SmtpServer" Type="System.String" Scope="User">
+    <Setting Name="EmailSmtpServer" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="HonourFilters" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="MinimumSeverity" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="MinimumSeverity" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

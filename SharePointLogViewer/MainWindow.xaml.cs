@@ -84,6 +84,25 @@ namespace SharePointLogViewer
 
         void LoadSettings()
         {
+            if (Properties.Settings.Default.EnableEmailNotifications)
+            {
+                INotifier notifier = new EmailNotifier(Properties.Settings.Default.EmailSenders,
+                                                       Properties.Settings.Default.EmailRecepients,
+                                                       Properties.Settings.Default.EmailSmtpServer);
+
+                notifiers.Add(notifier);
+            }
+            if (Properties.Settings.Default.EnableEventLogNotifications)
+            {
+                INotifier notifier = new EventLogNotifier();
+                notifiers.Add(notifier);
+            }
+            if (Properties.Settings.Default.EnableSystemTrayNotifications)
+                notifiers.Add(trayNotifier);
+            if (Properties.Settings.Default.HonourFilters)
+                filters.Add(new ListViewFilter(lstLog));
+            if (Properties.Settings.Default.MinimumSeverity > 0)
+                filters.Add(new SeverityFilter(Properties.Settings.Default.MinimumSeverity));
         }
 
         void trayIcon_Click(object sender, EventArgs e)

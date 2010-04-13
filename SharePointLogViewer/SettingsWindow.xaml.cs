@@ -45,7 +45,7 @@ namespace SharePointLogViewer
             settingsVm.NotificationSettings.MinimumSeverity = Properties.Settings.Default.MinimumSeverity;
             settingsVm.NotificationSettings.EmailSender = Properties.Settings.Default.EmailSenders;
             settingsVm.NotificationSettings.EmailRecepients = Properties.Settings.Default.EmailRecepients;
-            settingsVm.NotificationSettings.SmtpServer = Properties.Settings.Default.SmtpServer;
+            settingsVm.NotificationSettings.SmtpServer = Properties.Settings.Default.EmailSmtpServer;
         }
 
         private void LoadGeneralSettings()
@@ -90,7 +90,7 @@ namespace SharePointLogViewer
             Properties.Settings.Default.MinimumSeverity = settingsVm.NotificationSettings.MinimumSeverity;
             Properties.Settings.Default.EmailSenders = settingsVm.NotificationSettings.EmailSender;
             Properties.Settings.Default.EmailRecepients = settingsVm.NotificationSettings.EmailRecepients;
-            Properties.Settings.Default.SmtpServer = settingsVm.NotificationSettings.SmtpServer;
+            Properties.Settings.Default.EmailSmtpServer = settingsVm.NotificationSettings.SmtpServer;
         }
 
         private void SaveGeneralSettings()

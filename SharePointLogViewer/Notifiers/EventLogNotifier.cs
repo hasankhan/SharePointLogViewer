@@ -8,14 +8,12 @@ namespace SharePointLogViewer.Notifiers
 {
     class EventLogNotifier : INotifier
     {
-        string source;
+        const string source = "SPLV";
 
-        public EventLogNotifier(string source, string logName)
+        public EventLogNotifier()
         {
-            this.source = source;
-
             if (!EventLog.SourceExists(source))
-                EventLog.CreateEventSource(source, logName);
+                EventLog.CreateEventSource(source, "Application");
         }
         #region INotifier Members
 

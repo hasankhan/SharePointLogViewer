@@ -193,12 +193,12 @@ namespace SharePointLogViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SmtpServer {
+        public string EmailSmtpServer {
             get {
-                return ((string)(this["SmtpServer"]));
+                return ((string)(this["EmailSmtpServer"]));
             }
             set {
-                this["SmtpServer"] = value;
+                this["EmailSmtpServer"] = value;
             }
         }
         
@@ -216,10 +216,10 @@ namespace SharePointLogViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MinimumSeverity {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MinimumSeverity {
             get {
-                return ((string)(this["MinimumSeverity"]));
+                return ((int)(this["MinimumSeverity"]));
             }
             set {
                 this["MinimumSeverity"] = value;
