@@ -19,9 +19,14 @@ namespace SharePointLogViewer.Notifiers
 
         public void Notify(LogEntryViewModel logEntry)
         {
-            EventLog.WriteEntry(source, logEntry.Message, EventLogEntryType.Error);
-        }
+            EventLog.WriteEntry(source, logEntry.Message, GetLevel(logEntry));
+        }        
 
         #endregion
+
+        EventLogEntryType GetLevel(LogEntryViewModel logEntry)
+        {
+            return EventLogEntryType.Information;
+        }
     }
 }
