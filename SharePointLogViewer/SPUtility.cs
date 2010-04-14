@@ -111,6 +111,24 @@ namespace SharePointLogViewer
             }
         }
 
+        public static List<string> TraceSeverities
+        {
+            get
+            {
+                return new List<string>()
+                {
+                    "Information",
+                    "Verbose",
+                    "Warning",
+                    "Medium",
+                    "High",
+                    "CriticalEvent",
+                    "Exception",
+                    "Unexpected"
+                };
+            }
+        }
+
         public static string GetLastAccessedFile(string folderPath)
         {
             if (Directory.Exists(folderPath))

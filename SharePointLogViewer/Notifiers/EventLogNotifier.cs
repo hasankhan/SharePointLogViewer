@@ -26,7 +26,22 @@ namespace SharePointLogViewer.Notifiers
 
         EventLogEntryType GetLevel(LogEntryViewModel logEntry)
         {
-            return EventLogEntryType.Information;
+            switch (logEntry.Level)
+            {
+                case "Medium":
+                case "High":
+                case "CriticalEvent":
+                case "Exception":
+                case "UnExpected":
+                    return EventLogEntryType.Error;
+
+                case "Warning":
+                    return EventLogEntryType.Warning;
+
+                default:
+                    return EventLogEntryType.Information;
+
+            }
         }
     }
 }

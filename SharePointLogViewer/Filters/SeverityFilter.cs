@@ -25,7 +25,8 @@ namespace SharePointLogViewer.Filters
 
         private int GetSeverity(string level)
         {
-            return 1;
+            int severity = SPUtility.TraceSeverities.IndexOf(level);
+            return severity;
         }
 
         #endregion
