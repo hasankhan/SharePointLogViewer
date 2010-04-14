@@ -7,11 +7,21 @@ using Microsoft.Win32;
 using System.Security;
 using System.Reflection;
 using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace SharePointLogViewer
 {
     class SPUtility
     {
+        static IList<string> severities = new List<string>(){"Information",
+                                                             "Verbose",
+                                                             "Warning",
+                                                             "Medium",
+                                                             "High",
+                                                             "CriticalEvent",
+                                                             "Exception",
+                                                             "Unexpected"};
+
         public static SPVersion SPVersion
         {
             get
@@ -111,22 +121,20 @@ namespace SharePointLogViewer
             }
         }
 
-        public static List<string> TraceSeverities
+        public static ICollection TraceSeverities
         {
             get
             {
-                return new List<string>()
-                {
-                    "Information",
-                    "Verbose",
-                    "Warning",
-                    "Medium",
-                    "High",
-                    "CriticalEvent",
-                    "Exception",
-                    "Unexpected"
-                };
+                return new ReadOnlyCollection<string>(severities);
             }
+        }
+
+        public static int GetSeverity(string level)
+        {
+            for (int i = 0; i < severities.Count; i++)
+                if (level.ToLower() == severities[i].ToLower())
+                    return i;
+            return -1;
         }
 
         public static string GetLastAccessedFile(string folderPath)

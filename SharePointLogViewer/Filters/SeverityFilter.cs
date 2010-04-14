@@ -18,16 +18,10 @@ namespace SharePointLogViewer.Filters
 
         public bool Accept(LogEntryViewModel logEntry)
         {
-            int severity = GetSeverity(logEntry.Level);
+            int severity = SPUtility.GetSeverity(logEntry.Level);
             bool accept = (severity >= minSeverity);
             return accept;
-        }
-
-        private int GetSeverity(string level)
-        {
-            int severity = SPUtility.TraceSeverities.IndexOf(level);
-            return severity;
-        }
+        }      
 
         #endregion
     }
