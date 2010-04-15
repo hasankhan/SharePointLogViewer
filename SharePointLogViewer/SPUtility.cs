@@ -13,14 +13,14 @@ namespace SharePointLogViewer
 {
     public enum TraceSeverity
     {
-         Information,
-         Verbose,
-         Warning,
-         Medium,
-         High,
-         CriticalEvent,
-         Exception,
-         Unexpected
+        Verbose,
+        Information,
+        Warning,
+        Medium,
+        High,
+        CriticalEvent,
+        Exception,
+        Unexpected
     }
 
     class SPUtility
