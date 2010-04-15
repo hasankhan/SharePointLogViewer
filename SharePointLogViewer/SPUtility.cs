@@ -11,16 +11,21 @@ using System.Collections.ObjectModel;
 
 namespace SharePointLogViewer
 {
+    public enum TraceSeverity
+    {
+         Information,
+         Verbose,
+         Warning,
+         Medium,
+         High,
+         CriticalEvent,
+         Exception,
+         Unexpected
+    }
+
     class SPUtility
     {
-        static IList<string> severities = new List<string>(){"Information",
-                                                             "Verbose",
-                                                             "Warning",
-                                                             "Medium",
-                                                             "High",
-                                                             "CriticalEvent",
-                                                             "Exception",
-                                                             "Unexpected"};
+        static IList<TraceSeverity> severities = new List<TraceSeverity>((IEnumerable<TraceSeverity>)Enum.GetValues(typeof(TraceSeverity)));
 
         public static SPVersion SPVersion
         {
@@ -125,16 +130,21 @@ namespace SharePointLogViewer
         {
             get
             {
-                return new ReadOnlyCollection<string>(severities);
+                return new ReadOnlyCollection<TraceSeverity>(severities);
             }
         }
 
         public static int GetSeverity(string level)
         {
-            for (int i = 0; i < severities.Count; i++)
-                if (level.ToLower() == severities[i].ToLower())
-                    return i;
-            return -1;
+            try
+            {
+                var severity = (TraceSeverity)Enum.Parse(typeof(TraceSeverity), level, true);
+                return (int)severity;
+            }
+            catch (ArgumentException)
+            {
+                return 0;
+            }
         }
 
         public static string GetLastAccessedFile(string folderPath)

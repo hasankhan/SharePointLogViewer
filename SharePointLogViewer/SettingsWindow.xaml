@@ -1,4 +1,5 @@
 ﻿<Window x:Class="SharePointLogViewer.SettingsWindow"
+    xmlns:local="clr-namespace:SharePointLogViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Settings" Height="400" Width="500" Background="{DynamicResource DialogBackground}" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="ToolWindow" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
@@ -89,7 +90,9 @@
                                 </Grid.ColumnDefinitions>
                                 <CheckBox Grid.Column="1" Content="Honour Listview Filters" IsChecked="{Binding Path=NotificationSettings.HonourFilters}" Margin="0,0,0,5"/>
                                 <TextBlock Text="Minimum Severity:" Grid.Row="1" Margin="0,0,5,0"/>
-                                <TextBox Grid.Row="1" Text="{Binding Path=NotificationSettings.MinimumSeverity}" Margin="0,0,0,5" Grid.Column="1"/>
+                                <ComboBox Grid.Row="1"
+                                          ItemsSource="{Binding Source={x:Static Member=local:SPUtility.TraceSeverities}}"
+                                          SelectedItem="{Binding Path=NotificationSettings.MinimumSeverity}" Margin="0,0,0,5" Grid.Column="1"/>
                                 <CheckBox Grid.Row="2" Grid.Column="1" Content="Enable System Tray Notifications" Margin="0,0,0,5" IsChecked="{Binding Path=NotificationSettings.EnableSystemTrayNotification}"/>
                                 <CheckBox Grid.Row="3" Grid.Column="1" Content="Enable Event Log Notifications" Margin="0,0,0,5" IsChecked="{Binding Path=NotificationSettings.EnableEventLogNotification}"/>
                                 <CheckBox Grid.Row="4" Grid.Column="1" Content="Enable Email Notifications" Margin="0,0,0,5" IsChecked="{Binding Path=NotificationSettings.EnableEmailNotification}"/>

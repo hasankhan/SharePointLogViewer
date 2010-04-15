@@ -45,7 +45,7 @@ namespace SharePointLogViewer
         public bool EnableEmailNotification { get; set; }
         public bool EnableEventLogNotification { get; set; }
         public bool HonourFilters { get; set; }
-        public int MinimumSeverity { get; set; }
+        public TraceSeverity MinimumSeverity { get; set; }
         public string EmailSender { get; set; }
         public string EmailRecepients { get; set; }
         public string SmtpServer { get; set; }

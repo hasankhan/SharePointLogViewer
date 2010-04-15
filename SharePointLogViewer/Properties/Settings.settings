@@ -58,8 +58,8 @@
     <Setting Name="HonourFilters" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="MinimumSeverity" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="MinimumSeverity" Type="SharePointLogViewer.TraceSeverity" Scope="User">
+      <Value Profile="(Default)">Information</Value>
     </Setting>
   </Settings>
 </SettingsFile>

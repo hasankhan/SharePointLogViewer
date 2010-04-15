@@ -216,10 +216,10 @@ namespace SharePointLogViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int MinimumSeverity {
+        [global::System.Configuration.DefaultSettingValueAttribute("Information")]
+        public global::SharePointLogViewer.TraceSeverity MinimumSeverity {
             get {
-                return ((int)(this["MinimumSeverity"]));
+                return ((global::SharePointLogViewer.TraceSeverity)(this["MinimumSeverity"]));
             }
             set {
                 this["MinimumSeverity"] = value;

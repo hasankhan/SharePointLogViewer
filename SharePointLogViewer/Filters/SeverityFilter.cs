@@ -9,9 +9,9 @@ namespace SharePointLogViewer.Filters
     {
         int minSeverity;
 
-        public SeverityFilter(int minSeverity)
+        public SeverityFilter(TraceSeverity minSeverity)
         {
-            this.minSeverity = minSeverity;
+            this.minSeverity = (int)minSeverity;
         }
 
         #region ILogEntryFilter Members
