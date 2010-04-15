@@ -37,6 +37,7 @@ namespace SharePointLogViewer
         IList<IFilter> filters;
         WindowState lastWindowState;
         SystemTrayNotifier trayNotifier;
+        bool showMinimizeToolTip;
  
         public static RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(MainWindow));
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
@@ -78,8 +79,10 @@ namespace SharePointLogViewer
             if (App.RunInBackground)
             {
                 RunInLiveMode();
-                RunInBackground(false);
+                RunInBackground();
             }
+            else
+                showMinimizeToolTip = true;
         }
 
         void LoadSettings()
@@ -462,18 +465,21 @@ namespace SharePointLogViewer
             if (Properties.Settings.Default.HideToSystemTray)
             {
                 if (WindowState == WindowState.Minimized)
-                    RunInBackground(true);
+                    RunInBackground();
                 else
                     lastWindowState = WindowState;
             }
         }
 
-        private void RunInBackground(bool showMessage)
+        private void RunInBackground()
         {
             Hide();
             CheckTrayIcon();
-            if (showMessage)
+            if (showMinimizeToolTip)
+            {
+                showMinimizeToolTip = false;
                 trayNotifier.Notify("The app has been minimised. Click the tray icon to show.");
+            }
         }
 
         void CheckTrayIcon()
