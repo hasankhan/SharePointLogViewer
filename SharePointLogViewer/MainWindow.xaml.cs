@@ -87,7 +87,9 @@ namespace SharePointLogViewer
 
         void LoadSettings()
         {
-            if (Properties.Settings.Default.EnableEmailNotifications)
+            if (Properties.Settings.Default.EnableEmailNotifications && !(String.IsNullOrEmpty(Properties.Settings.Default.EmailSenders) ||
+                                                                          String.IsNullOrEmpty(Properties.Settings.Default.EmailRecepients) || 
+                                                                          String.IsNullOrEmpty(Properties.Settings.Default.EmailSmtpServer)))
             {
                 INotifier notifier = new EmailNotifier(Properties.Settings.Default.EmailSenders,
                                                        Properties.Settings.Default.EmailRecepients,
