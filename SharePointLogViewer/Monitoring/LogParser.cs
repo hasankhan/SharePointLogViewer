@@ -18,19 +18,16 @@ namespace SharePointLogViewer.Monitoring
                 FileStream logFile = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using (var reader = new StreamReader(logFile))
                 {
-                    reader.ReadLine().Split(new char[] { '\t' });
+                    reader.ReadLine();
 
                     while (!reader.EndOfStream)
                     {
                         string line = reader.ReadLine();
                         var entry = LogEntry.Parse(line);
-                        entries.Add(entry);
-                        //TODO:
-                        //if (row["Timestamp"].ToString().EndsWith("*"))
-                        //{
-                        //    entries.Rows[entries.Rows.Count - 2]["Message"] = entries.Rows[entries.Rows.Count - 2]["Message"].ToString().TrimEnd('.') + row["Message"].ToString().Substring(3);
-                        //    entries.Rows.Remove(row);
-                        //}
+                        if (entry.Timestamp.EndsWith("*") && entries.Count > 0)
+                            entries[entries.Count - 1].Message = entries[entries.Count - 1].Message.TrimEnd('.') + entry.Message.Substring(3);
+                        else
+                            entries.Add(entry);
                     }
                 }                
             }

@@ -11,6 +11,7 @@ namespace SharePointLogViewer.Monitoring
         FileTail fileTail;
         string folderPath;
         LogDirectoryWatcher watcher;
+        bool firstLine;
 
         public event EventHandler<LogEntryDiscoveredEventArgs> LogEntryDiscovered = delegate { };
 
@@ -42,17 +43,19 @@ namespace SharePointLogViewer.Monitoring
         void watcher_FileCreated(object sender, FileCreatedEventArgs e)
         {
             fileTail.Stop();
+            firstLine = true;
             fileTail.Start(e.Filename);
         }
 
         void fileTail_LineDiscovered(object sender, LineDiscoveredEventArgs e)
         {
-            if (!String.IsNullOrEmpty(e.Line.Trim()))
+            if (!String.IsNullOrEmpty(e.Line.Trim()) && !firstLine)
             {
                 var entry = LogEntry.Parse(e.Line);
                 if (entry != null)
                     LogEntryDiscovered(this, new LogEntryDiscoveredEventArgs() { LogEntry = entry });
             }
+            firstLine = false;
         }
 
         #region IDisposable Members
