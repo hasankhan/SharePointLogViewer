@@ -238,7 +238,7 @@ namespace SharePointLogViewer
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
-            Dispatcher.BeginInvoke((Action)(() =>
+            Dispatcher.Invoke((Action)(() =>
                 {
                     var le = new LogEntryViewModel(e.LogEntry);
                     logEntries.Add(le);
