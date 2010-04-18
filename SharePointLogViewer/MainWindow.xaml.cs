@@ -15,6 +15,7 @@ using SharePointLogViewer.Searching;
 using SharePointLogViewer.Monitoring;
 using SharePointLogViewer.Notifiers;
 using SharePointLogViewer.Filters;
+using System.Security;
 
 namespace SharePointLogViewer
 {
@@ -99,8 +100,14 @@ namespace SharePointLogViewer
             }
             if (Properties.Settings.Default.EnableEventLogNotifications)
             {
-                INotifier notifier = new EventLogNotifier();
-                notifiers.Add(notifier);
+                try
+                {
+                    INotifier notifier = new EventLogNotifier();
+                    notifiers.Add(notifier);
+                }
+                catch (SecurityException)
+                {
+                }
             }
             if (Properties.Settings.Default.EnableSystemTrayNotifications)
                 notifiers.Add(trayNotifier);
