@@ -197,7 +197,7 @@
                 SharePoint Log Viewer <TextBlock x:Name="lblVersion" /><LineBreak />
                 Copyright(C) 2010 Overroot Inc.<LineBreak /><LineBreak />
                 Website: <Hyperlink NavigateUri="http://www.overroot.com" RequestNavigate="Hyperlink_RequestNavigate">www.overroot.com</Hyperlink><LineBreak />
-                Email: <Hyperlink NavigateUri="mailto:overrootinc@gmail.com" RequestNavigate="Hyperlink_RequestNavigate">overrootinc@gmail.com</Hyperlink>
+                Email: <Hyperlink NavigateUri="mailto:info@overroot.com" RequestNavigate="Hyperlink_RequestNavigate">info@overroot.com</Hyperlink>
             </TextBlock>
         </Border>
     </Grid>
