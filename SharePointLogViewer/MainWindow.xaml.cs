@@ -245,11 +245,12 @@ namespace SharePointLogViewer
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
-            Dispatcher.Invoke((Action)(() =>
+            Dispatcher.BeginInvoke((Action)(() =>
                 {
                     var le = new LogEntryViewModel(e.LogEntry);
                     logEntries.Add(le);
-                    lstLog.ScrollIntoView(le);
+                    if (this.Visibility == System.Windows.Visibility.Visible)
+                        lstLog.ScrollIntoView(le);
                     NotifyIfRequired(le);
                 }
             ));
