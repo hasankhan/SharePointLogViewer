@@ -212,7 +212,12 @@ namespace SharePointLogViewer
         private static string GetSPDiagnosticsLogLocation()
         {
             string logLocation = String.Empty;
-            Type diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            Type diagSvcType = null; 
+            if (SPUtility.SPVersion == SPVersion.SP2007)
+                diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            else if (SPUtility.SPVersion == SPVersion.SP2010)
+                diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            
             if (diagSvcType != null)
             {
                 PropertyInfo propLocalDiagSvc = diagSvcType.GetProperty("Local", BindingFlags.Public | BindingFlags.Static);
