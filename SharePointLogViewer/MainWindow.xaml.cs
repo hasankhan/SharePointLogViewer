@@ -63,6 +63,7 @@ namespace SharePointLogViewer
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
             
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
+            this.Closing += new CancelEventHandler(MainWindow_Closing);
             trayNotifier = new SystemTrayNotifier();
             trayNotifier.Click += new EventHandler(trayIcon_Click);
 
@@ -84,6 +85,12 @@ namespace SharePointLogViewer
             }
             else
                 showMinimizeToolTip = true;
+        }
+
+        void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.LastDirectory = Environment.CurrentDirectory;
+            Properties.Settings.Default.Save();
         }
 
         void LoadSettings()
@@ -140,7 +147,7 @@ namespace SharePointLogViewer
             txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider((new LogEntryTokenizer(logEntries)).Distinct());
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
-                openDialog.InitialDirectory = SPUtility.GetLogsLocation();
+                Environment.CurrentDirectory = String.IsNullOrEmpty(Properties.Settings.Default.LastDirectory) ? SPUtility.GetLogsLocation() : Properties.Settings.Default.LastDirectory;
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
@@ -154,7 +161,10 @@ namespace SharePointLogViewer
 
         void OpenFile_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            openDialog.FileName = SPUtility.LatestLogFile;            
+            if (IsLogsDirectoryCurrentDirectory())
+                openDialog.FileName = SPUtility.LatestLogFile;
+            else
+                openDialog.FileName = null;
             if (openDialog.ShowDialog().Value)
             {
                 files = openDialog.FileNames;
@@ -163,7 +173,7 @@ namespace SharePointLogViewer
                 if (lstLog.Items.Count > 0)
                     lstLog.ScrollIntoView(lstLog.Items[0]);
             }
-        }
+        }        
 
         void Filter_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -502,6 +512,9 @@ namespace SharePointLogViewer
                 trayNotifier.Show(!IsVisible);
         }
 
-        
+        static bool IsLogsDirectoryCurrentDirectory()
+        {
+            return Environment.CurrentDirectory.TrimEnd('\\').ToLower() == SPUtility.GetLogsLocation().TrimEnd('\\').ToLower();
+        }        
     }
 }
