@@ -140,7 +140,7 @@ namespace SharePointLogViewer
             txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider((new LogEntryTokenizer(logEntries)).Distinct());
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
-                openDialog.InitialDirectory = SPUtility.LogsLocation;
+                openDialog.InitialDirectory = SPUtility.GetLogsLocation();
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
@@ -271,10 +271,13 @@ namespace SharePointLogViewer
 
         void StartLiveMonitoring()
         {
-            string folderPath = SPUtility.LogsLocation;
+            string folderPath = SPUtility.GetLogsLocation();
+            if (folderPath != String.Empty)
+                folderPath = Environment.ExpandEnvironmentVariables(folderPath);
+
             if (Directory.Exists(folderPath))
             {
-                var logMonitors = GetLogMonitors();
+                var logMonitors = GetLogMonitors(folderPath);
                 if (logMonitors.Any())
                     logMonitor = new MultiLogMonitor(logMonitors);
                 else
@@ -428,9 +431,9 @@ namespace SharePointLogViewer
             Reset();
         }
 
-        List<LogMonitor> GetLogMonitors()
+        List<LogMonitor> GetLogMonitors(string logLocation)
         {
-            IEnumerable<string> folderPaths = GetLogDirectoryPaths();
+            IEnumerable<string> folderPaths = GetLogDirectoryPaths(logLocation);
             var logMonitors = new List<LogMonitor>();
             foreach (var path in folderPaths)
             {
@@ -445,9 +448,10 @@ namespace SharePointLogViewer
             return logMonitors;
         }        
 
-        IEnumerable<string> GetLogDirectoryPaths()
+        IEnumerable<string> GetLogDirectoryPaths(string logLocation)
         {
-            string localLogDir = SPUtility.LogsLocation.Replace(':', '$');
+            string localLogDir = Environment.ExpandEnvironmentVariables(logLocation);
+            localLogDir = localLogDir.Replace(':', '$');
             IEnumerable<string> serverNames = SPUtility.GetServerNames();
             List<string> logDirs = new List<string>(from server in serverNames
                                                     let path = "\\\\" + server + "\\" + localLogDir

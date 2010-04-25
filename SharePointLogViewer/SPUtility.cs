@@ -87,25 +87,13 @@ namespace SharePointLogViewer
             }
         }        
 
-        public static string LogsLocation
-        {
-            get 
-            {
-                string logsPath = WSSInstallPath;
-                if (logsPath != String.Empty)
-                    logsPath = Path.Combine(logsPath, "logs");
-
-                return logsPath;
-            }
-        }
-
         public static string LatestLogFile
         {
             get
             {
                 string lastAccessedFile = null;
                 if (IsWSSInstalled)
-                    lastAccessedFile = GetLastAccessedFile(LogsLocation);
+                    lastAccessedFile = GetLastAccessedFile(GetLogsLocation());
 
                 return lastAccessedFile;
             }
@@ -132,6 +120,19 @@ namespace SharePointLogViewer
             {
                 return new ReadOnlyCollection<TraceSeverity>(severities);
             }
+        }
+
+        public static string GetLogsLocation()
+        {
+            string logLocation = String.Empty;
+            if (IsWSSInstalled)
+            {
+                logLocation = GetSPDiagnosticsLogLocation();
+                if (logLocation == String.Empty)
+                    logLocation = GetStandardLogLocation();
+            }
+
+            return logLocation;
         }
 
         public static int GetSeverity(string level)
@@ -197,6 +198,30 @@ namespace SharePointLogViewer
             if (key == null)
                 key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
             return key;
-        }        
+        }
+
+        private static string GetStandardLogLocation()
+        {
+            string logLocation = WSSInstallPath;
+            if (logLocation != String.Empty)
+                logLocation = Path.Combine(logLocation, "logs");
+
+            return logLocation;
+        }
+
+        private static string GetSPDiagnosticsLogLocation()
+        {
+            string logLocation = String.Empty;
+            Type diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            if (diagSvcType != null)
+            {
+                PropertyInfo propLocalDiagSvc = diagSvcType.GetProperty("Local", BindingFlags.Public | BindingFlags.Static);
+                object localDiagSvc = propLocalDiagSvc.GetValue(null, null);
+                PropertyInfo property = localDiagSvc.GetType().GetProperty("LogLocation");
+                logLocation = (string)property.GetValue(localDiagSvc, null);
+            }
+
+            return logLocation;
+        }
     }
 }
