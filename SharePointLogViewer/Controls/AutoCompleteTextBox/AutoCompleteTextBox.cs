@@ -24,7 +24,8 @@ namespace SharePointLogViewer.Controls.AutoCompleteTextBox
 
         void AutoCompleteTextBox_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            _acm.AttachTextBox(this);
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+                _acm.AttachTextBox(this);
         }
         
     }
