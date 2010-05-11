@@ -364,7 +364,11 @@ namespace SharePointLogViewer
             var exporter = new LogExporter();
             CollectionViewSource viewSource = GetCollectionViewSource();
             if (viewSource.View != null)
-                exporter.Save(saveDialog.OpenFile(), viewSource.View.Cast<LogEntry>());
+            {
+                var entries = from entry in viewSource.View.Cast<LogEntryViewModel>()
+                              select (LogEntry) entry;
+                exporter.Save(saveDialog.OpenFile(), entries);
+            }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
