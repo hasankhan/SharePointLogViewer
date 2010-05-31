@@ -147,7 +147,15 @@ namespace SharePointLogViewer
             txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider((new LogEntryTokenizer(logEntries)).Distinct());
             UpdateFilter();
             if (SPUtility.IsWSSInstalled)
-                Environment.CurrentDirectory = String.IsNullOrEmpty(Properties.Settings.Default.LastDirectory) ? SPUtility.GetLogsLocation() : Properties.Settings.Default.LastDirectory;
+            {
+                try
+                {
+                    string lastDirectory = String.IsNullOrEmpty(Properties.Settings.Default.LastDirectory) ? SPUtility.GetLogsLocation() : Properties.Settings.Default.LastDirectory;
+                    lastDirectory = Environment.ExpandEnvironmentVariables(lastDirectory);
+                    Environment.CurrentDirectory = lastDirectory;
+                }
+                catch { }
+            }
         }
 
         void logsLoader_LoadCompleted(object sender, LoadCompletedEventArgs e)
