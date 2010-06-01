@@ -132,6 +132,8 @@ namespace SharePointLogViewer
                     logLocation = GetStandardLogLocation();
             }
 
+            logLocation = Environment.ExpandEnvironmentVariables(logLocation);
+
             return logLocation;
         }
 
