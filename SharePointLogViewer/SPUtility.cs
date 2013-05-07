@@ -36,11 +36,25 @@ namespace SharePointLogViewer
                     var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
                     if (key != null)
                         return SPVersion.SP2007;
-                    key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
+
+                    // Check for SP2010
+                    key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0\WSS"); // Needed because SP2013 has 14.0 Key too
                     if (key != null)
+                    {
+                        key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
                         return SPVersion.SP2010;
+                    }
+
+                    // Check for SP2013
+                    key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\15.0\WSS");
+                    if (key != null)
+                    {
+                        key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\15.0");
+                        return SPVersion.SP2013;
+                    }
+
                 }
-                catch (SecurityException){}                 
+                catch (SecurityException) { }
                 return SPVersion.Unknown;
             }
         }
@@ -77,15 +91,15 @@ namespace SharePointLogViewer
                             if (versionStr != null)
                             {
                                 Version buildVersion = new Version(versionStr);
-                                if (buildVersion.Major == 12 || buildVersion.Major == 14)
+                                if (buildVersion.Major == 12 || buildVersion.Major == 14 || buildVersion.Major == 15)
                                     return true;
                             }
                         }
                 }
-                catch (SecurityException) {}
+                catch (SecurityException) { }
                 return false;
             }
-        }        
+        }
 
         public static string LatestLogFile
         {
@@ -166,10 +180,13 @@ namespace SharePointLogViewer
         {
             Type farmType = null;
 
-            if(SPUtility.SPVersion == SPVersion.SP2007)
+            if (SPUtility.SPVersion == SPVersion.SP2007)
                 farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
-            else if(SPUtility.SPVersion == SPVersion.SP2010)
+            else if (SPUtility.SPVersion == SPVersion.SP2010)
                 farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+            else if (SPUtility.SPVersion == SPVersion.SP2013)
+                farmType = Type.GetType("Microsoft.SharePoint.Administration.SPFarm, Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+
 
             if (farmType != null)
             {
@@ -191,14 +208,18 @@ namespace SharePointLogViewer
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\12.0");
             if (key == null)
                 key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\14.0");
+            else if (key == null)
+                key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Office Server\15.0");
             return key;
         }
-       
+
         static RegistryKey GetWSSRegistryKey()
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\15.0");
             if (key == null)
                 key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\14.0");
+            else if (key == null)
+                key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\12.0");
             return key;
         }
 
@@ -214,12 +235,14 @@ namespace SharePointLogViewer
         private static string GetSPDiagnosticsLogLocation()
         {
             string logLocation = String.Empty;
-            Type diagSvcType = null; 
+            Type diagSvcType = null;
             if (SPUtility.SPVersion == SPVersion.SP2007)
                 diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
             else if (SPUtility.SPVersion == SPVersion.SP2010)
                 diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
-            
+            else if (SPUtility.SPVersion == SPVersion.SP2013)
+                diagSvcType = Type.GetType("Microsoft.SharePoint.Administration.SPDiagnosticsService, Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c");
+
             if (diagSvcType != null)
             {
                 PropertyInfo propLocalDiagSvc = diagSvcType.GetProperty("Local", BindingFlags.Public | BindingFlags.Static);
