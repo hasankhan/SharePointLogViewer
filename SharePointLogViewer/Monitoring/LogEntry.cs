@@ -21,6 +21,9 @@ namespace SharePointLogViewer.Monitoring
             string[] fields = line.Split('\t');
             if (fields.Length > 8)
             {
+                string messageOneLine = fields[7].Trim();
+                string messageMultiLine = messageOneLine.Replace("    at ", "\r\n    at ");
+
                 var entry = new LogEntry()
                 {
                     Timestamp = fields[0].Trim(),
@@ -30,7 +33,7 @@ namespace SharePointLogViewer.Monitoring
                     Category = fields[4].Trim(),
                     EventID = fields[5].Trim(),
                     Level = fields[6].Trim(),
-                    Message = fields[7].Trim(),
+                    Message = messageMultiLine,
                     Correlation = fields[8].Trim()
                 };
                 return entry;
