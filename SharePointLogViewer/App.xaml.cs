@@ -13,6 +13,8 @@ namespace SharePointLogViewer
     {
         public static bool RunInBackground { get; set; }
 
+        public static string FileToOpen { get; set; }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             SharePointLogViewer.Properties.Settings.Default.Save();
@@ -21,7 +23,10 @@ namespace SharePointLogViewer
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             if (e.Args.Length > 0)
-                RunInBackground = e.Args[0].Trim() == "/background";
+                if (e.Args[0].Trim() == "/background")
+                    RunInBackground = true;
+                else
+                    FileToOpen = e.Args[0];
         }
     }
 }

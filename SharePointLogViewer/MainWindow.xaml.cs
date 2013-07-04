@@ -24,7 +24,7 @@ namespace SharePointLogViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);        
+        OverflowCollection<LogEntryViewModel> logEntries = new OverflowCollection<LogEntryViewModel>(le=>!le.Bookmarked);
 
         LogsLoader logsLoader = new LogsLoader();
         ILogMonitor logMonitor = null;
@@ -39,7 +39,7 @@ namespace SharePointLogViewer
         WindowState lastWindowState;
         SystemTrayNotifier trayNotifier;
         bool showMinimizeToolTip;
- 
+
         public static RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(MainWindow));
         public static RoutedUICommand About = new RoutedUICommand("About", "About", typeof(MainWindow));
         public static RoutedUICommand Filter = new RoutedUICommand("Filter", "Filter", typeof(MainWindow));
@@ -55,20 +55,20 @@ namespace SharePointLogViewer
         public MainWindow()
         {
             InitializeComponent();
-            
+
             if (Properties.Settings.Default.Maximized)
                 WindowState = WindowState.Maximized;
 
             lastWindowState = WindowState;
             logsLoader.LoadCompleted += new EventHandler<LoadCompletedEventArgs>(logsLoader_LoadCompleted);
-            
+
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             this.Closing += new CancelEventHandler(MainWindow_Closing);
             trayNotifier = new SystemTrayNotifier();
             trayNotifier.Click += new EventHandler(trayIcon_Click);
 
-            bookmarkNavigator = new BookmarkNavigator(lstLog, ()=>GetCollectionViewSource().View);           
-            
+            bookmarkNavigator = new BookmarkNavigator(lstLog, ()=>GetCollectionViewSource().View);
+
             InitializeDialogs();
             SetListHeadersState();
 
@@ -84,7 +84,15 @@ namespace SharePointLogViewer
                 RunInBackground();
             }
             else
+            {
                 showMinimizeToolTip = true;
+                if (!String.IsNullOrEmpty(App.FileToOpen))
+                {
+                    files = new string[] { App.FileToOpen };
+                    LoadFiles();
+                }
+
+            }
         }
 
         void MainWindow_Closing(object sender, CancelEventArgs e)
@@ -96,7 +104,7 @@ namespace SharePointLogViewer
         void LoadSettings()
         {
             if (Properties.Settings.Default.EnableEmailNotifications && !(String.IsNullOrEmpty(Properties.Settings.Default.EmailSenders) ||
-                                                                          String.IsNullOrEmpty(Properties.Settings.Default.EmailRecepients) || 
+                                                                          String.IsNullOrEmpty(Properties.Settings.Default.EmailRecepients) ||
                                                                           String.IsNullOrEmpty(Properties.Settings.Default.EmailSmtpServer)))
             {
                 INotifier notifier = new EmailNotifier(Properties.Settings.Default.EmailSenders,
@@ -146,7 +154,7 @@ namespace SharePointLogViewer
             this.DataContext = logEntries;
             txtFilter.AutoCompleteManager.DataProvider = new SimpleStaticDataProvider((new LogEntryTokenizer(logEntries)).Distinct());
             UpdateFilter();
-            
+
             string lastDirectory;
 
             if (SPUtility.IsWSSInstalled)
@@ -186,7 +194,7 @@ namespace SharePointLogViewer
                 if (lstLog.Items.Count > 0)
                     lstLog.ScrollIntoView(lstLog.Items[0]);
             }
-        }        
+        }
 
         void Filter_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -264,7 +272,7 @@ namespace SharePointLogViewer
             }
             else
                 MessageBox.Show("Could not start live monitoring.\nPlease make sure the wss/moss log directory is accessible.", "Live monitoring failed!", MessageBoxButton.OK, MessageBoxImage.Error);
-        }       
+        }
 
         void watcher_LogEntryDiscovered(object sender, LogEntryDiscoveredEventArgs e)
         {
@@ -313,7 +321,7 @@ namespace SharePointLogViewer
                 logMonitor.Start();
                 liveMode = true;
             }
-        }        
+        }
 
         void Reset()
         {
@@ -363,11 +371,11 @@ namespace SharePointLogViewer
                 Process.Start(e.Uri.AbsoluteUri);
                 e.Handled = true;
             }
-            catch { }            
+            catch { }
         }
 
         private void ExportLogEntries_Executed(object sender, ExecutedRoutedEventArgs e)
-        {            
+        {
             bool? result = saveDialog.ShowDialog();
             if (!result.Value)
                 return;
@@ -412,12 +420,12 @@ namespace SharePointLogViewer
         private void Previous_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             bookmarkNavigator.Previous();
-        }        
+        }
 
         private void Next_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             bookmarkNavigator.Next();
-        }        
+        }
 
         private void ToggleBookmark_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -439,7 +447,7 @@ namespace SharePointLogViewer
             LogEntryViewModel selected = lstLog.SelectedItem as LogEntryViewModel;
             if (selected != null)
                 selected.Bookmarked = !selected.Bookmarked;
-        }   
+        }
 
         private void Navigate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -471,7 +479,7 @@ namespace SharePointLogViewer
 
             }
             return logMonitors;
-        }        
+        }
 
         IEnumerable<string> GetLogDirectoryPaths(string logLocation)
         {
@@ -530,6 +538,6 @@ namespace SharePointLogViewer
         static bool IsLogsDirectoryCurrentDirectory()
         {
             return Environment.CurrentDirectory.TrimEnd('\\').ToLower() == SPUtility.GetLogsLocation().TrimEnd('\\').ToLower();
-        }        
+        }
     }
 }
