@@ -139,10 +139,13 @@ namespace SharePointLogViewer
         public static string GetLogsLocation()
         {
             string logLocation = String.Empty;
+
             if (IsWSSInstalled)
             {
                 logLocation = GetSPDiagnosticsLogLocation();
-                if (logLocation == String.Empty)
+                if (String.IsNullOrEmpty(logLocation))
+                    logLocation = GetCustomLogLocation();
+                if (String.IsNullOrEmpty(logLocation))
                     logLocation = GetStandardLogLocation();
             }
 
@@ -229,6 +232,21 @@ namespace SharePointLogViewer
             if (logLocation != String.Empty)
                 logLocation = Path.Combine(logLocation, "logs");
 
+            return logLocation;
+        }
+
+        static string GetCustomLogLocation()
+        {
+            string logLocation = String.Empty;
+            try
+            {
+                using (RegistryKey key = GetWSSRegistryKey())
+                    if (key != null)
+                        using (RegistryKey subKey = key.OpenSubKey("WSS"))
+                            if (subKey != null)
+                                logLocation = subKey.GetValue("LogDir") as string;
+            }
+            catch (SecurityException) { }
             return logLocation;
         }
 
